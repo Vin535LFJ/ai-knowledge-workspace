@@ -1,0 +1,21 @@
+# Internal agent work journals — not part of the knowledge base deliverable.
+.workbuddy-ai/memory/
+
+# Agent run logs — local only, retention policy archives summaries to archive/ (D15).
+.agent/runs/
+
+# Local tooling artifacts.
+.playwright-cli/
+.qoder-input-images/
+*.pyc
+__pycache__/
+.DS_Store
+
+# VitePress online site: only sources (package.json / .vitepress/config.mjs / README) are committed.
+site-vitepress/docs/
+site-vitepress/node_modules/
+site-vitepress/.vitepress/cache/
+site-vitepress/.vitepress/dist/
+site-vitepress/.vitepress/.temp/
+site-vitepress/.vitepress/sidebar.generated.mjs
+site-vitepress/.vitepress/sidebar.generated.json

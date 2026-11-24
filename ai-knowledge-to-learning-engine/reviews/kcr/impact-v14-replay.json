@@ -1,0 +1,65 @@
+{
+  "trigger": {
+    "type": "claim_status_request",
+    "ref": "V14",
+    "date": "2026-11-20"
+  },
+  "new_sources": [],
+  "seed": {
+    "source_id": null,
+    "claim_id": "V14"
+  },
+  "affected": {
+    "claims": [
+      {
+        "id": "V14",
+        "relation": "supports",
+        "note": "claim 状态请求的主体断言（seed=claim）"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "K-STRIDE",
+        "via_claim": "V14"
+      }
+    ],
+    "lessons": [
+      {
+        "id": "L01",
+        "via_claim": "V14"
+      }
+    ],
+    "quizzes": [
+      {
+        "id": "L01#L01-Q2",
+        "via_claim": "V14"
+      }
+    ],
+    "courses": [
+      {
+        "id": "courses/video-rendering-journey/course.json",
+        "objectives_maybe": false
+      },
+      {
+        "id": "tools/course.json",
+        "objectives_maybe": false
+      }
+    ]
+  },
+  "conflicts": [],
+  "uncovered": [],
+  "integrity_findings": [],
+  "website_artifacts": [
+    "web/content.js (build 生成物)",
+    "site-vitepress/docs/ (build 生成物)"
+  ],
+  "counts": {
+    "sources": 24,
+    "claims": 55,
+    "concepts": 23,
+    "quizzes": 5,
+    "courses": 2
+  },
+  "generated_at": "2026-11-20 09:58",
+  "read_only": true
+}

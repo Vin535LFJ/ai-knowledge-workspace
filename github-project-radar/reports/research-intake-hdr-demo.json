@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "exported_at": "2026-11-21T11:47:48.413156+00:00",
+  "task_count": 1,
+  "tasks": [
+    {
+      "candidate_id": 100,
+      "repository": "ruvnet/ruflo",
+      "url": "https://github.com/ruvnet/ruflo",
+      "topic": "ai-agent",
+      "discovery_reason": {
+        "method": "topic-keyword-match",
+        "matched_keywords": 6,
+        "snapshot_count": 1
+      },
+      "star_metrics": {
+        "stargazers_count": 82195,
+        "forks_count": 9688,
+        "star_growth_7d": null,
+        "star_growth_30d": null,
+        "insufficient_history": true
+      },
+      "evaluation": {
+        "dimensions": {
+          "innovation": {
+            "score": 76,
+            "reason": "基于描述/主题中的创新关键词命中度估计；关键词命中越多，创新信号越强（启发式，非事实断言）。",
+            "basis": {
+              "description": "🌊 The original agent harness. Deploy intelligent multi-player swarms, coordinate autonomous workflows, and build conversational AI systems. Features adaptive memory, self-learning intelligence, federation, vector RAG integration, and native Claude Code / Codex / Hermes and many more Integrated",
+              "topics": [
+                "agent-memory",
+                "agent-orchestration",
+                "agentic-ai",
+                "agentic-workflow",
+                "ai-agents",
+                "autonomous-agents",
+                "claude",
+                "claude-code",
+                "codex",
+                "hnsw",
+                "mcp",
+                "mcp-server",
+                "multi-agent",
+                "multi-agent-systems",
+                "plugins",
+                "rvf",
+                "swarm",
+                "swarm-intelligence",
+                "typescript",
+                "vector-search"
+              ],
+              "keyword_hits": [
+                "agent",
+                "rag",
+                "mcp"
+              ]
+            }
+          },
+          "relevance": {
+            "score": 80.0,
+            "reason": "与主题组『ai-agent』关键词匹配 6/10 项。",
+            "basis": {
+              "topic_group": "ai-agent",
+              "keyword_hits": [
+                "agent",
+                "multi-agent",
+                "harness",
+                "memory",
+                "orchestration",
+                "autonomous"
+              ],
+              "keywords_total": 10
+            }
+          },
+          "engineering_maturity": {
+            "score": 70.0,
+            "reason": "依据许可证、主页、主题、描述、最近发布等可观测信号评估工程成熟度。",
+            "basis": {
+              "has_license": true,
+              "has_homepage": true,
+              "has_topics": true,
+              "has_description": true,
+              "has_recent_release": false
+            }
+          },
+          "reusability": {
+            "score": 90.0,
+            "reason": "宽松许可证显著提升可复用性。",
+            "basis": {
+              "license": "MIT",
+              "permissive_license": true,
+              "homepage": "https://cognitum.one/ruPro"
+            }
+          },
+          "growth_momentum": {
+            "score": 0.0,
+            "reason": "快照历史不足，增长势能记为 0（中性）；未使用或编造 7d/30d 增长数据。 快照数量不足（<2），无法计算增长；7d/30d 指标留空而非编造。",
+            "basis": {
+              "insufficient_history": true,
+              "snapshot_count": 1
+            }
+          }
+        },
+        "total": 63.0,
+        "group": "ai-agent",
+        "weights": {
+          "innovation": 25,
+          "relevance": 25,
+          "engineering_maturity": 15,
+          "reusability": 15,
+          "growth_momentum": 20
+        },
+        "insufficient_history": true,
+        "review_log": [
+          {
+            "reviewer": "user(采纳AI推荐授权 2026-11-21)",
+            "at": "2026-11-21T11:47:48+00:00",
+            "from": "",
+            "to": "Triaged",
+            "decision": "P10 验收：最高分候选(63.0)分诊"
+          },
+          {
+            "reviewer": "user(采纳AI推荐授权 2026-11-21)",
+            "at": "2026-11-21T11:47:48+00:00",
+            "from": "Triaged",
+            "to": "Research",
+            "decision": "P10 验收：进入研究队列（Research Intake 导出演示）"
+          }
+        ],
+        "review_status": "Research"
+      },
+      "review_status": "Research",
+      "research_objective": "",
+      "created_at": "2026-11-21T11:47:17+00:00",
+      "human_selected_for_research": false,
+      "source_url": null,
+      "observed_at": null,
+      "retrieved_at": null,
+      "data_quality": null
+    }
+  ]
+}

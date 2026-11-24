@@ -1,0 +1,58 @@
+{
+  "trigger": {
+    "type": "claim_status_request",
+    "ref": "V23",
+    "date": "2026-11-21"
+  },
+  "new_sources": [],
+  "seed": {
+    "source_id": null,
+    "claim_id": "V23"
+  },
+  "affected": {
+    "claims": [
+      {
+        "id": "V23",
+        "relation": "supports",
+        "note": "claim 状态请求的主体断言（seed=claim）"
+      }
+    ],
+    "concepts": [],
+    "lessons": [
+      {
+        "id": "L03",
+        "via_claim": "V23"
+      }
+    ],
+    "quizzes": [],
+    "courses": [
+      {
+        "id": "tools/course.json",
+        "objectives_maybe": false
+      }
+    ]
+  },
+  "conflicts": [],
+  "uncovered": [],
+  "integrity_findings": [
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V23",
+      "status": "open",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    }
+  ],
+  "website_artifacts": [
+    "web/content.js (build 生成物)",
+    "site-vitepress/docs/ (build 生成物)"
+  ],
+  "counts": {
+    "sources": 35,
+    "claims": 79,
+    "concepts": 23,
+    "quizzes": 5,
+    "courses": 2
+  },
+  "generated_at": "2026-11-21 11:37",
+  "read_only": true
+}

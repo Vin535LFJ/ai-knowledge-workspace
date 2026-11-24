@@ -1,0 +1,43 @@
+{
+  "documents": [
+    {
+      "document_id": "basic-project-readme",
+      "path": "README.md",
+      "type": "project-readme",
+      "level": null,
+      "status": "active",
+      "owner": "human",
+      "created_at": "2026-11-19",
+      "updated_at": "2026-11-19",
+      "source_of_truth": null,
+      "generated": false,
+      "related_task": null,
+      "related_adr": null,
+      "related_documents": [],
+      "replaces": null,
+      "superseded_by": null,
+      "retention_policy": "",
+      "title": ""
+    },
+    {
+      "document_id": "basic-project-design",
+      "path": "docs/design.md",
+      "type": "formal-tech-doc",
+      "level": "L1",
+      "status": "active",
+      "owner": "human",
+      "created_at": "2026-11-19",
+      "updated_at": "2026-11-19",
+      "source_of_truth": "docs/design.md",
+      "generated": false,
+      "related_task": null,
+      "related_adr": null,
+      "related_documents": [],
+      "replaces": null,
+      "superseded_by": null,
+      "retention_policy": "",
+      "title": ""
+    }
+  ],
+  "updated_at": "2026-11-19"
+}

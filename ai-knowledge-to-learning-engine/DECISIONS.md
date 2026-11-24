@@ -1,0 +1,190 @@
+# 决策记录（DECISIONS）
+
+> 本文件记录 Render_Notes「AI Knowledge-to-Learning Engine 增量补齐」过程中的关键裁决与已失效信息。所有非关键技术决策采用合理默认值并在此登记，不反复询问用户。
+>
+> 更新：2026-11-18；2026-11-19 清理过期引用：P0 完整计划原件位于用户目录 `~/.workbuddy-ai/plans/quantum-nebula-newton-ffFN4E3P.md`（会话级产物，不入仓库），其关键裁决已萃取至本文件（D01–D14）。
+
+---
+
+## D01 · 执行口径：增量补齐，不重建
+
+- **裁决**：保留现有全部成果（离线站、19 课、3 实验、图谱、技术索引、QA、Skill、故事线），只补两份方案里确实没有的东西。
+- **理由**：两份方案基于 2026-11-03 旧快照，假设"无网站、无课程层、无 Skill"，与现状严重不符；从零重建会造成重复、覆盖与破坏。
+- **影响**：两份方案文档（`Master Prompt：*.md`、`Render_Notes：*.md`）仅作参考，**不改、不删、不覆盖**。
+
+## D02 · 网站方向：两套并存
+
+- **裁决**：保留 `web/` 零依赖离线站为**主站**且不可破坏；另加 `site-vitepress/` 源码树用于在线发布。
+- **理由**：用户明确选择"两套并存"；离线站双击即开、vendor 自足、已通过 QA，不能因引入 VitePress 而退化。
+- **约束**：在线站不移植 Vue 版交互 demo（避免逻辑分叉），实验入口链接回离线 `web/index.html#/lab/<id>`；**不发布 GitHub Pages / 不远程部署**，除非明确授权。
+
+## D03 · ID 方案：沿用 L##，不引第二套
+
+- **裁决**：课程/课时 ID 沿用现有 `L01`–`L18`；跨课程用命名空间（如 `video-rendering-journey/L01`）。
+- **理由**：方案示例的 `video-yuv-lesson-01` 与现有 `tools/course.json` 的 `L##` 冲突；避免双 ID 体系。
+
+## D04 · 目录与工具：只扩展 tools/ 与现有 Skill
+
+- **裁决**：不建顶层 `skills/`、不建 `scripts/{ingest,validate,graph,publish}/`；只扩展 `tools/` 与 `.workbuddy-ai/skills/research-to-learning/`。
+- **理由**：`tools/build_site.py` + `tools/validate_site.py` 已覆盖方案里"Website Builder / Website Tester / Link Checker / Anchor Checker"等；重复建树违反"避免重复存储"工程红线。
+- **Skill 位置**：保留 `.workbuddy-ai/skills/research-to-learning/`（项目级，git 已跟踪），不采用方案里的 `.agents/skills` 或 `.claude/skills`。
+
+## D05 · 机器可读产物格式：JSON（非 YAML）
+
+- **裁决**：evidence / knowledge-model / quizzes 等机器可读产物统一用 **JSON**；YAML 仅用于 VitePress 前端自有配置。
+- **理由**：Python 工具链保持 stdlib-only，不引入 PyYAML；YAML 只留给人读的 VitePress config。
+
+## D06 · 知识正文单一来源：引用不复制
+
+- **裁决**：claim ledger 只存断言/证据/状态；concepts 只存 ID/关系/术语引用；样章只链接现有文档与锚点，不复制知识正文。
+- **理由**：避免"一份知识多处存储"导致失同步；glossary.json 仍是术语定义唯一来源。
+
+## D07 · QA 双门禁
+
+- **裁决**：确定性校验统一收敛到 `tools/validate_site.py`（扩展而非新建）；章节叙事语义用现有 `.workbuddy-ai/skills/research-to-learning/scripts/check_chapter_arc.py`。
+- **理由**：一个门禁一处维护；语义检查与结构检查分离。
+
+## D08 · 失效数字（方案中的旧快照，不得作为执行依据）
+
+| 来源 | 旧陈述（失效） | 当前实测（2026-11-18） |
+|---|---|---|
+| 两份方案 | 27 篇主文档 / 9500 行 / 39 个 Markdown（2026-11-03） | 46 篇主文档（build 计 48，含 archive+2 方案）；124 术语 / 11 组 |
+| README 第 8 行 | 29 篇主文档 / 41 Markdown / 311 链接（2026-11-17） | 同上；README 含用户未提交改动，**本计划内不动** |
+| 方案 Skill 位置 | `.agents/skills` / `.claude/skills` | `.workbuddy-ai/skills/research-to-learning/` 已存在且跟踪 |
+| 方案网站栈 | VitePress 重建网站 | 离线 `web/` 为主 + `site-vitepress/` 并存 |
+| 方案 ID | `video-yuv-lesson-01` | `L01`–`L18` + 课程命名空间 |
+
+## D09 · Git 与发布
+
+- **裁决（原）**：本计划内**不 commit、不 push、不远程发布**。
+- **理由（原）**：用户此前已单独要求推送（commit `2dd62d2` 已推送）；本次执行未获新的提交授权；遵循"远程/不可逆操作需授权"红线。
+- **更新 2026-11-18（用户新授权）**：用户在 P5 + Part B 全部完成后明确要求"提交 git 更新"，并确认 **(a) commit + push 到 origin/master**、**(b) README.md 的未提交改动一并纳入**。因此本次允许 `git add/commit/push`；此为一次性明确授权，不改变其他阶段的默认口径。
+  - 提交内容：本次 P5 收尾 + Part B 全部产物，以及 README.md 已有的 3 行 chat 链接改动。
+  - 远程发布（GitHub Pages 等在线部署）仍 **未授权**（D02），本次只 push 源码，不做在线发布。
+- **不伪造构建**：D10.6 仍然有效——VitePress `docs:build` 未完成的如实记录，不因提交而改变。
+
+## D10 · 执行默认值（非关键，直接采用）
+
+1. 在线站目录名 `site-vitepress/`（内部含 `.vitepress/`），非根级 `.vitepress/`。
+2. 在线站交互先链接离线 lab，不移植 Vue 版 demo。
+3. Demo 优先级：YUV↔RGB、Stride、PTS/DTS、视频链路、RenderGraph；Shader Playground 延后。
+4. 离线 `content.js` 继续收录 archive 与两份方案文档（影响最小）；在线站做策展剔除。
+5. README 数字不动（含用户未提交的 chat 链接）。
+6. VitePress 锁定最新稳定 1.6.x，禁用 alpha；实施时联网确认版本，安装失败则保留源码树并如实记录，不伪造构建成功。
+
+## D11 · P6 教材质量升级执行默认值（2026-11-18，Master Prompt V2.0）
+
+> 依据：根目录 `PROJECT_CURRENT_STATE.md` / `CURRENT_GAPS.md` / `NEXT_PHASE_PLAN.md`；G2 材料见 `courses/video-rendering-journey/G2-审核材料-P6.md`。非关键项直接采用并登记；需用户拍板项已单列 G2 材料 §4，不擅自处理。
+
+1. **Gold Standard 选 L01**：源素材推导最完整、路线首课、实验现成、断言基础好（诊断 §4 理由）。L13 为第二篇深化候选（先重建断言链）。
+2. **pilot next 指针对齐 curriculum 路线**（L01→L02→L06→L11→L13→null）：原指针继承自主课程、指向 pilot 外课时，与大纲和正文桥矛盾，属数据错误而非路线变更。主课程 L12.next=L15 与 L15 先修的矛盾**不擅自改**，留 G2 拍板（路线设计权属人）。
+3. **乱码修复范围**：L01 目标"Stride Why"两层 course.json 已修；L11"由谁 inserted"涉及 checkpoint/正文/quiz 四处联动（validate §11b 覆盖约束），留 P7 同步修复。
+4. **新断言纪律**：V13（生理依据）/V14（stride 机制）从主文档 ✅ 段提取，按 evidence-and-claims 硬规则默认 `open/low`，待 G1 人工升级；新增来源 SRC-RN-AV-BASE（repo_doc）。历史兼容性叙事不挂断言，作明确标注的背景叙述并列入候选清单。
+5. **ledger 挂载补漏**：V06 补 L13、E03 补 L11（正文实际引用）；P02 挂 L06 但正文未声明的矛盾留 P7 裁决，不静默删挂载。
+6. **教材质量规范为提案**：`references/lesson-quality-standard.md` 待 G2 人工确认后才算正式标准；AI 不宣布通过。十维度诊断结论仅为线索，不替代人工评分。
+7. **P6 内容修复边界**：只重写 L01；L02/L06/L11/L13 的 blocker/major 修复全部留 P7（G2 确认后），避免标准未确认前批量改内容。
+8. **README 不动**（D10.5 继续有效）：数字过时已登记 G-R1 决策提案，待授权。
+9. **commit/push 口径**：D09 的 P5 一次性授权已用于 5359259。**2026-11-18 用户新授权"先提交代码，保存修改"** → P6 全部产物本地 commit `3ce7b2f`（19 文件）+ 文档笔 `0b2c0a1`；**用户随后授权"push吧"** → 已 push 到 origin/master（远端 HEAD=`0b2c0a1`，本地与远端同步）。本次 commit+push 为一次性明确授权；后续阶段默认不 commit/push，除非用户再次授权。远程在线发布（GitHub Pages 等，D02）仍未授权。**2026-11-19 用户授权"同步最新更改到github"** → Loop 2 全部产物 commit `d4a9620`（27 文件：裁决执行 + reviews/ 8 份审核材料 + KCR 机制文档）已 push 到 origin/master（远端 HEAD=`d4a9620` 实测同步）。B13 由该授权解答（reviews/ 纳入 git）；`.zcode/`（外来 agent 产物）与 `old_content.js.tmp`（临时备份）未纳入（B14 待裁决）。
+10. **本机门禁命令用 `py -3`**：`python` 首选解析到 cygwin stub 不可用（环境事实，Python 3.12.10 实测可用）。
+
+## D12 · V3.0 Loop 2 人工裁决记录（2026-11-19）
+
+> 来源：用户对 `reviews/DECISION_REQUIRED.md` 的答复（倾向性建议）。**未答复项保持待审核，不视为同意**（V3.0 §11）。权威来源核验已完成（网络恢复），证据见 `reviews/G1-evidence-review.md` 增补与下方。
+
+1. **B1 / G2-01（L02 无证据目标）= 先补研究，无法证实时删除**。研究结论（C1 已完成，权威来源 Media3/FFmpeg/MediaCodec/ExoPlayer）：精准 seek"静默解码追赶"机制**证实存在**，但原目标"seek 后为什么不能立刻丢帧"**表述不准确**——追赶期恰恰解码但不渲染（丢弃陈旧帧），到达目标 PTS 后首帧强制渲染。→ **保留知识点但改写目标**为准确表述（"解释精准 seek 的静默解码追赶与目标首帧强制渲染"），补 claim（默认 open）+ 引用解码链路 §8.2:348。"recover"非 ExoPlayer 官方状态名，改称"position reset 后首帧强制渲染"。
+2. **B2 / G2-02（主课程路线）= A 先完成前置再性能评测**。改 `tools/course.json` L12.next 由 L15→L13（L13.next=L14、L14.next=L15 已存在），全链先修满足。pilot 路线不受影响。
+3. **B3 / G2-03（质量规范）= A 认可为可迭代标准**。`lesson-quality-standard.md` 正式采纳为后续教材统一基准（可迭代）；不强制同构标题。
+4. **B4 / G2-04（Gold Standard L01）= 待定**。用户需实际阅读 L01 后决定，**不视为认可**；L01 样板地位待 B4 确认。P7 其余章节以 B3 已采纳规范为基准。
+5. **B5 / G2-05（README）= A 授权按实测更新**。解除 D10.5"README 不动"；按实测真值更新数字（保留用户 chat 链接）。
+6. **B6 / G2-06（VitePress）= A 授权本地构建，不授权远程发布**。可执行 `npm run docs:build`（放行 vitepress 自身 `.temp/dist` 清理）；**GitHub Pages 等远程发布仍未授权（D02 维持）**。
+7. **G1-01（V13/V14 升级，B7/B8）= 逐条核查证据后决定**。核验已完成：V13 核心（亮度空间视锐度>色度）获权威支持（Wikipedia Chroma subsampling 引 Winkler 2001/Livingstone 2002；ACM 综述），但"杆状细胞远多于锥状细胞"作直接因果属简化（杆状细胞仅主导暗视觉，明视觉色觉/细节由锥状细胞及通路承担）→ **需修正 V13 与 L01 §3 表述**；V14 stride 机制获源文档✅支持。状态升级（open→verified）**仍待人工最终确认**；先按权威来源修正表述，不自动升级。另按 Poynton：视频 Y' 为 luma（伽马校正），严格区别于 luminance Y，数字视频宜称 Y'CbCr（术语精化建议）。
+8. **G1-02（Pass 口径 B9 / SurfaceTexture API C2）= 以权威技术来源为准**。
+   - SurfaceTexture：权威核验（AOSP source.android.com/docs/core/graphics/arch-st、NDK surface_texture.h）确认正确为 `SurfaceTexture.getTransformMatrix(float[])`（NDK `ASurfaceTexture_getTransformMatrix`，API28+）；`glGetTransformMatrix()` 非 GL 函数。→ **勘误解码与播放链路.md:124**。
+   - Pass 深度：Frostbite FrameGraph GDC 2017 全文与 Vulkan 规范**均无 ≥3/>3 硬阈值**，属工程启发式。→ 内部统一 **≥3**（C06/验真队列/概念引入多数口径），并**软化为启发式表述**（非规范结论）；勘误跨平台与高性能架构.md:205 ">3"→"≥3（工程启发式）"。
+9. **未答复项保持待审核**：B10（L13 候选断言登记）、B11（P02 与 L06 挂载）、B12（stash pop/drop）、B13（reviews/ 是否入 git）、B14（外来产物 .zcode/old_content.js.tmp）、B15（C3–C7 研究立项）。**不执行、不视为同意。**
+10. **Category A 执行授权**：Loop 2 按计划批量执行 A1（数字口径更正）/A3（build 排除 .zcode）/A4（学习路径指南补 U7）/A5（K-STRIDE 改挂 V14）/A6（Pass 勘误，依 D12.8）。A2 为提示词路径描述，仅记录。
+11. **commit/push 口径**：本轮（Loop 2）默认不 commit/push，除非用户再次授权（D09/D11.9 延续）。
+
+## D13 · 引入 Knowledge Change Review（知识变更审核）机制（2026-11-19，用户新增需求）
+
+- **裁决**：项目已是持续产生新知识/报告/教材的系统，须引入明确的 **Knowledge Change Review（KCR）** 机制，确保新研究不弄乱既有知识体系。纳入 P8（D3 增量更新 / D4 影响链）正式实现。
+- **机制四阶段**：① 新研究报告进入 → ② 影响分析（Source→Claim→Concept→Lesson→Quiz→Course）→ ③ 变更提案（新增/修改/废弃/重新验证，逐项带证据与受影响产物）→ ④ 人工审核（批准/驳回/补充研究，AI 不自主）→ ⑤ 增量更新教材与网站（保留版本记录与来源追溯，过门禁）。
+- **设计交付**：`reviews/KNOWLEDGE_CHANGE_REVIEW.md`（机制设计 + JSON schema 提案 + 与现有 tools/evidence 集成方案）。实现归 P8，复用 claim-ledger/source-registry/concepts/course.json/validate_site，不重建。
+- **约束**：变更提案不得自动替代人工审核；废弃 claim 保留 ID 改状态加 note（evidence-and-claims 硬规则 5）；增量更新不重生成全库。
+
+## D14 · 智能体文档统一仓库 `.agent/`（2026-11-19，用户需求"统一文件仓库"）
+
+- **裁决**：建立 `.agent/` 作为公共智能体文档仓库（入 git，随仓库同步到 GitHub）。各智能体私有文件夹只做索引，不再重复存放文档正文；任何智能体切换时只读 `.agent/README.md`。
+- **迁移**（取代 D12 的技能位置裁定）：`.workbuddy-ai/skills/research-to-learning/` 文档正文（SKILL.md + references 5 篇 + assets 2 篇，共 8 文件）迁入 `.agent/skills/research-to-learning/`；`.zcode/plans/plan-sess_*.md` 归档入 `.agent/plans/` 并纳入 git（**B14 就此裁决：归档并提交**；`.zcode/` 空目录已移除）。
+- **保留不迁**：① `scripts/check_chapter_arc.py` 留原处（可执行契约，门禁命令路径不变，迁移后实测可运行）；② 原 SKILL.md 位置改为发现 stub（frontmatter 不变，维持技能发现）；③ `.workbuddy-ai/memory/**` 受保护不动（D09/D11）；④ `reviews/` 为项目治理材料，留原处（用户裁决）。
+- **防污染**：`tools/build_site.py`、`tools/validate_site.py`、`tools/build_vitepress_content.py` 排除列表新增 `.agent`（.zcode 污染教训 A3 的制度化）。
+- **规则**：读取优先、索引 stub、写入登记、禁区与 bundle 隔离等规则见 `.agent/README.md`；结构调整必须记录 DECISIONS.md。
+- **已知问题（已关闭，2026-11-19，用户授权清理）**：原 `.workbuddy-ai/plans/quantum-nebula-newton-ffFN4E3P.md` 仓库内死引用（DECISIONS:5 / IMPLEMENTATION_PLAN:3 / WORKFLOW_STATE:5）已改为如实指向——计划原件位于用户目录 `~/.workbuddy-ai/plans/`（会话级产物，不入仓库），关键裁决已萃取至 DECISIONS.md（D01–D14）。
+- **git 同步（2026-11-19 用户授权"授权 commit + push"）**：结构治理 commit **`f5d4ecf`**（26 文件，+258/−91；git 识别 7 处 100% rename）已 push 到 origin/master（`656d107..f5d4ecf`，`ls-remote` 实测远端 HEAD=`f5d4ecf`，本地同步）。**仅 push 源码，未做在线发布**（D02 未授权）。
+
+## D15 · 多智能体文档治理架构基座（2026-11-19，用户提案 + 四项裁决）
+
+- **裁决**：在 D14 统一仓库基础上**增量**落地治理能力（不改变 D14 目录归属）。采纳用户 Multi-Agent Documentation Governance 提案。四项执行口径：① 范围=最小基座（constitution / MADR / 标准 / 模板 / 变更流程 / 注册表 schema+生成器 / 适配入口）；② 注册表=frontmatter 事实源 + `tools/build_document_registry.py` 生成（生成物不手改）；③ 适配入口=全客户端（根 `CLAUDE.md`/`AGENTS.md`、`.cursor/rules/`、`.github/copilot-instructions.md`、`.gemini/GEMINI.md` + 既有 Workbuddy stub），只跳转不复制；④ OpenSpec=借鉴思想自研 `.agent/changes/` 轻量流程。
+- **新增**：`.agent/constitution/` 四件套（PROJECT_PRINCIPLES / AGENT_RULES / DOCUMENTATION_POLICY / HUMAN_APPROVAL_POLICY）；`.agent/decisions/`（MADR：README + adr-template + ADR-0001 采纳本架构；`DECISIONS.md` 保留为历史索引，不机械拆分）；`.agent/standards/documentation-types.md`；`.agent/templates/`（change-proposal / agent-handoff）；`.agent/changes/`（轻量变更流程）；`.agent/indexes/`（registry schema + 生成物 registry）；`tools/build_document_registry.py`；五个客户端适配入口；`.gitignore` 追加 `.agent/runs/`。
+- **写入所有权五规则**（AGENT_RULES）：单写者 / 默认只读+任务授权 / 重要任务 worktree / 生成物非源 / 完成必交接。
+- **三级治理 + 状态机**：L1 权威 / L2 工作 / L3 历史；`draft→proposed→under_review→approved→active→superseded→archived`；存量文档 frontmatter 渐进补齐（注册表如实标记 unregistered，不批量回填）。
+- **排除列表同步**：build_site / validate_site / build_vitepress_content 新增 `.gemini`/`.cursor`/`.github` 与根 `CLAUDE.md`/`AGENTS.md` 排除（适配入口不进知识 bundle）。
+- **Dogfooding 修正**：治理文档自身补 YAML frontmatter（初版误用 blockquote 元数据，注册表无法识别，已修正）。注册表初版实测：**104 篇**（frontmatter 26 / unregistered 78；L1 19 / L2 14 / L3 13 / unclassified 58）。
+- **边界**：不预建 6 个空技能目录（首次使用时创建）；不批量给存量文档打状态；DECISIONS 历史不拆分；Run Logs 本地 gitignore + 摘要归档 archive/；注册表一致性门禁接入 validate 留 P8。
+
+## D16 · 程序级裁剪与收口（2026-11-19，用户批准 PD-Q1/Q2/Q7/Q8）
+
+- **裁决**：用户批准"PD-Q7 裁剪方案，PD-Q1/PD-Q2/PD-Q8 按推荐执行，之后只推进 Engine 一条线"。程序级决策权威在 `AI-Knowledge\ai-knowledge-program\decisions\`（PD-001…003），本条为 Engine 内指针记录。
+- **PD-Q7 裁剪（PD-003 accepted）**：Engine 为唯一活跃线（收口 → G1/G2 裁决 → P7.2 逐篇 → P8 KCR 闭环 → P9 最小状态机 → P10 一批新资料端到端验收）；learning-experience-design / P03 Governance / P04 Radar **冻结在现有成果**（冻结≠删除，解冻条件见 PD-003）；不新建知识库/skill 收录类独立项目（供应库=项目02，知识收录=Engine P8 source inbox）。
+- **PD-Q1 收口**：三批未提交改动按来源拆分——`5a4de84`（D15 治理基座，31 文件）/ `a45ffa9`（CHG-0001 P7 教材+P2 Skill，33 文件）/ `7c05bc7`（P8/P9 预研：kcr_impact+publish allowlist+decision-kit，20 文件）+ 本留痕笔。修正 `test_publish_boundary.py` 断言笔误（移除 8 篇 reviews 后应为 69 而非 77），修正后 11/11 OK。
+- **发布边界生效**：allowlist 使 reviews/ 不再进入学习站 bundle，build 实测 **69 docs**（此前 77 含 8 篇 reviews）；archive 行为不变（D10.4）。
+- **PD-Q2**：P03 `agent-workspace-governance` 本地 git `dec60ba`（39 文件）/ P04 `github-project-radar` 本地 git `942530b`（30 文件）；均无远程（PD-Q3 另行授权）；测试 25/38 OK 本轮实测。
+- **PD-Q8**：`program-office-delivery/` 10 份交付副本安全删除（回收站可恢复，权威原件在程序办公室）；`.qoder-input-images/` 加入 .gitignore（agent 输入缓存，架构图已归档办公室 references/）。
+- **门禁实测（收口复跑）**：build 69 docs / 17 sections / 124 terms / 19 lessons / 7 labs / 504 cards；validate 11 checks 0 FAIL 0 WARN；arc 5/5；review_gate 37 claims（16 verified / 14 open / 7 conditional）误标 0；publish boundary 11/11。
+- **待办**：Render_Notes 迁入 AI-Knowledge 仍被会话工作区占用阻塞（PD-002 收尾，需绑定其他目录的会话执行）；G1/G2/G3 待人工（reviews/decision-kit/）；stash@{0} 原样（B12）。
+- **git 同步**：收口四笔 `5a4de84`/`a45ffa9`/`7c05bc7`/`9bfa732` 已 push 到 origin/master（用户 PD-Q1 授权含 push；首次推送遇网络 RPC/SSL 抖动，重试成功，`ls-remote` 实测远端 HEAD=`9bfa732`，本地同步）。仅 push 源码，未做在线发布（D02 未授权）。
+
+## D17 · decision-kit 首轮裁决：B4=B / B15=A + 本地目录改名（2026-11-19）
+
+- **B4 = B（认可 + minor 修订）**：用户认可 L01 为 Gold Standard 样板课，P7 其余教材以 L01 + lesson-quality-standard 为基准。授权并已执行两处 minor 修订：① L01 §4.2 补 4:2:0 记号精确口径（J:a:b，水平垂直均 1/2 降采样，"0"=垂直共享，与主文档口径一致）；② V13 误导性因果并列修正——"杆状细胞远多于锥状细胞"是数量事实、不是亮度/色度敏感度差异的直接原因；三处同步：主文档 §2.1、L01 §3、ledger V13 claim 文本。**V13/V14 状态保持 open/low，升级另票裁决，AI 未自批。**
+- **B15 = A（全部立项）**：C1–C7 全部进入研究队列（用户未采纳 C2/C3/C6 部分立项推荐）。执行按 P8 节奏，不打断 P7.2 教材主线；研究只读、不自动改结论；claim 升级仍逐条人工裁决。
+- **本地目录改名（程序级，用户批准先于 GitHub）**：`GITCODE\AI-Knowledge\Render_Notes → ai-knowledge-to-learning-engine`、`mattpocock-skills-zh-CN-custom → matt-pocock-skills-zh-cn`（Move-Item 成功，git 完好）。**GitHub 仓库名与 remote 仍旧名**，待用户手动同步 GitHub 后由 Program 集中更新 remote 与引用（方案：`AI-Knowledge\ai-knowledge-program\plans\2026-11-19-rename-audit-and-migration.md`）。过渡态不改 remote、不批量改 URL 引用。
+- **剩余 OPEN（5 项）**：V13（升级）/ V14 / B10 / B11 / B12。G1/G2/G3 关卡仍未通过；B2 路线与 B5 README 已在 D12 裁决，不重复裁决。
+- **门禁**：修订后复跑结果见 CHANGELOG 本日条目。
+- **commit/push**：未授权，未执行（D09 延续）。
+
+## D18 · V13/V14 升级 verified（2026-11-19，decision-kit 第二轮裁决）
+
+- **裁决**：V13 = A（修正表述后升级 verified/high）；V14 = A（升级 verified/high 并保留两条平台差异 conditions）。用户会话结构化裁决，Resolution 已回填 V13.md / V14.md。
+- **依据**：V13——D12.7 权威核验（Wikipedia Chroma subsampling 引 Winkler 2001/Livingstone 2002；ACM 综述）+ D17 表述修正完成（误导性因果并列已消除）；V14——源文档 §2.2 公式/算例/故障表 ✅，对齐基数 ⚠️ 由 conditions 如实覆盖（对齐基数因芯片平台而异以 SoC 手册为准；行高也可能被对齐）。
+- **执行**：ledger V13/V14 verification.status=verified、confidence=high（V14 conditions 原样保留）；L01 §11 断言状态说明同步；REVIEW_STATUS B7/B8 标注已决；PROJECT_CURRENT_STATE 断言数更正为 37（18v/12o/7c，修正 P6 基线遗留的 31 口径）。历史审计快照（G1-evidence-review/教材质量诊断/G2 材料等）不改写。
+- **后续**：C3（stride 对齐基数平台差异）/C6（来源 locator 精度）已立项（D17/B15=A），实证后可细化 conditions，不影响本次升级。
+- **剩余 OPEN（3 项）**：B10（L13 断言 V17–V20 确认）/ B11（P02↔L06 挂载）/ B12（stash）。G1/G2/G3 关卡仍未通过（升级不等于关卡通过）。
+- **门禁**：升级后复跑结果见 CHANGELOG 本日条目。commit/push 未授权未执行。
+
+## D19 · decision-kit 收尾三项：B10/B11/B12 全 A（2026-11-19，七项全闭合）
+
+- **裁决**：B10 = A（确认 V17–V20 登记为 open/low，升级留待逐条权威核验后另裁，可并入 B15 研究队列）；B11 = A（确认 L06 已补 P02 声明并保留挂载，P02 仍 open/low，升级另由 G1 裁决）；B12 = A（stash@{0} 继续原样保留，本轮增量提交稳定后再验证 20 处链接修正是否仍需要，届时用户决定 pop/drop）。用户会话结构化裁决，Resolution 已回填三票。
+- **执行**：三项均为确认现状，无内容/数据改动；stash 未触碰；decision-kit 总表更新为 **7/7 已决**。
+- **里程碑意义**：decision-kit 七项人工裁决全部闭合（D17/D18/D19）。**续跑点推进为 P7.2 逐篇深化**（一次一篇，以 Gold Standard L01 + lesson-quality-standard 为基准；pilot 路线下一篇 = L02）。
+- **关卡口径**：G1/G2 的**裁决项**已全部解决，但 G1/G2/G3 关卡本身仍未由人工宣布通过（G2 评分表 review-report.md 仍待人工填写；AI 不自评）。P7.2 启动依据 = WORKFLOW_STATE 续跑点（裁决→P7.2），不等于关卡通过。
+- **门禁**：记录性改动后复跑 validate/review_gate 确认无漂移，数字见 CHANGELOG。commit/push 未授权未执行。
+
+
+## D20 · P10 收官裁决执行记录（2026-11-21，用户四件人工门全部通过）
+
+- **G1 证据核验**：V63–V67 升级 verified/high + V23（I19=A）先补 HLG 兼容边界（仅 SDR/BT.2020 WCG）再升级——采纳 AI 推荐授权执行，glossary HLG 词条联动（U4）；U5 惯例裁决=跨课引用按前课指针口径。台账终态 **84 claims（verified 24 / open 53 / conditional 7）误标 0**。
+- **KCR-2026-11-001**：用户批准 → run_state kcr --to APPROVED（19 项，approver 记录授权方式）。
+- **G2 质量评分**：L19 = **91/100 通过**（23/23/18/17/10，用户本人填分确认，采纳 AI 诊断建议分）。
+- **G3 发布门**：gate --pass（approver: user，2026-11-21T22:22:05+08:00）→ resume → PUBLISH（发布记录 reviews/p10/publish-record-hdr.md：本地 bundle 口径，在线发布 D02 仍未授权）→ FEEDBACK（反馈记录 reviews/p10/feedback-record-hdr.md）→ **done（write_paths 释放）**。
+- **阶段 2–4 解冻执行**（用户总指令）：阶段 3 Governance 9/9 验收（ENGINE 真实适配 183 docs + IGNORE_DIRS 修复 + 28 tests，提交 6aec3d3/1b4a880）；阶段 4 Radar 八功能+首次真实数据（rest.py 落地 + 匿名 121 仓/200 快照 + 首份周报 + intake 导出，提交 b7442da）；阶段 2 LXD 解冻、试点 A 待执行。
+- **收口提交**：Engine 9f8ef4b（84 文件分组）；Program f7044b0（含 final-acceptance-2026-11-21.md 六阶段总验收）。**push 全程未做（用户：等我通知）**。
+
+## D21 · 两处源笔误修正 + embodied-loop-journey kickoff 批准（2026-11-23）
+
+- **源笔误修正（用户批准）**：① 项目实战指南 §5.3 PSNR "+6 dB 减半"→"+3 dB 减半（+6 dB≈1/4）"；② 程序化几何 §2 "花冠"→"花瓶"；③ L15 勘误注记闭合；④ V53 台账 claim/conditions 同步。历史审读材料不改写。
+- **kickoff 批准**：课程名 `embodied-loop-journey`《具身智能：一条指令如何变成物理动作》+ 首批 6 课范围（Program plans/2026-11-23-embodied-course-kickoff.md §8）。run `RUN-2026-11-23-embodied-batch1` 建立，INTAKE 完成→RESEARCH；源库 Robot_Learn 只读零改动。
+- **源清单修订**：facts.md 实为法规卷底本（非具身核心）；textbook-embodied 实测 10 章。详见 reviews/embodied-batch1/intake-manifest.md。
+- **工具链多课程最小扩展（报批中，WRITE 前需批准）**：validate §10 independent 课程命名空间 + build_site additive courses[] payload + publish-allowlist 08-具身智能。未批则首批先以知识文档形态产出。
+- **push 回执补记**：用户授权 7 笔已推（Engine e848d28..3115cad / Skills e1936f2..7326522，ls-remote 实测一致）；回执笔 79c3fe8 推送成功，ls-remote 复核初遇网络抖动、本会话重试成功（远端 master=79c3fe8 一致）。
+- **commit/push**：本批（笔误修正 + INTAKE）改动未提交，待授权。

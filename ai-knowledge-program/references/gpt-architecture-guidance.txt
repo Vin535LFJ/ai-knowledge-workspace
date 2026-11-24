@@ -1,0 +1,1549 @@
+你的调整方向是合理的。我建议采用 一个领域产品 + 一个通用技能供应库 + 两个可迁移基础项目 的架构。
+
+我还想增加一个关键调整：文档治理虽然放在第三阶段独立建设，但第一阶段就应该使用最低限度的治理规则。否则，在建设 Engine 的过程中，AI 本身又会制造大量需要治理的文档。
+一、最终项目架构
+我建议最终形成以下四个独立 GitHub 项目，其中两个已经存在，两个未来新建。
+项目 01 · 已有，核心产品
+AI Knowledge-to-Learning Engine
+现有仓库： Render_Notes
+
+负责把原始资料转化成结构化知识、系统教材、实践内容和最终网页产品。
+内部包含
+- Research-to-Learning 工作流
+- 专业研究、知识架构、Evidence、课程设计
+- Documentation Writer、Learning Designer、Reviewer
+- MCP、Tools、Skills、多 Agent 编排
+- learning-experience-design 专属 Skill
+- 网站构建、交互实验、质量审核
+
+
+
+项目 02 · 已有，技能供应库
+Matt Pocock Skills 中文定制版
+mattpocock-skills-zh-CN-custom提供可复用的 Agent 工作方法、工程纪律和协作 Skills。
+
+定位： 不重造轮子，而是为 Engine 和未来其他项目提供技能能力。
+
+
+项目 03 · 新建，通用基础设施
+Agent Workspace Governance
+建议仓库名：agent-workspace-governance
+
+负责： 多智能体协作管理、文档治理、ADR、统一映射、版本和生命周期、Agent 交接、权限及冲突治理。
+
+目标是让任何项目都能引入这套治理能力，不依赖 Render_Notes 的知识领域。
+
+
+项目 04 · 新建，独立情报系统
+GitHub Project Radar
+建议仓库名：github-project-radar
+
+负责： GitHub 项目发现、Star 增长追踪、Agent Skills/MCP 热点、优秀工程实践分析、深度调研候选推荐。
+
+
+这里有一个关键边界：
+
+项目 02 提供 Agent 怎么工作的能力，项目 03 规定多个 Agent 在一个项目中如何共同工作，项目 01 负责具体的知识生产业务。
+
+这三者不能混为一谈。
+1. 为什么不直接把治理系统做进 Matt Pocock Skills？
+我检查了你第二个仓库的 README、AGENT-COMPATIBILITY.md、SYNC.md、AGENTS.md 以及实际技能目录。
+
+它已经是一套相当完整的技能供应库：
+- grill-with-docs：设计访谈、共享术语和 ADR。
+- wayfinder：大型工作的决策地图。
+- implement-spec：基于任务依赖图并行实施。
+- triage：Issue 分类和处理。
+- handoff：不同 Agent 之间的工作交接。
+- writing-for-agents：面向 Agent 的文档编写。
+- domain-modeling：领域模型和共享语言。
+- research、code-review、tdd 等。
+README 声明技能集包含 37 个技能，同时保留了针对原版的本地回填。Skills 仓库说明。
+
+但它解决的是可复用的 Agent 工作方法，并没有完整解决：
+- 多个 Agent 共用什么项目文档空间；
+- 哪份文件是当前唯一权威版本；
+- 两个 Agent 同时修改文件怎么办；
+- 文档状态、责任人、替代关系如何维护；
+- 不同 Agent 客户端如何统一发现项目规范；
+- 如何追踪跨 Agent 的任务执行和交接；
+- ADR、计划、执行记录和正式知识如何区分。
+而且它自己的兼容性文档也明确区分了安装器投放文件、Agent 实际发现技能、运行时实际调用这几个层次，不能将文件成功安装等同于所有客户端均已验证。WorkBuddy 也有单独的兼容性限制。跨 Agent 兼容性分析。
+
+因此，我建议：
+
+保留它作为 Skill 源，不把它改造成一个大而全的 Agent 管理平台。
+
+新建 Governance 项目，让它兼容并调用这套 Skills。
+2. 项目之间如何连接？
+Matt Pocock Skills
+
+可复用的工作方法和技能
+
+提供技能能力
+AI Knowledge-to-Learning Engine
+
+领域工作流、MCP、Tools、Agent Orchestration、学习体验
+
+生产知识产品
+知识 / 研究报告 / 教材 / 实践 / 网站
+
+
+Agent Workspace Governance
+
+跨项目提供文档规范、生命周期、映射、任务所有权和协作规则
+
+通过适配器和项目配置接入各个项目
+Render_Notes / 其他 AI 项目 / 新项目
+
+
+GitHub Project Radar
+
+独立采集情报，向 Engine 提供研究候选，不自动修改知识库
+
+
+我建议统一项目间的接口，而不是建立一个必须在线运行的中央服务器。
+
+每个项目拥有自己的知识、文档、任务和执行状态；Governance 定义统一的数据结构、治理规则和客户端适配器。这样，即使换了项目、Agent、模型或者开发工具，也能迁移。
+
+二、执行先后顺序
+你的优先顺序我基本完全赞成，但我会将第一阶段增加一个轻量治理准备动作。
+01
+完成 AI Knowledge-to-Learning Engine
+最高优先级
+先把原始资料到完整教学产品的生产链跑通。此阶段使用现有 .agent/、D12–D14、KCR 和 reviews 等机制，不提前建设完整通用治理平台。
+
+
+
+02
+开发 learning-experience-design
+
+在 Engine 生产链稳定后，专门优化教材阅读、交互式知识表达、视觉设计、学习路径和网页体验。它属于 Engine 内部的专属 Skill，不需要另建一个仓库。
+
+
+
+03
+抽取 Agent Workspace Governance
+
+从前两个阶段的实际协作问题中提炼通用规范，建立可以迁移到任意项目的独立治理工具包。
+
+
+
+04
+建设 GitHub Project Radar
+
+形成持续情报采集、筛选、研究和知识沉淀能力，最终成为 Engine 的一个外部研究入口。
+
+
+
+第一阶段里程碑怎么定义？
+我建议不要把“19 篇课全部写完”作为 Engine 完成的前提，而是将生产系统跑通作为核心里程碑。
+
+Render_Notes 当前已经有 19 个课时、5 篇试点教学正文、7 个交互实验，以及 Research-to-Learning、Evidence、Knowledge Model 等结构。
+
+当前项目记录的续跑位置是 P7.1 的 L06，后续还有 L13、L11 等教材问题需要处理；P8 的工作流生产化和 P9 的轻量编排也尚未全部完成。G3 目前仍未通过。因此，应该沿着原计划推进，而不是重新开始建设。参见 WORKFLOW_STATE、NEXT_PHASE_PLAN 和 G3 审核材料。
+Engine 完成验收标准
+1. 原始资料可以通过统一输入接口进入工作流。
+2. Research Agent 能生成有可靠来源、证据和争议记录的深度研究报告。
+3. Evidence 和 Knowledge Architect 能完成知识点提取、查重、关系构建和冲突识别。
+4. Documentation Writer 能将知识转化为完整的系统教材，而不是摘要合并。
+5. Learning Designer 能构建前置依赖、课程路线、章节故事线和目标。
+6. Practice Designer 能生产可验证的实验和练习。
+7. Reviewer 能发现事实、追溯、连贯性和实践方面的问题。
+8. Publisher 能生成可阅读、可导航、可交互的网站。
+9. 整条链具备任务状态、断点恢复、质量门禁和人工审批。
+10. 至少使用一批新的资料完成一次端到端生产，证明不是只适用于现有知识库。
+
+这里也有一个设计原则：知识质量优先于内容数量，完整工作流优先于批量生成。
+三、四份可以直接交给 AI 的项目提示词
+我把它们设计成独立提示词。每一份都要求 AI 先检查当前项目，再制定实施计划，最后执行，而不是只写一份漂亮的架构文档。
+
+执行顺序：
+提示词	使用位置	什么时候执行
+P1：Engine 完整建设	现有 Render_Notes 根目录	现在
+P2：Learning Experience Design	现有 Render_Notes 根目录	P1 核心生产链验收后
+P3：Agent Workspace Governance	新建独立项目目录	P2 完成后
+P4：GitHub Project Radar	新建独立项目目录	P3 完成后
+
+P1：AI Knowledge-to-Learning Engine 完整建设
+建议现在执行
+这份提示词最重要。它会要求 AI 沿着现有项目的路线继续推进，不允许重新设计一套重复系统。
+Master Execution Prompt：AI Knowledge-to-Learning Engine
+1. 你的角色
+你是一个由以下角色组成的高级 AI 工程团队：
+- Principal AI Systems Architect
+- Knowledge Engineering Architect
+- Research Workflow Engineer
+- Multi-Agent Orchestration Engineer
+- Instructional Designer
+- Documentation Engineer
+- QA / Validation Engineer
+你需要负责完善现有的 AI Knowledge-to-Learning Engine，而不是重新创建一个新项目。
+2. 项目目标
+现有项目：
+
+https://github.com/Vin535LFJ/Render_Notes
+
+项目名称：
+
+AI Knowledge-to-Learning Engine
+
+最终目标：
+
+构建一个 AI 原生的知识生产与教学系统，让 AI 能够把原始资料、论文、技术文档、网页、GitHub 项目、已有知识笔记以及深度研究报告，重新组织成符合人类认知规律的系统教材。
+
+知识是原材料，教学是重新设计的产品，网站是最终交付形式。
+
+完整链路：
+原始资料
+   ↓
+Research
+   ↓
+Evidence & Fact Verification
+   ↓
+Knowledge Architecture
+   ↓
+Knowledge Graph & Concept Model
+   ↓
+Curriculum Design
+   ↓
+Documentation Writing
+   ↓
+Learning Experience Design
+   ↓
+Practice & Interactive Labs
+   ↓
+Quality Review
+   ↓
+Website Publishing
+   ↓
+Learning Feedback
+   ↓
+Knowledge Update
+最终不是简单地建立一个 Markdown 知识库，而是构建一个能够持续研究、理解、组织、教学、验证和更新知识的自动化生产系统。
+3. 第一原则：先审计现状，禁止重建
+开始前必须读取 Git 仓库最新代码和本地工作区。
+
+首先检查：
+- git status、当前分支、HEAD、远程同步情况。
+- README.md。
+- .agent/README.md。
+- DECISIONS.md，尤其 D12–D14。
+- WORKFLOW_STATE.md。
+- IMPLEMENTATION_PLAN.md。
+- NEXT_PHASE_PLAN.md。
+- CURRENT_GAPS.md。
+- reviews/REVIEW_STATUS.md。
+- reviews/CURRENT_AUDIT.md。
+- reviews/KNOWLEDGE_CHANGE_REVIEW.md。
+- .agent/skills/research-to-learning/。
+- tools/ 全部脚本和 JSON 数据结构。
+- evidence/。
+- knowledge-model/。
+- courses/。
+- web/。
+- site-vitepress/。
+所有工作必须遵循：
+1. 以最新代码、Git 状态和可重复实测为依据。
+2. 历史计划只作为参考，不能将已完成的工作重新执行。
+3. 以现有项目决策为约束，不擅自推翻已有决定。
+4. 先确认已经存在的能力，能扩展就不重建。
+5. 不创建重复知识源、术语库、验证工具或网站。
+6. 不批量生成教材来制造进度。
+7. 不将 AI 自动检查通过描述成用户人工审核通过。
+保留项目已有的保护措施，包括 archive、memory、vendor、web/index.html 等受保护内容。对 .agent/ 的结构调整遵循 D14 和现有治理规则。
+4. 阶段一：完成现有教材和知识体系问题
+以最新 WORKFLOW_STATE 和 CURRENT_GAPS 为准恢复续跑。
+
+优先处理尚未完成的 P7 工作：
+- L06 教材目标、正文、数据流和技术引用一致性。
+- L13 坐标空间、MVP、投影推导和 Evidence 追溯。
+- L11 RenderPass、RenderGraph、同步和工程边界。
+- 课程依赖、先修关系、next、checkpoint、quiz 和 labs 映射。
+每一篇教材遵循：
+
+诊断 → 来源核对 → 断言核对 → 修复 → 教学质量审查 → 自动验证 → 人工审核材料。
+
+以已经采纳的：
+
+.agent/skills/research-to-learning/references/lesson-quality-standard.md
+
+作为教学质量基准。
+
+禁止一次性机械生成全部 19 篇课时。根据课程依赖和实际教学价值逐篇建设。
+5. 阶段二：Research-to-Learning 工作流生产化
+完善现有 research-to-learning Skill。
+
+不新建重复的顶层 Skill，也不重复创建已有的 build、validate、review_gate、build_knowledge_model 等工具。
+5.1 Research Agent
+支持以下输入：
+- Markdown、TXT 等本地文件。
+- PDF、论文。
+- 网页和官方技术文档。
+- GitHub 仓库。
+- 已有知识笔记。
+- AI 生成的研究报告。
+- 用户提供的其他资料。
+研究前必须先查询已有知识，回答：
+1. 哪些知识已经存在？
+2. 当前知识有哪些不足？
+3. 新资料提供了哪些新增信息？
+4. 是否与已有结论冲突？
+5. 哪些内容值得进入知识体系？
+研究报告必须记录研究范围、方法、来源、重要发现、证据、争议、局限、结论和未解决问题。
+5.2 Evidence Analyst
+复用：
+- evidence/claim-ledger.json
+- evidence/source-registry.json
+要求：
+- 原子化提取重要技术断言。
+- 标注来源、适用条件和限制。
+- 识别新旧断言冲突。
+- 不重复创建已有断言。
+- 新断言默认 open。
+- 不允许 AI 自行升级为 verified。
+- 保持来源和断言的双向追溯。
+5.3 Knowledge Architect
+复用：
+- knowledge-model/concepts.json
+- knowledge-model/taxonomy.json
+- tools/glossary.json
+负责：
+- 概念抽取和去重。
+- 同义词识别。
+- 概念层级和依赖关系。
+- prerequisite、part_of、used_by、contrast_with 等关系。
+- 识别知识缺口。
+- 发现概念冲突和循环依赖。
+术语定义始终以 tools/glossary.json 为唯一来源。
+5.4 Documentation Writer
+将已经经过整理和追溯的知识转化为：
+- 系统技术文档。
+- 原理推导文档。
+- 工程实践文档。
+- 教材正文。
+- 技术参考手册。
+- 研究报告。
+区分技术参考文档、系统教材、操作手册和面试知识库，不能混为同一种文体。
+5.5 Learning Designer
+设计符合人类认知过程的学习路线：
+
+问题引入 → 前置知识 → 直观理解 → 概念建立 → 因果推导 → 数学和工程机制 → 实践验证 → 知识迁移 → 下一章承接。
+
+每篇教材必须形成理解闭环，而不是告诉读者去看其他文档才知道核心原理。
+5.6 Practice Designer
+复用 tools/labs.json 和现有实验渲染体系。
+
+让实践、实验、练习和 quiz 真正验证课程目标，而不是只在文档末尾增加一些问题。
+5.7 Knowledge Reviewer
+审核：
+- 来源是否真实。
+- 技术结论是否准确。
+- 断言与正文是否匹配。
+- 概念关系是否合理。
+- 教材叙事是否连贯。
+- 先修知识是否完整。
+- 实践是否可操作。
+- 前后章节是否形成合理承接。
+AI 可以给出审核建议，但 G1、G2、G3 等人工关卡不得自动通过。
+6. 阶段三：Agent Orchestration
+完善项目自己的轻量多 Agent 工作流。
+
+角色包括：
+- Research Agent
+- Evidence Analyst
+- Knowledge Architect
+- Documentation Writer
+- Learning Designer
+- Practice Designer
+- Knowledge Reviewer
+- Knowledge Publisher
+- Feedback Analyst
+角色不等于必须运行九个独立进程。
+
+根据任务复杂度决定采用单 Agent、多 Agent、并行子任务还是顺序执行。
+
+要求：
+1. 有明确的 Agent 输入和输出合同。
+2. 有任务依赖关系。
+3. 能追踪每个 Agent 的执行产物。
+4. 支持并行研究与串行整合。
+5. 同一批权威数据不能被多个 Agent 无协调地同时修改。
+6. 支持失败重试、断点恢复和人工暂停。
+7. 每个阶段具有明确的完成条件。
+优先使用现有 Python tools 和 JSON 数据，不引入重型分布式编排平台。
+7. 阶段四：MCP 和 Tools 能力盘点
+实际盘点当前项目和运行环境提供的 MCP、CLI、Skills、脚本及外部服务。
+
+将能力分为：
+类型	职责
+Skill	定义可复用工作方法
+MCP	提供外部系统访问能力
+Tool / Script	执行确定性操作和验证
+Agent	执行分析和专业任务
+Orchestrator	分配任务、管理状态和依赖
+Human	负责高影响决策和质量批准优先复用已经可用的能力。
+
+不允许假设某个 MCP Server 已经安装或可用。
+
+对于没有运行时支持的 Agent，提供明确的降级方案，并实测相应能力。
+8. 阶段五：Knowledge Change Review
+生产化现有 reviews/KNOWLEDGE_CHANGE_REVIEW.md 中设计的 KCR 机制。
+
+新研究进入已有知识库时，必须执行：
+
+Source → Claim → Concept → Lesson → Quiz → Course → Website
+
+影响分析。
+
+每次知识更新都形成可审核的变更提案。
+
+分类包括：
+- 新增知识。
+- 修改已有知识。
+- 纠正错误。
+- 废弃结论。
+- 重新验证。
+- 仅作为研究资料保存。
+人工批准之前，不自动改变高影响知识结论、课程路线和正式教材。
+9. 阶段六：完整生产链验收
+选择一批新的技术资料，开展一次真实端到端验证。
+
+必须能够完成：
+1. 导入资料。
+2. 检查已有知识。
+3. 开展深度研究。
+4. 生成研究报告。
+5. 建立证据和断言。
+6. 更新概念关系。
+7. 设计学习路线。
+8. 编写教材。
+9. 设计实践和测验。
+10. 完成质量审核。
+11. 生成网站内容。
+12. 验证导航、引用和知识关联。
+13. 保存整个工作流状态和变更记录。
+证明整套系统不仅能处理现在的音视频与渲染知识，还能迁移到其他技术领域。
+10. 网站阶段的边界
+当前：
+- web/ 是权威离线交互主站。
+- site-vitepress/ 是在线站源码与镜像发布工程。
+第一阶段只要求网站生成和现有交互完整稳定，不进行大范围视觉重新设计。
+
+网站视觉升级交给后续的 learning-experience-design Skill 专门负责。
+
+不要破坏已经存在的搜索、术语、课程、实验、图谱和反馈功能。
+11. 人工裁决规则
+遇到需要人工决定的事项，不能简单说“需要用户确认”。
+
+必须输出：
+- 问题背景。
+- 实际证据。
+- 可选方案。
+- 每种方案的优缺点。
+- 影响范围。
+- 实施成本。
+- 回滚难度。
+- 你的推荐方案。
+- 推荐理由。
+- 不处理的后果。
+对于高影响事项等待人工批准。
+
+对于低风险、确定性强且不改变既有决策的事项，可以按合理默认值执行并记录。
+
+Git commit、push、部署、删除历史资料和破坏性迁移，均遵循明确授权边界。
+12. 最终交付
+持续维护：
+- PROJECT_CURRENT_STATE.md
+- WORKFLOW_STATE.md
+- IMPLEMENTATION_PLAN.md
+- CHANGELOG.md
+- reviews/
+- .agent/README.md
+不要产生重复的项目状态文件。
+
+每个阶段报告：
+1. 实际完成的内容。
+2. 修改文件。
+3. 运行过的脚本和测试。
+4. 实际测试结果。
+5. 新发现的问题。
+6. 人工裁决事项及推荐。
+7. 下一阶段续跑点。
+现在开始：
+
+第一步：审计最新仓库和本地工作区。
+
+第二步：确认实际续跑点，生成增量执行计划。
+
+第三步：在不重复建设、不破坏已有成果的前提下继续实施。
+
+不要只给出架构建议，要在可安全执行的范围内完成实际工程任务。
+
+
+
+
+P2：开发专属 Skill：learning-experience-design
+P1 验收后执行
+这一份不是让 AI 单纯美化 CSS，而是要建立一个懂教学产品、信息设计、交互可视化和专业网页设计的综合能力。
+
+它要继承 Impeccable 和 Hallmark 的优点，但不能照搬 SaaS 网站或营销页面的设计模板。
+Skill Development Prompt：learning-experience-design
+1. 项目背景
+你正在为 AI Knowledge-to-Learning Engine 开发一套专属设计 Skill：
+
+learning-experience-design
+
+现有项目：
+
+https://github.com/Vin535LFJ/Render_Notes
+
+Skill 最终位置：
+
+.agent/skills/learning-experience-design/
+
+它属于现有 AI Knowledge-to-Learning Engine，不创建独立网站项目，也不重复建设网站生成引擎。
+2. 核心目标
+将现有知识库网站升级为专业的 AI 原生学习产品。
+
+网站的目标不是把 Markdown 渲染出来，而是帮助学习者：
+- 发现知识。
+- 理解概念。
+- 建立知识联系。
+- 按认知顺序学习。
+- 理解复杂原理。
+- 通过图表和可视化理解机制。
+- 通过交互实验验证理解。
+- 建立长期知识记忆。
+设计定位：
+
+Editorial Technical Learning Experience
+
+融合专业技术百科、深度研究杂志、互动式教材和工程实验室。
+3. 研究外部设计 Skill
+研究以下上游项目：
+1. Impeccable
+   https://github.com/pbakaus/impeccable
+2. Hallmark
+   https://github.com/Nutlope/hallmark
+学习其：
+- Design vocabulary。
+- Product context。
+- Design system。
+- 页面审查。
+- 反 AI 模板化检测。
+- 响应式审查。
+- 浏览器真实渲染。
+- 多尺寸截图。
+- Accessibility。
+- 分层质量门槛。
+同时研究优秀的技术教育、知识阅读、研究杂志和可视化网站。
+
+必须核对上游最新代码、使用方式、许可证、运行要求和支持的 Agent。
+
+不得简单复制整个外部 Skill。只吸收适合本项目的设计思想和合法可复用的能力。
+4. 建立自身的设计语言
+首先调研现有网站：
+- web/index.html
+- web/assets/
+- web/content.js
+- tools/build_site.py
+- tools/course.json
+- tools/glossary.json
+- tools/labs.json
+- tools/graph.json
+- site-vitepress/
+记住：
+
+web/ 仍然是权威离线交互站。
+
+site-vitepress/ 是在线镜像工程。
+
+不能为了视觉升级重写全部系统。
+
+设计体系应该根据 Render_Notes 的真实内容和交互需求建立。
+
+至少包含：
+- 色彩系统。
+- 字体系统。
+- 字号和行高。
+- 阅读宽度。
+- 标题层级。
+- 间距规则。
+- 页面布局。
+- 代码展示。
+- 公式展示。
+- 图表和流程图。
+- 术语提示。
+- 内容引用。
+- 导航。
+- 主题。
+- 响应式规则。
+- Accessibility。
+形成可执行的 Design System。
+5. 页面类型设计
+不要所有页面使用相同布局。
+
+根据不同内容建立页面原型：
+A. 知识文章
+强调阅读舒适度、知识层级、前置概念、引用和章节导航。
+B. 系统教材
+强调故事线、问题引入、逐层推导、章节桥接、学习目标和练习。
+C. 技术原理推导
+强调公式、变量、图解、过程分解、数值算例和工程意义。
+D. 交互实验
+强调操作区域、实时反馈、实验步骤、观察结果和原理关联。
+E. 知识图谱
+强调可探索性、依赖关系、重点节点和学习路径，而不是单纯展示复杂网络。
+F. 研究报告
+强调来源、证据、争议、结论和研究时间。
+G. 术语与概念
+强调定义、背景、示例、易混淆概念和关联知识。
+6. 教学视觉表达
+为知识设计合适的视觉表达方式：
+- 结构示意图。
+- 数据流图。
+- 时间轴。
+- 因果关系图。
+- 数学推导。
+- 对比表。
+- 状态机。
+- 层级结构图。
+- 交互实验。
+- 前后对照。
+图形的目的必须是帮助理解，不是装饰。
+
+需要结合具体知识类型选择可视化方式，不能默认每篇文章都塞入卡片和图表。
+7. 学习体验设计
+重点设计：
+1. 课程入口和学习目标。
+2. 前置知识提示。
+3. 学习路线图。
+4. 上一章和下一章承接。
+5. 章节阅读进度。
+6. 重点概念提示。
+7. 术语快速解释。
+8. 公式和代码的阅读体验。
+9. 交互实验入口。
+10. 学习自测。
+11. 知识图谱探索。
+12. 反馈与学习记录。
+这些能力必须能与现有课程、知识和实验数据关联，不另建一套重复内容库。
+8. Skill 内部结构
+在 .agent/skills/learning-experience-design/ 建立：
+learning-experience-design/
+├── SKILL.md
+├── references/
+│   ├── design-system.md
+│   ├── editorial-layout.md
+│   ├── learning-page-archetypes.md
+│   ├── educational-visualization.md
+│   ├── interaction-patterns.md
+│   ├── accessibility.md
+│   ├── responsive-design.md
+│   └── visual-quality-gates.md
+├── assets/
+│   ├── design-review-template.md
+│   ├── page-spec-template.md
+│   └── visual-regression-checklist.md
+└── scripts/
+    └── 按实际需要开发确定性检查工具
+SKILL.md 只保留核心工作流程，复杂知识采用渐进式加载。
+
+遵守 D14 的统一智能体文档规则，不在不同 Agent 私有目录复制完整 Skill 正文。
+9. 设计执行流程
+每次修改网站时遵循：
+理解页面目标
+    ↓
+检查现有产品与组件
+    ↓
+确定学习者任务
+    ↓
+选择页面原型
+    ↓
+建立页面设计方案
+    ↓
+绘制关键页面原型
+    ↓
+用户确认设计方向
+    ↓
+分阶段实施
+    ↓
+真实浏览器截图
+    ↓
+视觉审查
+    ↓
+响应式和无障碍审查
+    ↓
+回归测试
+不能一开始就修改全部网站。
+
+先选择有代表性的现有教材页面和交互实验页面开展试点。
+
+让用户看到真实页面效果，再决定设计体系是否推广。
+10. 质量门槛
+Floor：
+- 文字可读。
+- 色彩对比合格。
+- 键盘导航有效。
+- 页面适配移动端。
+- 不制造虚假内容。
+- 不破坏现有交互。
+- 不遗漏必要操作。
+Reflex：
+- 避免无意义的重复卡片。
+- 避免滥用渐变、玻璃拟态。
+- 避免所有页面都是同一个模板。
+- 不随意改变正文阅读宽度。
+- 避免多余装饰。
+Finish：
+- 字体细节。
+- 动画。
+- 图表过渡。
+- 微交互。
+- 精细间距。
+- 页面一致性。
+必须区分硬阻塞问题和审美改进建议。
+11. 测试
+至少检查：
+- 360px 手机。
+- 768px 平板。
+- 1024px 小型桌面。
+- 1440px 桌面。
+使用实际浏览器渲染和截图验证。
+
+测试明暗主题、长篇文档、复杂公式、长代码块、Mermaid 图、交互实验以及键盘操作。
+
+保留现有网站的全部核心功能。
+12. 人工裁决
+对于整体视觉风格、信息架构、重要交互模式，先给出多个有实际页面效果的方案。
+
+说明：
+- 设计理由。
+- 优势。
+- 缺点。
+- 对阅读和学习的影响。
+- 实施范围。
+- 技术成本。
+- 对现有网站的影响。
+由用户确定方向。
+
+不要将审美偏好伪装成客观技术结论。
+13. 最终成果
+交付：
+1. 专属 Skill。
+2. Render_Notes Design System。
+3. 页面原型规范。
+4. 学习体验设计规则。
+5. 视觉质量检查规则。
+6. 浏览器验证方法。
+7. 一组经过验证的教材和实验页面。
+8. 后续网站升级路线图。
+最终让 Render_Notes 不只是一个专业知识库，而是一个具有高质量阅读体验和交互学习能力的技术教育产品。
+
+
+
+
+这里有一个我的具体建议：Impeccable 更适合承担设计语言与设计审查能力，Hallmark 更适合提供视觉质量门槛、渲染审查和反模板化思路。两者目前的上游许可证分别标注为 Apache-2.0 和 MIT，正式引入前仍应逐项检查对应代码、素材和依赖的许可条件。
+
+GitHub+2
+
+P3：新建 Agent Workspace Governance
+第二个新项目，建议独立仓库
+这个项目将来最有可能被你应用到 OmniWorld-Engine、Mgtv-Pet-SDK、Render_Notes，以及其他 AI 辅助开发项目。
+
+我建议它不做成一个重量级多 Agent 平台，而是做成一个 Portable Agent Project Governance Kit。
+
+它借鉴三个成熟理念：
+- OpenSpec：管理变更提案、规范、实施计划和归档。完成时将变更合并到当前规范，保留历史过程。
+  
+  GitHub+1
+- MADR：管理真正具有架构意义的决策，避免所有小任务都变成 ADR。
+  
+  GitHub+1
+- Spec Kit：借鉴 Constitution 和规范驱动的工程流程。
+我的推荐是：OpenSpec 管变更，MADR 管重要决策，治理系统管 Agent、文件、文档和责任关系。
+
+不要把 OpenSpec、Spec Kit、MADR 三套完整流程叠加，否则会产生重复。
+Project Bootstrap Prompt：Agent Workspace Governance
+1. 项目定位
+创建一个独立、通用、可迁移的项目：
+
+Agent Workspace Governance
+
+建议仓库名：
+
+agent-workspace-governance
+
+项目目标：
+
+解决多个 AI Agent、多个 AI Coding 工具共同参与项目时，产生的文档混乱、任务冲突、信息不一致、ADR 泛滥、计划重复、文件所有权不清晰、Agent 交接困难和项目状态无法统一等问题。
+
+它不是某一个知识库的专用系统，而是能够安装到任意软件项目、知识工程项目和 AI 协作项目中的通用治理基础设施。
+2. 项目必须区分三个概念
+A. Agent Skills
+规定 Agent 应该如何工作。
+
+例如：
+- research
+- planning
+- implementation
+- code-review
+- documentation-writing
+- handoff
+这些能力可以引用外部 Skills 仓库。
+
+其中包括：
+
+https://github.com/Vin535LFJ/mattpocock-skills-zh-CN-custom
+
+不要重新开发一套与其重复的 Skill 集合。
+B. Agent Governance
+规定 Agent 如何在一个项目里协作。
+
+包括：
+- 文档权威性。
+- 任务分配。
+- 文件写入所有权。
+- 共享上下文。
+- 文档状态。
+- ADR 管理。
+- 变更管理。
+- Agent 身份和能力映射。
+- 人工审批。
+- 交接与审计。
+C. Agent Orchestration
+实际负责 Agent 的任务调度、运行和工作流编排。
+
+治理模块不负责替代各业务项目自己的 Orchestrator。
+
+它提供统一的治理合同和状态管理接口。
+3. 核心设计原则
+1. 项目独立，治理规则可迁移。
+2. 每份正式文档有唯一权威来源。
+3. 工作文档和正式文档严格区分。
+4. 所有 Agent 共享同一套项目规则。
+5. 每个任务有明确负责人和可写入范围。
+6. 文档变更必须有来源和变更记录。
+7. ADR 只记录有架构意义的决策。
+8. 普通实现计划不创建 ADR。
+9. 所有重要状态可机器读取。
+10. 人工裁决不能被 AI 自动替代。
+11. 各种 Agent 客户端通过 Adapter 适配，而不是复制整套规则。
+12. 无法验证的 Agent 能力必须明确标记为未验证。
+4. 文档治理体系
+建立三级文档体系。
+L1 Canonical Documents
+权威文档：
+- 项目宪法。
+- 项目规范。
+- ADR。
+- 当前架构。
+- 正式技术文档。
+- 正式研究报告。
+- 当前项目状态。
+只能有一个权威版本。
+L2 Active Work Artifacts
+工作文档：
+- Change Proposal。
+- Research Draft。
+- Agent Plan。
+- Execution Plan。
+- Review Report。
+- Handoff。
+- 当前任务记录。
+完成后需要经过审核、合并或者归档。
+L3 Archive & History
+历史文档：
+- 已完成的计划。
+- 旧版本报告。
+- 已被取代的 ADR。
+- 历史执行日志。
+- 历史审查记录。
+必须保留可追溯关系。
+
+不能让 Agent 把归档文件当成当前有效事实。
+5. 文档生命周期
+针对不同文件类型建立明确状态机。
+
+一般文档：
+
+draft → proposed → under_review → approved → active → superseded → archived
+
+Change Proposal：
+
+draft → proposed → approved → implementing → verifying → completed → archived
+
+ADR：
+
+proposed → accepted → deprecated / superseded
+
+ADR 不能因为实施完成就自动成为 accepted，必须通过对应的人工决策规则。
+
+执行日志可以使用独立的生命周期。
+
+禁止所有文件强行共用一个状态机。
+6. ADR 管理系统
+提供 MADR 风格的 ADR 管理能力。
+
+每个 ADR 包含：
+- ADR ID。
+- 标题。
+- 创建日期。
+- 决策状态。
+- 背景。
+- 问题。
+- 设计目标和约束。
+- 候选方案。
+- 比较与取舍。
+- 最终决策。
+- 决策理由。
+- 影响和后果。
+- 替代关系。
+- 相关文档。
+- 责任人。
+必须区分：
+- ADR：长期重要的架构决策。
+- RFC / Proposal：尚未批准的方案。
+- Change Plan：某一次具体变更的执行计划。
+- Task：具体执行事项。
+- Execution Log：真实发生的执行过程。
+不要因为 Agent 每完成一个任务就生成一份 ADR。
+7. Agent 多工具统一映射
+设计独立的 Agent Registry。
+
+每个 Agent 至少记录：
+- agent_id
+- agent_name
+- provider
+- model
+- harness
+- capabilities
+- supported_skills
+- supported_mcp
+- supported_tools
+- context_limit（如可获得）
+- invocation_mode
+- parallel_capability
+- background_task_capability
+- file_access_scope
+- runtime_verification_status
+支持不同客户端：
+- Claude Code。
+- Codex。
+- Cursor。
+- OpenCode。
+- WorkBuddy。
+- ZCode。
+- 其他符合规范的 Agent。
+但必须明确：
+
+配置文件存在不等于 Agent 已经发现它。
+
+Agent 发现技能不等于技能运行成功。
+
+每个客户端需要有自己的 Adapter 和验证记录。
+
+适配器只负责生成索引、指针、配置和兼容入口，禁止为不同客户端维护多份完整规则正文。
+8. Agent 任务和文件所有权治理
+建立统一任务合同：
+{
+  "task_id": "TASK-001",
+  "title": "Example task",
+  "owner_agent": "research-agent",
+  "status": "in_progress",
+  "read_paths": [],
+  "write_paths": [],
+  "protected_paths": [],
+  "dependencies": [],
+  "outputs": [],
+  "acceptance_criteria": [],
+  "human_approval_required": false
+}
+支持：
+- 一个任务一个主要写入负责人。
+- 多 Agent 并行研究。
+- 文件读写范围声明。
+- 写入冲突预警。
+- 依赖关系。
+- 任务交接。
+- 完成状态验证。
+- Git branch / worktree 建议。
+- 文件修改前后审计。
+文件所有权默认是协作约定，不要假装一个 JSON 锁就能阻止所有外部 Agent 修改文件。
+
+可以提供可选的 hooks / pre-commit / CI 检查，用于在支持的运行环境中加强执行。
+9. 统一文档注册表
+设计 machine-readable document registry。
+
+建议记录：
+- document_id
+- path
+- type
+- status
+- owner
+- created_at
+- updated_at
+- source_of_truth
+- generated
+- related_task
+- related_adr
+- related_documents
+- replaces
+- superseded_by
+- retention_policy
+提供查询：
+- 当前有效文档。
+- 待人工审批文档。
+- 已过期文档。
+- 重复文档。
+- 孤立文档。
+- 未登记文档。
+- 缺少 owner 的文档。
+- 缺少替代关系的旧版本文档。
+- 当前任务引用的文档。
+Registry 是权威索引，不应成为另一份重复知识库。
+10. OpenSpec 和 KCR 集成
+采用分层方式：
+Change Governance
+借鉴 OpenSpec：
+- proposal.md
+- specs/
+- design.md
+- tasks.md
+负责一般工程变更和规范演进。
+Architecture Decision Governance
+采用 MADR：
+- 一个重要决策一份 ADR。
+- 保留历史。
+- 明确状态。
+- 明确替代关系。
+Knowledge Change Governance
+允许领域项目接入自己的 KCR。
+
+例如 Render_Notes 使用：
+
+Source → Claim → Concept → Lesson → Quiz → Course
+
+Governance Kit 不强制所有项目采用这条知识关系。
+
+它提供通用变更接口和项目适配机制。
+11. Human-in-the-Loop
+建立人工审批制度。
+
+至少包含：
+- 架构决策。
+- 业务目标改变。
+- 文档目录结构重大改变。
+- 权威知识升级。
+- 课程路线调整。
+- 高风险文档删除。
+- 重要历史归档。
+- Git commit / push。
+- 生产部署。
+人工审批记录必须包括审批人、时间、对象、决策和授权范围。
+
+未回复不视为同意。
+12. 项目目录建议
+先以小规模 MVP 实现：
+agent-workspace-governance/
+│
+├── README.md
+├── LICENSE
+├── AGENTS.md
+│
+├── constitution/
+│   ├── PROJECT_PRINCIPLES.md
+│   ├── AGENT_RULES.md
+│   ├── DOCUMENTATION_POLICY.md
+│   └── HUMAN_APPROVAL_POLICY.md
+│
+├── schemas/
+│   ├── project.schema.json
+│   ├── document.schema.json
+│   ├── agent.schema.json
+│   ├── task.schema.json
+│   └── decision.schema.json
+│
+├── templates/
+│   ├── adr-template.md
+│   ├── change-proposal.md
+│   ├── research-report.md
+│   ├── execution-plan.md
+│   ├── handoff.md
+│   └── review-report.md
+│
+├── skills/
+│   ├── documentation-governance/
+│   ├── adr-management/
+│   ├── multi-agent-coordination/
+│   └── agent-handoff/
+│
+├── adapters/
+│   ├── generic/
+│   ├── claude-code/
+│   ├── codex/
+│   ├── workbuddy/
+│   └── zcode/
+│
+├── cli/
+│
+├── tests/
+│
+├── examples/
+│   ├── basic-project/
+│   ├── render-notes/
+│   └── multi-agent-software-project/
+│
+└── docs/
+    ├── architecture.md
+    ├── specification.md
+    └── migration-guide.md
+这是目标结构，不要求一次性创建全部目录。
+
+根据 MVP 的实际需要裁剪。
+13. MVP 功能
+第一版先做以下确定性能力：
+1. init：初始化治理配置。
+2. inventory：扫描并登记文档。
+3. validate：验证文档 metadata 和引用。
+4. status：查看任务和审批状态。
+5. map：查看 Agent、Skill、Tool、MCP 的映射。
+6. handoff：生成标准 Agent 交接文档。
+7. adr：创建、检查和索引 ADR。
+8. archive-check：检查归档条件。
+9. audit：发现文档冗余、孤立、冲突和过期引用。
+优先 Python 标准库、JSON Schema 和 Markdown。
+
+不要一开始引入云数据库、复杂前端、分布式锁或 SaaS 服务。
+14. 迁移验证
+必须提供两个真实迁移示例：
+
+A. Render_Notes
+
+验证它能否适配现有 .agent/、DECISIONS.md、reviews/、KCR 和 WORKFLOW_STATE.md。
+
+B. 一个全新的普通软件项目
+
+验证这套规范是否依赖 Render_Notes 特有的知识结构。
+
+要求做到：
+
+安装治理配置后，新项目中的不同 Agent 能够读取统一规范、识别正式文件、管理工作计划和完成交接。
+15. 最终交付
+- 通用治理规范。
+- 文档类型与生命周期标准。
+- ADR 管理能力。
+- Agent Registry。
+- Document Registry。
+- Task Registry。
+- Skill / MCP / Tool 映射。
+- 客户端 Adapter。
+- CLI 工具。
+- 项目初始化模板。
+- 迁移指南。
+- 自动化验证测试。
+最终目标：
+
+让一个多 Agent 项目无论使用什么模型、什么开发工具，都能拥有明确的共同规则、文档秩序、责任边界和可追溯的协作记录。
+
+现在先研究和设计 MVP，验证它与 Matt Pocock Skills 仓库的边界，再在本地创建项目。
+
+不得修改 Matt Pocock Skills 原仓库来承载本项目的治理代码。
+
+未经授权不要创建 GitHub 远程仓库、push 或部署。
+
+
+
+
+P4：新建 GitHub Project Radar
+第三阶段完成后执行
+这套系统不能只是简单查询 GitHub Trending。
+
+我特别建议建立自己的历史快照数据库。因为只看当前 Star 总量无法准确计算某个项目过去 7 天究竟增长了多少 Star。
+
+每天采集一次历史快照，才能逐渐建立真正有价值的增长趋势数据。
+Project Bootstrap Prompt：GitHub Project Radar
+1. 项目定位
+创建独立项目：
+
+GitHub Project Radar
+
+建议仓库名：
+
+github-project-radar
+
+项目目标：
+
+建立一套长期运行的 GitHub 开源技术情报系统，自动发现新项目、快速增长项目、优秀 Skills、MCP Server、Agent Framework 和值得学习的工程实践。
+
+它不是简单的 GitHub Trending 排行榜。
+
+它是一个：
+
+Open Source Intelligence & Technology Discovery System
+2. 监控方向
+首先建立以下主题：
+AI Agent
+- Multi-Agent Systems。
+- Agent Frameworks。
+- Agent Harness。
+- Coding Agents。
+- Agent Memory。
+- Agent Orchestration。
+- Agent Evaluation。
+Agent Skills
+- Skills。
+- Agent Instructions。
+- AGENTS.md。
+- Claude Skills。
+- Codex Skills。
+- Skill Registry。
+- Skill Distribution。
+MCP & Tools
+- MCP Servers。
+- MCP Clients。
+- Browser Automation。
+- Developer Tools。
+- Tool Calling。
+- Workflow Automation。
+Knowledge Engineering
+- RAG。
+- Knowledge Graph。
+- Graph RAG。
+- Knowledge Management。
+- Research Automation。
+- Document Intelligence。
+Learning & Education
+- AI Tutor。
+- AI Education。
+- Interactive Learning。
+- Technical Documentation。
+- Course Generation。
+- Learning Experience。
+Graphics & Rendering
+- GPU Computing。
+- WebGPU。
+- Vulkan。
+- 3D Rendering。
+- Game Engine。
+- Procedural Graphics。
+- Computer Vision。
+其他扩展方向
+- Video Generation。
+- Multimodal AI。
+- World Models。
+- Embodied AI。
+- Robotics。
+- Developer Productivity。
+- Software Architecture。
+主题体系必须可扩展，不要将类别硬编码在业务逻辑中。
+3. 项目发现机制
+综合使用 GitHub 公开 REST API 和可用的公开项目信息。
+
+发现渠道包括：
+- 新创建的仓库。
+- 指定主题和语言的仓库。
+- 快速增长的仓库。
+- 最近活跃的仓库。
+- 有重要 Release 的仓库。
+- 新出现的 Agent Skills。
+- MCP 相关仓库。
+- 具有较高工程质量的工具和框架。
+记录 GitHub API 的查询参数、查询时间和数据来源。
+
+遵守 GitHub API 的认证、速率限制和服务条款。
+
+不依赖不稳定的网页抓取作为唯一数据源。
+4. Star Growth Tracking
+这是整个系统的重要能力。
+
+不能只获取当前 Star 总量后就宣称它是最近增长最快的项目。
+
+建立自己的历史快照系统。
+
+每天至少记录：
+- repository_id
+- full_name
+- captured_at
+- stargazers_count
+- forks_count
+- watchers_count
+- open_issues_count
+- pushed_at
+- updated_at
+- release information（可获得时）
+同时记录项目基本信息：
+- description
+- language
+- topics
+- license
+- created_at
+- homepage
+- default_branch
+- archived
+计算：
+- 24 小时 Star 增长。
+- 7 天 Star 增长。
+- 30 天 Star 增长。
+- Fork 增长。
+- 项目活跃度。
+- 增长速度变化。
+历史数据不足时必须注明，不得伪造 7 天和 30 天增长数据。
+
+新发现的仓库需要建立初始快照。
+
+即使仓库暂时不再出现在搜索结果，也应该继续更新已经追踪的项目。
+5. 候选项目分析
+对于值得关注的项目，分析：
+基本信息
+- 项目解决什么问题？
+- 面向什么用户？
+- 项目创建时间？
+- 当前 Star / Fork？
+- 最近增长情况？
+技术分析
+- 核心架构。
+- 技术栈。
+- 核心设计。
+- 关键代码目录。
+- 如何使用。
+- 核心依赖。
+- 部署复杂度。
+工程质量
+- README 质量。
+- 文档完整度。
+- 测试情况。
+- CI/CD。
+- Issue / PR 活跃度。
+- Release 频率。
+- License。
+- 维护者情况。
+创新分析
+- 它解决了什么旧问题？
+- 与已有方案有什么区别？
+- 为什么受到关注？
+- 是否有值得学习的工程创新？
+- 是否只是营销或短期热度？
+学习价值
+- 值得学习的设计。
+- 可复用的 Skill。
+- 可复用的 MCP。
+- 值得研究的代码。
+- 对未来项目架构的启发。
+6. 价值评分系统
+建立一个可配置的项目评价模型。
+
+建议初始权重：
+维度	权重
+技术创新性	25
+与关注领域的相关性	25
+工程成熟度	15
+可复用性与落地价值	15
+增长势头	20
+合计	100增长势头必须使用历史快照计算。
+
+所有评分都应显示理由和数据依据。
+
+不能仅因 Star 数高就认定项目优秀。
+
+不同领域的项目应尽可能分组比较，避免拿完全不同类型的项目直接比较。
+7. 报告体系
+自动生成每周报告：
+reports/
+├── 2026-W01/
+│   ├── weekly-report.md
+│   ├── star-growth.json
+│   ├── rising-projects.md
+│   ├── new-skills.md
+│   ├── mcp-and-tools.md
+│   ├── engineering-practices.md
+│   └── research-candidates.json
+报告包括：
+A. Weekly Rising Projects
+快速增长的项目和原因。
+B. Hidden Gems
+Star 数不高但工程质量、设计或创新很优秀的项目。
+C. AI Agent Radar
+Agent Framework、Harness、多 Agent 协作。
+D. Skills Radar
+新出现的 Skill、优秀 Skill 设计和技能管理工具。
+E. MCP Radar
+优秀 MCP Server 和工具。
+F. Engineering Radar
+优秀的软件工程实践、文档治理和架构方案。
+G. Graphics & Rendering Radar
+GPU、图形、视频、3D 和实时渲染相关项目。
+8. Deep Research
+不能只给项目名称和 Star 数据。
+
+每周筛选少量高价值项目进行深入分析。
+
+每个项目生成：
+- Executive Summary。
+- 项目背景。
+- 需求与痛点。
+- 技术架构。
+- 核心工作机制。
+- 关键实现。
+- 技术优势。
+- 技术缺点。
+- 与现有方案比较。
+- 工程成熟度。
+- 可以吸收的设计。
+- 是否值得进一步研究。
+- 参考来源。
+深度研究必须有真实资料和引用。
+
+无法验证的技术事实需要明确标注。
+9. Human Review
+每个候选项目有明确的处理状态：
+- Discovered
+- Triaged
+- Watch
+- Research
+- Adopt
+- Ignore
+AI 负责发现、初筛、调研、评分和推荐。
+
+用户负责是否值得深入研究、是否采纳和是否进入知识库。
+
+不能看到一个项目 Star 增长就自动安装它、导入知识库或者修改其他项目。
+10. 与 Knowledge-to-Learning Engine 的接口
+GitHub Radar 与 Render_Notes 保持独立。
+
+当一个项目被批准进入深度研究阶段，输出标准化研究任务：
+{
+  "candidate_id": "GH-001",
+  "repository": "owner/repository",
+  "url": "https://github.com/owner/repository",
+  "topic": "agent-skills",
+  "discovery_reason": [],
+  "star_metrics": {},
+  "evaluation": {},
+  "review_status": "approved_for_research",
+  "research_objective": "",
+  "created_at": ""
+}
+输出可以导入 AI Knowledge-to-Learning Engine 的 Research Agent。
+
+Radar 不直接修改 Engine 内部的 evidence、knowledge-model、课程和教材。
+11. 技术实施建议
+第一版优先使用：
+- Python。
+- GitHub REST API。
+- SQLite 历史快照数据库。
+- JSON / Markdown 报告。
+- GitHub Actions 定期调度。
+- 可配置的监控主题。
+根据实际需要扩展。
+
+至少支持：
+- 手动执行。
+- 每日快照采集。
+- 每周趋势报告。
+- 单仓库深度分析。
+- 候选项目导出。
+- 数据重试。
+- API 速率限制处理。
+- 历史数据查询。
+凭据通过环境变量或 GitHub Actions Secrets 管理。
+
+禁止将 Token 写入源码、配置文件或日志。
+12. 项目质量要求
+- 有明确的数据模型。
+- 可重复运行。
+- 采集结果有时间戳。
+- 增长计算有来源。
+- 不因重复发现重复创建仓库记录。
+- 采集失败不能破坏历史数据。
+- 报告能够追溯原始来源。
+- 评分模型可调整。
+- 数据采集和价值判断分开。
+- 提供自动化测试。
+13. 人工裁决事项
+在第一版实施前，提供以下建议：
+1. SQLite 还是 PostgreSQL：第一版优先 SQLite。
+2. 每日还是每周采集：建议每日保存快照、每周生成报告。
+3. 是否要实时监控：第一版不需要。
+4. 是否需要网站 Dashboard：第一版不需要。
+5. 是否自动导入 Render_Notes：不自动导入，只提供研究任务出口。
+6. 是否监控私有仓库：第一版仅公开仓库。
+所有不确定事项给出成本、风险和推荐方案。
+14. 最终成果
+交付：
+- GitHub Project Radar。
+- 仓库发现系统。
+- 历史 Star Snapshot 系统。
+- 趋势计算。
+- 项目评价模型。
+- 周报生成。
+- 深度研究模板。
+- 候选审批机制。
+- Knowledge-to-Learning 导出接口。
+- 自动化测试。
+- GitHub Actions 定期运行配置。
+- 项目部署和使用说明。
+最终实现：
+
+持续发现全球优秀开源项目，跟踪真实增长，识别工程创新，形成深度研究报告，并将值得学习的内容交给知识生产系统。
+
+现在开始进行项目调研、架构设计和本地项目初始化。
+
+未经授权不得创建远程仓库、推送代码、安装外部服务或产生不可逆操作。
+
+
+
+
+
+四、我建议你保留的最终人工裁决
+有几项，我不建议完全交给 AI 自己决定。下面是我的推荐。
+决策事项	我的建议	原因
+Engine 是否单独保留	确定	它是核心业务产品，不应该和治理工具混在一起
+Matt Pocock Skills 是否继续独立	确定	它是技能供应库，有自身上游同步和发行规则
+Governance 是否独立	推荐	将来多个项目都可以复用
+learning-experience-design 是否独立仓库	不独立	它当前高度依赖 Render_Notes 的教材、课程和网站数据
+Governance 是否开发完整 Orchestrator	不开发	各业务项目自己负责工作流编排
+ADR 是否由 AI 自动创建	有条件允许	AI 可以起草，重要决策由人批准；普通任务不创建 ADR
+GitHub Radar 是否自动导入知识库	不允许	热门不等于有价值，需要先研究和筛选
+是否现在引入多 Agent 分布式框架	暂缓	先把轻量状态机、Agent 合同和任务恢复跑通
+
+五、再补充一个重要的工程建议：不要把所有项目做成强耦合依赖
+我希望最终达到的是这样的效果：
+可迁移、可替换的能力架构
+Skills
+可替换技能供应库
+
+Governance
+可迁移的项目规范
+
+MCP / Tools
+可替换外部能力
+
+Agent Adapters
+可替换模型与运行环境
+
+
+
+AI Knowledge-to-Learning Engine
+
+知识研究、知识建模、教材生产和学习网站
+
+
+Learning Product
+
+系统知识 / 深度教材 / 实践 / 交互式网站
+
+
+GitHub Project Radar
+
+独立提供持续情报和研究候选
+
+
+这样今后你新建一个 AI 视频生成项目，可以直接引入 Governance Kit 和 Skills；新建一个 3D 渲染研究项目，也可以复用它们。
+
+而 Engine 的课程生产流程、教材质量标准、术语体系和网站设计能力，则留在 Engine 自己的业务领域里。
+
+最后我的执行建议是：现在只启动 P1，不要同时开四个项目。 把现有 Render_Notes 从当前进度推进到一条稳定、完整的知识生产流水线，随后再做视觉体验 Skill。这样后面两个独立项目不是凭空设计出来的，而是基于真实工程问题提炼出来的。
+
+这会比同时建设四套系统更容易成功。

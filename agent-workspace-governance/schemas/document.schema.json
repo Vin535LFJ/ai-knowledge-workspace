@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.org/governance/schemas/document.schema.json",
+  "title": "Document Registry Entry",
+  "description": "文档注册表条目。注册表是索引，不是另一套知识库。type 字段采用 13 类标准文档类型（英文 slug + 中文说明）。为向后兼容，旧版本中遗留的自定义类型值（如 change-proposal、research-report、formal-tech-doc 等）仍作为历史数据保留且可读取，additionalProperties 保持 true；新文档应优先使用下列 13 类标准类型，doctor 命令会对非标准类型给出提示。",
+  "type": "object",
+  "required": ["document_id", "path", "type", "status", "owner", "created_at", "updated_at"],
+  "properties": {
+    "document_id": { "type": "string", "minLength": 1 },
+    "path": { "type": "string", "minLength": 1 },
+    "type": {
+      "description": "文档类型：13 类标准类型之一；历史遗留的自定义类型值仍兼容。",
+      "oneOf": [
+        { "const": "ADR", "title": "ADR 架构决策" },
+        { "const": "Spec", "title": "Spec 规格说明" },
+        { "const": "Plan", "title": "Plan 计划" },
+        { "const": "Task", "title": "Task 任务" },
+        { "const": "Runbook", "title": "Runbook 运维手册" },
+        { "const": "Glossary", "title": "Glossary 术语表" },
+        { "const": "Architecture", "title": "Architecture 架构说明" },
+        { "const": "Skill", "title": "Skill 技能说明" },
+        { "const": "Workflow", "title": "Workflow 工作流" },
+        { "const": "Script", "title": "Script 脚本说明" },
+        { "const": "Handoff", "title": "Handoff 交接文档" },
+        { "const": "Audit", "title": "Audit 审计报告" },
+        { "const": "Session Note", "title": "Session Note 会话记录" }
+      ]
+    },
+    "level": { "type": "string", "enum": ["L1", "L2", "L3"], "description": "文档分级。" },
+    "status": { "type": "string", "minLength": 1 },
+    "owner": { "type": "string", "minLength": 1, "description": "责任人，不得为空。" },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" },
+    "source_of_truth": { "type": ["string", "null"], "description": "权威来源指针；正式文档应为自身或明确指向。" },
+    "generated": { "type": "boolean", "default": false, "description": "是否由工具生成。" },
+    "related_task": { "type": ["string", "null"] },
+    "related_adr": { "type": ["string", "null"] },
+    "related_documents": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "replaces": { "type": ["string", "null"] },
+    "superseded_by": { "type": ["string", "null"] },
+    "retention_policy": { "type": "string", "description": "保留策略，例如 keep-forever / archive-after-180d。" },
+    "title": { "type": "string" }
+  },
+  "additionalProperties": true
+}

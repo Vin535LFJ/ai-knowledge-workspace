@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.org/governance/schemas/agent.schema.json",
+  "title": "Agent Registry Entry",
+  "description": "Agent 注册表条目。配置存在 ≠ 被发现 ≠ 成功调用；每个客户端独立验证记录。",
+  "type": "object",
+  "required": ["agent_id", "agent_name", "provider", "runtime_verification_status"],
+  "properties": {
+    "agent_id": { "type": "string", "minLength": 1 },
+    "agent_name": { "type": "string", "minLength": 1 },
+    "provider": {
+      "type": "string",
+      "description": "提供方，例如 anthropic / openai / cursor / opencode / workbuddy / zcode / generic。"
+    },
+    "model": { "type": ["string", "null"] },
+    "harness": { "type": ["string", "null"], "description": "运行框架/客户端。" },
+    "capabilities": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "supported_skills": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "supported_mcp": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "supported_tools": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "context_limit": { "type": ["integer", "null"], "description": "若可得，上下文窗口大小。" },
+    "invocation_mode": {
+      "type": "string",
+      "enum": ["interactive", "cli", "api", "scheduled", "unknown"],
+      "default": "unknown"
+    },
+    "parallel_capability": { "type": "boolean", "default": false },
+    "background_task_capability": { "type": "boolean", "default": false },
+    "file_access_scope": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "runtime_verification_status": {
+      "type": "string",
+      "enum": ["verified", "unverified"],
+      "default": "unverified",
+      "description": "未实跑验证的能力必须为 unverified。"
+    },
+    "config_present": { "type": "boolean", "default": false },
+    "discovery_success": { "type": "boolean", "default": false },
+    "invocation_success": { "type": "boolean", "default": false },
+    "verification_record": { "type": "string", "description": "指向 Adapter 的独立验证记录。" }
+  },
+  "additionalProperties": true
+}

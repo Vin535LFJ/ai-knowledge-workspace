@@ -1,0 +1,34 @@
+{
+  "trigger": {
+    "type": "claim_status_request",
+    "ref": "(inline claim draft)",
+    "date": "2026-11-20"
+  },
+  "new_sources": [],
+  "seed": {
+    "source_id": null,
+    "claim_id": null
+  },
+  "affected": {
+    "claims": [],
+    "concepts": [],
+    "lessons": [],
+    "quizzes": [],
+    "courses": []
+  },
+  "conflicts": [],
+  "uncovered": [],
+  "integrity_findings": [],
+  "website_artifacts": [],
+  "counts": {
+    "sources": 24,
+    "claims": 55,
+    "concepts": 23,
+    "quizzes": 5,
+    "courses": 2
+  },
+  "generated_at": "2026-11-20 09:58",
+  "read_only": true,
+  "claim_draft_echo": "RGBA 中间纹理的 loadOp=LOAD 在 TBDR 上代价高，应使用 CLEAR/DONT_CARE",
+  "note": "草稿模式仅回显文本，未匹配到现有断言；正式分析请用 --claim-id/--source-id。new_sources 由 Stage 2 提案登记，本工具只读不登记来源。"
+}

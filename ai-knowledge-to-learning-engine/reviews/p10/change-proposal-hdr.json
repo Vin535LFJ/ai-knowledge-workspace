@@ -1,0 +1,387 @@
+{
+  "proposal_id": "KCR-2026-11-001",
+  "impact_report": "reviews/p10/impact-bt2100-new.json",
+  "items": [
+    {
+      "item_id": "I1",
+      "action": "add",
+      "target": {
+        "layer": "claim",
+        "id_draft": "V63"
+      },
+      "content": "BT.2100 定义两套 HDR 参考传递系统且不得混用：PQ（SMPTE ST 2084 EOTF，display-referred 绝对亮度 0–10000 cd/m²，Dolby 提出）与 HLG（BBC/NHK，ARIB STD-B67 OETF 与 BT.2100 逐字一致，scene-referred 相对亮度，下半段 gamma/上半段对数）；系统色度 BT.2020，10/12bit（narrow 64–940 / full 0–1023）",
+      "evidence": [
+        "SRC-ITU-BT2100 · BT.2100-3 Table 4/5/9 与 recommends 段",
+        "SRC-UHDF-BLUEBOOK · §7.1.2–7.1.4（PQ10/HLG10 定义、HLG 兼容边界）",
+        "SRC-UPM-BT2100-TABLES · Table 4/5 逐字转载"
+      ],
+      "default_status": "open",
+      "conditions": [
+        "HLG 向后兼容仅针对 SDR/BT.2020 WCG 显示，不针对仅 BT.709 的显示（BT.709 屏去饱和+色相偏移）",
+        "PQ 内容转 SDR 需 down-mapping，直接显示会发灰"
+      ],
+      "affected": {
+        "lessons": [
+          "L19"
+        ]
+      },
+      "rationale": "HDR 批次研究报告 F1–F7 支撑；新断言默认 open/low，升级待 G1",
+      "version_note": "P10 RUN-2026-11-20-p10-hdr EVIDENCE 2026-11-21"
+    },
+    {
+      "item_id": "I2",
+      "action": "add",
+      "target": {
+        "layer": "claim",
+        "id_draft": "V64"
+      },
+      "content": "PQ EOTF：L=10000×[max(V^(1/m2)−c1,0)/(c2−c3·V^(1/m2))]^(1/m1)，m1=2610/16384≈0.1593017578125、m2=78.84375、c1=0.8359375、c2=18.8515625、c3=18.6875；中性灰锚点 100nit≈0.508078、1000nit≈0.751827、10000nit=1.0；基于 Barten(1999) 对比敏感度模型，步长≈JND，10bit PQ 抑制全范围 banding；10bit narrow range 100nit≈code 509（64+876×0.508078）",
+      "evidence": [
+        "SRC-COLOUR-ST2084 · 函数签名常数 + Barten 说明 + doctest eotf_ST2084(0.508078421517399)=100.0",
+        "SRC-UPM-BT2100-TABLES · Table 4（PQ EOTF 常数逐字）",
+        "SRC-ITU-BT2100 · Table 4（PQ 参考非线性）"
+      ],
+      "default_status": "open",
+      "conditions": [
+        "常数以 SMPTE ST 2084:2014 为准",
+        "锚点 0.508/0.752 为舍入值，精确 0.508078/0.751827",
+        "code 509 算例回读 ≈99.9nit，舍入误差如实标注"
+      ],
+      "affected": {
+        "lessons": [
+          "L19"
+        ]
+      },
+      "rationale": "HDR 批次研究报告 F1–F7 支撑；新断言默认 open/low，升级待 G1",
+      "version_note": "P10 RUN-2026-11-20-p10-hdr EVIDENCE 2026-11-21"
+    },
+    {
+      "item_id": "I3",
+      "action": "add",
+      "target": {
+        "layer": "claim",
+        "id_draft": "V65"
+      },
+      "content": "HDR10 = PQ10 + 静态元数据三件套：ST 2086 MDCV（母带显示 primaries/白点 x,y + min/max 亮度）+ MaxCLL（全片最亮单像素）+ MaxFALL（最大帧平均亮度）；元数据供显示端做 color volume transform/tone mapping 决策；Android 解码输出 format 以 KEY_HDR_STATIC_INFO（静态）/KEY_HDR10_PLUS_INFO（动态，逐帧可变）携带；动态元数据（HDR10+/DV）逐场景/逐帧",
+      "evidence": [
+        "SRC-UHDF-BLUEBOOK · §7.2/7.2.1/7.2.2（MDCV/MaxCLL/MaxFALL 定义与局限）",
+        "SRC-ANDROID-HDR · Supported HDR technologies 表 + KEY_HDR_STATIC_INFO/KEY_HDR10_PLUS_INFO 段"
+      ],
+      "default_status": "open",
+      "conditions": [
+        "部分显示忽略部分/全部静态元数据",
+        "直播节目 MaxCLL/MaxFALL 允许 0（未知）",
+        "母带 outlier 可致 MaxCLL 虚高（有内容方用统计法修正）"
+      ],
+      "affected": {
+        "lessons": [
+          "L19"
+        ]
+      },
+      "rationale": "HDR 批次研究报告 F1–F7 支撑；新断言默认 open/low，升级待 G1",
+      "version_note": "P10 RUN-2026-11-20-p10-hdr EVIDENCE 2026-11-21"
+    },
+    {
+      "item_id": "I4",
+      "action": "add",
+      "target": {
+        "layer": "claim",
+        "id_draft": "V66"
+      },
+      "content": "Android HDR 播放链：Display.getHdrCapabilities（HDR_TYPE_* + desired luminance）与 CodecCapabilities.profileLevels（HEVCProfileMain10HDR10/VP9Profile2HDR 等）发现能力 → MP4/WebM Extractor → 硬解（解析 SEI/SPS 母带元数据）→ 输出 format 携带 HDR 信息 → Surface → HWC2 传播静态数据 → 合成（统一线性色彩空间→混合→转显示信号）；Android 7.0 仅 tunneled 保证 HDR，非 tunneled 可能丢 HDR 信息被压平为 SDR；Android 13 libtonemap 统一 HWC/SF/app tone mapping，混合合成时屏幕提亮 + SDR 图层按 sdrHdrRatioMap 调暗",
+      "evidence": [
+        "SRC-ANDROID-HDR · Discovery/Playback/HDR10 decoder pipeline/Hardware composition 各节",
+        "SRC-ANDROID-MIXED-SDR-HDR · libtonemap/sdrHdrRatioMap/minimumHdrPercentOfScreen 段",
+        "SRC-RN-STREAMING · §5.3 Android 上的 HDR 链路"
+      ],
+      "default_status": "open",
+      "conditions": [
+        "设备相关（HWC 实现/面板能力）",
+        "版本差异：7.0 仅 tunneled 保证；9+ 非 tunneled 报告元数据；13 引入 libtonemap/SDR dimming",
+        "硬件不足时 dimming 回退 GPU 合成（耗电）"
+      ],
+      "affected": {
+        "lessons": [
+          "L19"
+        ]
+      },
+      "rationale": "HDR 批次研究报告 F1–F7 支撑；新断言默认 open/low，升级待 G1",
+      "version_note": "P10 RUN-2026-11-20-p10-hdr EVIDENCE 2026-11-21"
+    },
+    {
+      "item_id": "I5",
+      "action": "add",
+      "target": {
+        "layer": "claim",
+        "id_draft": "V67"
+      },
+      "content": "PQ 信号送入期望 BT.709 输入的显示 → 画面 dim/washed out、去饱和 + 色相偏移（'发灰'的权威解释）；tone mapping = 动态范围压缩（down-map HDR→SDR），须在线性光做、暗部保留/高光压缩；8bit FBO 先截断高光则后续 tone mapping 已晚；SDR dimming 可致 black crush（暗部码值坍缩），不可接受时必须 dither",
+      "evidence": [
+        "SRC-ITU-BT2408 · §3.1 Display of PQ signals + §5 Definitions（TM/ITM/hard clip）",
+        "SRC-ANDROID-MIXED-SDR-HDR · Issues 段（black crush/dither）",
+        "SRC-RN-STREAMING · §5.3 '8bit FBO 后丢失高光，再 tone mapping 已经晚了'",
+        "SRC-RN-IMGALGO · 色调映射须线性 RGB / 10bit→8bit 后 dither"
+      ],
+      "default_status": "open",
+      "conditions": [
+        "算子选择（Reinhard/ACES/BT.2390 等）依平台与内容",
+        "hard clip 与 soft clip（tone mapping）语义不同，制作监看常用 hard clip"
+      ],
+      "affected": {
+        "lessons": [
+          "L19"
+        ]
+      },
+      "rationale": "HDR 批次研究报告 F1–F7 支撑；新断言默认 open/low，升级待 G1",
+      "version_note": "P10 RUN-2026-11-20-p10-hdr EVIDENCE 2026-11-21"
+    },
+    {
+      "item_id": "I6",
+      "action": "add",
+      "target": {
+        "layer": "source",
+        "id_draft": "SRC-ANDROID-HDR"
+      },
+      "content": "Android Open Source Project · HDR video（官方播放/发现/管线要求）（https://source.android.com/docs/core/display/hdr，type=official_doc，accessed=2026-11-21）",
+      "evidence": [
+        "used_by_claims=['V66', 'V65']"
+      ],
+      "affected": {},
+      "rationale": "HDR 批次外部权威证据链（AOSP/ITU/UHD Forum/colour-science/UPM）+ 流媒体 repo 来源补登记",
+      "version_note": "P10 EVIDENCE 2026-11-21"
+    },
+    {
+      "item_id": "I7",
+      "action": "add",
+      "target": {
+        "layer": "source",
+        "id_draft": "SRC-ANDROID-MIXED-SDR-HDR"
+      },
+      "content": "Android Open Source Project · Mixed SDR and HDR composition（libtonemap/SDR dimming）（https://source.android.com/docs/core/display/mixed-sdr-hdr，type=official_doc，accessed=2026-11-21）",
+      "evidence": [
+        "used_by_claims=['V66', 'V67']"
+      ],
+      "affected": {},
+      "rationale": "HDR 批次外部权威证据链（AOSP/ITU/UHD Forum/colour-science/UPM）+ 流媒体 repo 来源补登记",
+      "version_note": "P10 EVIDENCE 2026-11-21"
+    },
+    {
+      "item_id": "I8",
+      "action": "add",
+      "target": {
+        "layer": "source",
+        "id_draft": "SRC-ITU-BT2100"
+      },
+      "content": "ITU-R BT.2100-3 (2025/02) · HDR-TV 图像参数（PQ/HLG 双系统）（https://www.itu.int/rec/R-REC-BT.2100/en，type=spec，accessed=2026-11-21）",
+      "evidence": [
+        "used_by_claims=['V63', 'V64']"
+      ],
+      "affected": {},
+      "rationale": "HDR 批次外部权威证据链（AOSP/ITU/UHD Forum/colour-science/UPM）+ 流媒体 repo 来源补登记",
+      "version_note": "P10 EVIDENCE 2026-11-21"
+    },
+    {
+      "item_id": "I9",
+      "action": "add",
+      "target": {
+        "layer": "source",
+        "id_draft": "SRC-ITU-BT2408"
+      },
+      "content": "ITU-R BT.2408-3 (2019) 报告 · HDR 电视运营实践（PQ→BT.709 发灰/tone mapping 定义）（https://www.itu.int/dms_pub/itu-r/opb/rep/R-REP-BT.2408-3-2019-MSW-E.docx，type=official_doc，accessed=2026-11-21）",
+      "evidence": [
+        "used_by_claims=['V67']"
+      ],
+      "affected": {},
+      "rationale": "HDR 批次外部权威证据链（AOSP/ITU/UHD Forum/colour-science/UPM）+ 流媒体 repo 来源补登记",
+      "version_note": "P10 EVIDENCE 2026-11-21"
+    },
+    {
+      "item_id": "I10",
+      "action": "add",
+      "target": {
+        "layer": "source",
+        "id_draft": "SRC-UHDF-BLUEBOOK"
+      },
+      "content": "Ultra HD Forum Blue Book v3.2.0 · Ultra HD 制作与后期（PQ10/HLG10/HDR10 定义与元数据）（https://ultrahdforum.org/wp-content/uploads/BlueBook-Ultra_HD_Production_and_Post_Production_3.2.0.pdf，type=official_doc，accessed=2026-11-21）",
+      "evidence": [
+        "used_by_claims=['V63', 'V65']"
+      ],
+      "affected": {},
+      "rationale": "HDR 批次外部权威证据链（AOSP/ITU/UHD Forum/colour-science/UPM）+ 流媒体 repo 来源补登记",
+      "version_note": "P10 EVIDENCE 2026-11-21"
+    },
+    {
+      "item_id": "I11",
+      "action": "add",
+      "target": {
+        "layer": "source",
+        "id_draft": "SRC-COLOUR-ST2084"
+      },
+      "content": "colour-science 官方文档 · eotf_ST2084（ST 2084:2014 常数/Barten 模型/100nit doctest）（https://colour.readthedocs.io/en/v0.3.13/generated/colour.models.eotf_ST2084.html，type=official_doc，accessed=2026-11-21）",
+      "evidence": [
+        "used_by_claims=['V64']"
+      ],
+      "affected": {},
+      "rationale": "HDR 批次外部权威证据链（AOSP/ITU/UHD Forum/colour-science/UPM）+ 流媒体 repo 来源补登记",
+      "version_note": "P10 EVIDENCE 2026-11-21"
+    },
+    {
+      "item_id": "I12",
+      "action": "add",
+      "target": {
+        "layer": "source",
+        "id_draft": "SRC-UPM-BT2100-TABLES"
+      },
+      "content": "UPM 硕士论文（PFC Miguel Prieto Losanez）· 逐字转载 BT.2100 Table 4/5（PQ 常数 + HLG OETF/gamma）（https://oa.upm.es/48645/1/PFC_MIGUEL_PRIETO_LOSANEZ.pdf，type=paper，accessed=2026-11-21）",
+      "evidence": [
+        "used_by_claims=['V63', 'V64']"
+      ],
+      "affected": {},
+      "rationale": "HDR 批次外部权威证据链（AOSP/ITU/UHD Forum/colour-science/UPM）+ 流媒体 repo 来源补登记",
+      "version_note": "P10 EVIDENCE 2026-11-21"
+    },
+    {
+      "item_id": "I13",
+      "action": "add",
+      "target": {
+        "layer": "source",
+        "id_draft": "SRC-RN-STREAMING"
+      },
+      "content": "AI Knowledge-to-Learning Engine 流媒体、HDR 与实时采集（主知识文档 §5）（repo:02-解码与播放链路/流媒体与实时采集.md，type=repo_doc，accessed=2026-11-21）",
+      "evidence": [
+        "used_by_claims=['V66', 'V67']"
+      ],
+      "affected": {},
+      "rationale": "HDR 批次外部权威证据链（AOSP/ITU/UHD Forum/colour-science/UPM）+ 流媒体 repo 来源补登记",
+      "version_note": "P10 EVIDENCE 2026-11-21"
+    },
+    {
+      "item_id": "I14",
+      "action": "add",
+      "target": {
+        "layer": "lesson",
+        "id_draft": "L19"
+      },
+      "content": "L19《HDR 视频渲染》：PQ/HLG 数学 + HDR10 元数据 + Android 链路 + tone mapping 故障定位；unit U4，prerequisites [L03,L12,L14]，next null（新终点）；无绑定 lab（照 L10/L12 先例）；不入 pilot（照 L18 先例，quiz 待纳入后补建）",
+      "evidence": [
+        "reviews/p10/research-report-hdr.md F1–F8"
+      ],
+      "affected": {
+        "lessons": [
+          "L18",
+          "L19"
+        ],
+        "quizzes": []
+      },
+      "rationale": "查重确认 HDR 无专课深讲；L03 概览层之上的渲染侧管线深潜",
+      "version_note": "P10 WRITE 阶段落盘"
+    },
+    {
+      "item_id": "I15",
+      "action": "add",
+      "target": {
+        "layer": "concept",
+        "id_draft": "K-HDR"
+      },
+      "content": "K-HDR（layer L1，glossary_term HDR）relations: prerequisite_of K-TONEMAP(V67), contrast_with K-RGB(V63)",
+      "evidence": [
+        "V63",
+        "V67"
+      ],
+      "affected": {
+        "lessons": [
+          "L19"
+        ]
+      },
+      "rationale": "HDR 批次知识建模；无环（K-HDR→K-TONEMAP→K-PBR）",
+      "version_note": "P10 ARCHITECT 2026-11-21"
+    },
+    {
+      "item_id": "I16",
+      "action": "add",
+      "target": {
+        "layer": "concept",
+        "id_draft": "K-TONEMAP"
+      },
+      "content": "K-TONEMAP（layer L3，glossary_term tone mapping）relations: used_by K-PBR(V67)",
+      "evidence": [
+        "V67"
+      ],
+      "affected": {
+        "lessons": [
+          "L19"
+        ]
+      },
+      "rationale": "tone mapping 是 HDR 显示与 PBR 后处理的共用机制",
+      "version_note": "P10 ARCHITECT 2026-11-21"
+    },
+    {
+      "item_id": "I17",
+      "action": "modify",
+      "target": {
+        "layer": "course",
+        "id": "tools/course.json"
+      },
+      "content": "L18.next null→L19；追加 L19 条目（unit U4 / objectives 3 条 / reading 3 条锚点 / terms 7 词 / checkpoint 3 题）；glossary 新增 BT.2020/tone mapping/MaxCLL/MaxFALL/DataSpace 5 词条（color-compression 组）",
+      "evidence": [
+        "validate §3/§5 术语解析约束"
+      ],
+      "affected": {
+        "lessons": [
+          "L18",
+          "L19"
+        ]
+      },
+      "rationale": "next 链延伸与术语解析前置",
+      "version_note": "P10 WRITE/ARCHITECT 2026-11-21"
+    },
+    {
+      "item_id": "I18",
+      "action": "modify",
+      "target": {
+        "layer": "lesson",
+        "id": "L18"
+      },
+      "content": "L18 头部'路线位置'与 §10 桥句：'next 链终点/收官'表述改为延伸至 L19；正文知识内容不动",
+      "evidence": [
+        "lesson-quality-standard §2.10 桥句与 course.json next 一致"
+      ],
+      "affected": {
+        "lessons": [
+          "L18"
+        ]
+      },
+      "rationale": "L19 加入后 L18 不再是终点",
+      "version_note": "P10 WRITE 2026-11-21"
+    },
+    {
+      "item_id": "I19",
+      "action": "reverify",
+      "target": {
+        "layer": "claim",
+        "id": "V23"
+      },
+      "from_status": "open",
+      "to_status_requested": "verified",
+      "content": "V23（PQ 绝对/HLG 相对概览）外部证据链已由本批闭合（BT.2100/UHDF/UPM）；但'HLG 兼容 SDR'表述需先补边界条件（仅 SDR/BT.2020 WCG，BT.709 屏去饱和+色相偏移，UHD Forum §7.1.3 / BT.2408 §3.2.1）",
+      "evidence": [
+        "SRC-ITU-BT2100 Table 4/5",
+        "SRC-UHDF-BLUEBOOK §7.1.2–7.1.3",
+        "reviews/p10/research-report-hdr.md §5 争议"
+      ],
+      "conditions": [
+        "建议先 modify 补 HLG 兼容边界条件，再裁升级；或维持 open 待边界修订"
+      ],
+      "affected": {
+        "lessons": [
+          "L03",
+          "L19"
+        ]
+      },
+      "rationale": "研究报告闭合 V23 外部证据缺口；升级与边界修订均属 G1 人工裁决，AI 不预填",
+      "version_note": "P10 EVIDENCE 2026-11-21"
+    }
+  ],
+  "ai_recommendation": "仅供参考：I1–I18 为纯增量（新断言 open/low、新来源、新教材/概念/术语、L18 桥句联动），建议确认；I19（V23 升级）建议先补 HLG 兼容边界条件再裁，或维持 open。基线影响见 reviews/p10/impact-v23-baseline.json。",
+  "human_decision": null
+}

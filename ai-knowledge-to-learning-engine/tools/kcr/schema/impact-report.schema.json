@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "KCR Stage 1 · impact-report（影响分析产出）",
+  "description": "D13 设计文档 reviews/KNOWLEDGE_CHANGE_REVIEW.md §Stage1 的机器契约。产出方：tools/kcr_impact.py（只读）。消费方：Stage 2 change-proposal。",
+  "type": "object",
+  "required": ["trigger", "new_sources", "affected", "conflicts", "uncovered"],
+  "properties": {
+    "trigger": {
+      "type": "object",
+      "required": ["type", "ref", "date"],
+      "properties": {
+        "type": { "type": "string", "enum": ["new_research_report", "new_source", "source_update", "lesson_revision", "claim_status_request"] },
+        "ref": { "type": "string", "description": "触发物引用路径或来源 id" },
+        "date": { "type": "string" }
+      }
+    },
+    "new_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "url", "type"],
+        "properties": {
+          "id": { "type": "string", "pattern": "^SRC-" },
+          "url": { "type": "string" },
+          "type": { "type": "string", "enum": ["official_doc", "spec", "paper", "book", "repo_doc", "derivation"] }
+        }
+      }
+    },
+    "affected": {
+      "type": "object",
+      "required": ["claims", "concepts", "lessons", "quizzes", "courses"],
+      "properties": {
+        "claims": { "type": "array", "items": { "type": "object", "required": ["id", "relation"], "properties": { "id": { "type": "string" }, "relation": { "type": "string", "enum": ["supports", "conflicts", "extends"] }, "note": { "type": "string" } } } },
+        "concepts": { "type": "array", "items": { "type": "object", "required": ["id"], "properties": { "id": { "type": "string" }, "via_claim": { "type": "string" } } } },
+        "lessons": { "type": "array", "items": { "type": "object", "required": ["id"], "properties": { "id": { "type": "string" }, "via_claim": { "type": "string" }, "sections": { "type": "array", "items": { "type": "string" } } } } },
+        "quizzes": { "type": "array", "items": { "type": "object", "required": ["id"], "properties": { "id": { "type": "string" }, "via_claim": { "type": "string" } } } },
+        "courses": { "type": "array", "items": { "type": "object", "required": ["id"], "properties": { "id": { "type": "string" }, "objectives_maybe": { "type": "boolean" } } } }
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["new_claim_draft", "existing_claim", "type"],
+        "properties": {
+          "new_claim_draft": { "type": "string" },
+          "existing_claim": { "type": "string" },
+          "type": { "type": "string", "enum": ["contradiction", "condition_change"] },
+          "evidence": { "type": "string" }
+        }
+      }
+    },
+    "uncovered": { "type": "array", "items": { "type": "string" } }
+  }
+}

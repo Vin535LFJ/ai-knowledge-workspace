@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.org/governance/schemas/task.schema.json",
+  "title": "Task Contract",
+  "description": "任务契约。一个任务一个主 writer；文件所有权是约定，不是真实锁。",
+  "type": "object",
+  "required": [
+    "task_id",
+    "title",
+    "owner_agent",
+    "status",
+    "read_paths",
+    "write_paths",
+    "protected_paths",
+    "dependencies",
+    "outputs",
+    "acceptance_criteria",
+    "human_approval_required"
+  ],
+  "properties": {
+    "task_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "owner_agent": { "type": "string", "minLength": 1, "description": "唯一主 writer。" },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "proposed", "under_review", "approved", "in_progress", "blocked", "completed", "archived"]
+    },
+    "read_paths": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "write_paths": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "protected_paths": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "dependencies": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "outputs": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "acceptance_criteria": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "human_approval_required": { "type": "boolean", "default": false },
+    "parallel_research_allowed": { "type": "boolean", "default": false },
+    "conflict_warnings": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "handoff_doc": { "type": ["string", "null"] },
+    "branch_advice": { "type": ["string", "null"], "description": "分支/worktree 建议。" },
+    "before_audit": { "type": ["string", "null"] },
+    "after_audit": { "type": ["string", "null"] },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" },
+    "claimed_at": { "type": "string", "description": "任务被认领的时间（Task Claim 协议）。可选，旧任务契约无需提供。" },
+    "claim_token": { "type": "string", "description": "认领令牌，用于 Single Writer 冲突判定。可选。" },
+    "dependency_frontier": {
+      "description": "依赖前沿：依赖任务 ID 列表，或含任务 ID 与批准状态的对象列表。可选，旧任务契约无需提供。",
+      "oneOf": [
+        { "type": "array", "items": { "type": "string" } },
+        { "type": "array", "items": { "type": "object" } }
+      ],
+      "default": []
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,104 @@
+{
+  "version": 2,
+  "updated": "2026-11-19",
+  "description": "加权评分配置。weights 为旧版综合分权重（保持不变）；three_scores 为新增的三维独立评分配置。",
+  "weights": {
+    "innovation": 25,
+    "relevance": 25,
+    "engineering_maturity": 15,
+    "reusability": 15,
+    "growth_momentum": 20
+  },
+  "thresholds": {
+    "hidden_gem_max_stars": 500,
+    "high_value_min_score": 75,
+    "watch_min_score": 55
+  },
+  "three_scores": {
+    "description": "三个彼此独立的分数，不再合成为综合分。字段缺失的子信号标 unknown，不默认满分或零分。",
+    "discovery_signal": {
+      "dimensions": [
+        "star_velocity_24h", "star_velocity_7d", "star_velocity_30d",
+        "fork_growth_7d", "commit_activity", "novelty",
+        "domain_attention", "contributor_change"
+      ],
+      "weights": {
+        "star_velocity_24h": 10,
+        "star_velocity_7d": 25,
+        "star_velocity_30d": 15,
+        "fork_growth_7d": 15,
+        "commit_activity": 20,
+        "novelty": 10,
+        "domain_attention": 3,
+        "contributor_change": 2
+      },
+      "thresholds": {
+        "velocity_cap_24h": 20,
+        "velocity_cap_7d": 100,
+        "velocity_cap_30d": 300,
+        "fork_growth_cap": 30,
+        "novelty_reference_date": "2026-11-19",
+        "novelty_max_years": 3
+      }
+    },
+    "engineering_quality": {
+      "dimensions": [
+        "readme_clarity", "docs_runnable", "license", "release_activity",
+        "issue_pr_maintenance", "community_activity", "testing_ci",
+        "security_policy", "dependency_health", "code_structure",
+        "single_maintainer_risk"
+      ],
+      "weights": {
+        "readme_clarity": 20,
+        "docs_runnable": 15,
+        "license": 15,
+        "release_activity": 10,
+        "issue_pr_maintenance": 10,
+        "community_activity": 15,
+        "testing_ci": 5,
+        "security_policy": 4,
+        "dependency_health": 4,
+        "code_structure": 2,
+        "single_maintainer_risk": 0
+      },
+      "thresholds": {
+        "readme_full_length": 120,
+        "issue_penalty_per_issue": 2
+      }
+    },
+    "relevance": {
+      "dimensions": ["engine", "agent_docs_governance", "radar", "web_teaching", "av_gpu"],
+      "weights": {
+        "engine": 25,
+        "agent_docs_governance": 20,
+        "radar": 20,
+        "web_teaching": 20,
+        "av_gpu": 15
+      },
+      "group_match_bonus": 50,
+      "dimension_keywords": {
+        "engine": {
+          "keywords": ["agent", "engine", "framework", "runtime", "orchestration", "memory", "harness"],
+          "groups": ["ai-agent", "agent-skills"]
+        },
+        "agent_docs_governance": {
+          "keywords": ["agents.md", "skills", "claude skill", "codex skill", "registry", "documentation", "governance"],
+          "groups": ["agent-skills"]
+        },
+        "radar": {
+          "keywords": ["rag", "knowledge graph", "graphrag", "retrieval", "research automation", "document intelligence", "radar"],
+          "groups": ["knowledge-engineering"]
+        },
+        "web_teaching": {
+          "keywords": ["tutor", "education", "interactive learning", "learning experience", "course", "teaching", "docs"],
+          "groups": ["learning-education"]
+        },
+        "av_gpu": {
+          "keywords": ["gpu", "webgpu", "vulkan", "render", "renderer", "3d", "shader", "video", "diffusion", "multimodal"],
+          "groups": ["graphics-rendering", "extensions"]
+        }
+      }
+    }
+  },
+  "notes": "growth_momentum 在快照历史不足时为 0（中性），并附带原因，不编造增长数据。three_scores 的字段缺失一律标 unknown。"
+}

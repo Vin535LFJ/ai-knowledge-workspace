@@ -1,0 +1,63 @@
+{
+  "version": 1,
+  "updated": "2026-11-19",
+  "description": "外部化主题分类法。新增主题只需在本文件追加一个条目，无需修改任何代码。",
+  "topics": [
+    {
+      "id": "ai-agent",
+      "name": "AI Agent",
+      "name_zh": "AI 智能体",
+      "keywords": ["agent", "multi-agent", "framework", "harness", "coding agent", "memory", "orchestration", "evaluation", "autonomous", "tool use"],
+      "languages": ["Python", "TypeScript", "Go"],
+      "description": "多智能体、框架、运行底座、编码智能体、记忆、编排与评估"
+    },
+    {
+      "id": "agent-skills",
+      "name": "Agent Skills",
+      "name_zh": "智能体技能",
+      "keywords": ["skills", "AGENTS.md", "claude skill", "codex skill", "registry", "distribution", "skill package", "prompt package"],
+      "languages": ["Markdown", "TypeScript", "Python"],
+      "description": "技能包、AGENTS.md、Claude/Codex 技能、注册中心与分发机制"
+    },
+    {
+      "id": "mcp-tools",
+      "name": "MCP & Tools",
+      "name_zh": "MCP 与工具",
+      "keywords": ["mcp", "model context protocol", "server", "client", "browser automation", "dev tools", "tool calling", "workflow automation", "plugin"],
+      "languages": ["TypeScript", "Python", "Rust"],
+      "description": "MCP 服务端/客户端、浏览器自动化、开发工具、工具调用与工作流自动化"
+    },
+    {
+      "id": "knowledge-engineering",
+      "name": "Knowledge Engineering",
+      "name_zh": "知识工程",
+      "keywords": ["rag", "knowledge graph", "graphrag", "knowledge management", "research automation", "document intelligence", "retrieval", "vector database", "embedding"],
+      "languages": ["Python", "TypeScript"],
+      "description": "RAG、知识图谱、GraphRAG、知识管理、研究自动化与文档智能"
+    },
+    {
+      "id": "learning-education",
+      "name": "Learning & Education",
+      "name_zh": "学习与教育",
+      "keywords": ["ai tutor", "ai education", "interactive learning", "technical docs", "course generation", "learning experience", "edtech", "spaced repetition"],
+      "languages": ["TypeScript", "Python"],
+      "description": "AI 导师、AI 教育、交互式学习、技术文档、课程生成与学习体验"
+    },
+    {
+      "id": "graphics-rendering",
+      "name": "Graphics & Rendering",
+      "name_zh": "图形与渲染",
+      "keywords": ["gpu", "webgpu", "vulkan", "3d rendering", "game engine", "procedural graphics", "computer vision", "shader", "ray tracing", "renderer"],
+      "languages": ["Rust", "C++", "TypeScript", "GLSL"],
+      "description": "GPU、WebGPU、Vulkan、3D 渲染、游戏引擎、程序化图形与计算机视觉"
+    },
+    {
+      "id": "extensions",
+      "name": "Extensions",
+      "name_zh": "扩展观察域",
+      "keywords": ["video generation", "multimodal", "world model", "embodied ai", "robotics", "developer productivity", "software architecture", "diffusion", "simulation"],
+      "languages": ["Python", "TypeScript", "C++"],
+      "description": "视频生成、多模态、世界模型、具身智能、机器人、开发者效率与软件架构"
+    }
+  ]
+}

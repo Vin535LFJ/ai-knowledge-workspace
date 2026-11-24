@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "KCR Stage 2 · change-proposal（变更提案）",
+  "description": "D13 设计文档 §Stage2 的机器契约。逐项 action ∈ {add, modify, deprecate, reverify}；deprecate 保留 ID 改 status 加 note（evidence-and-claims 硬规则 5）。human_decision 在 Stage 3 前必须为 null（AI 不预填）。",
+  "type": "object",
+  "required": ["proposal_id", "impact_report", "items", "ai_recommendation", "human_decision"],
+  "properties": {
+    "proposal_id": { "type": "string", "pattern": "^KCR-\\d{4}-\\d{2}-\\d{3}$" },
+    "impact_report": { "type": "string", "description": "Stage 1 产出的 impact-report 文件路径" },
+    "items": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["item_id", "action", "target", "evidence", "affected", "rationale", "version_note"],
+        "properties": {
+          "item_id": { "type": "string" },
+          "action": { "type": "string", "enum": ["add", "modify", "deprecate", "reverify"] },
+          "target": {
+            "type": "object",
+            "required": ["layer"],
+            "properties": {
+              "layer": { "type": "string", "enum": ["claim", "concept", "lesson", "quiz", "course", "source"] },
+              "id": { "type": "string", "description": "既有项 id（modify/deprecate/reverify 必填）" },
+              "id_draft": { "type": "string", "description": "新增项草稿 id（add 用）" }
+            }
+          },
+          "content": { "type": "string", "description": "add/modify 的新文本或 diff 说明" },
+          "evidence": {
+            "type": ["array", "string"],
+            "description": "来源证据（source_id + locator 或说明）"
+          },
+          "default_status": { "type": "string", "enum": ["open", "conditional"], "description": "add 时 AI 生成内容默认 open（evidence-and-claims 硬规则）" },
+          "conditions": { "type": "array", "items": { "type": "string" } },
+          "affected": {
+            "type": "object",
+            "properties": {
+              "concepts": { "type": "array", "items": { "type": "string" } },
+              "lessons": { "type": "array", "items": { "type": "string" } },
+              "quizzes": { "type": "array", "items": { "type": "string" } }
+            }
+          },
+          "rationale": { "type": "string" },
+          "version_note": { "type": "string" },
+          "from_status": { "type": "string", "description": "reverify 用：现状态" },
+          "to_status_requested": { "type": "string", "description": "reverify 用：申请目标状态" }
+        }
+      }
+    },
+    "ai_recommendation": { "type": "string", "description": "仅供参考，非裁决" },
+    "human_decision": {
+      "type": ["object", "null"],
+      "description": "Stage 3 人工填写；Stage 2 提交时必须为 null",
+      "properties": {
+        "reviewer": { "type": "string" },
+        "date": { "type": "string" },
+        "decisions": { "type": "array", "items": { "type": "object" } },
+        "overall": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "project_id": "basic-project",
+  "name": "Basic Project",
+  "description": "最小普通软件项目示例，证明治理工具包无 Render_Notes 知识结构依赖。",
+  "version": "0.1.0",
+  "owner": "human",
+  "doc_root": ".",
+  "state_dir": ".governance",
+  "doc_levels": ["L1", "L2", "L3"],
+  "lifecycles": {
+    "general": ["draft", "proposed", "under_review", "approved", "active", "superseded", "archived"],
+    "change_proposal": ["draft", "proposed", "approved", "implementing", "verifying", "completed", "archived"],
+    "adr": ["proposed", "accepted", "deprecated", "superseded"]
+  },
+  "registries": {
+    "document": "document-registry.json",
+    "task": "task-registry.json",
+    "agent": "agent-registry.json",
+    "adr": "adr-index.json"
+  },
+  "adapters": ["generic"],
+  "created_at": "2026-11-19",
+  "updated_at": "2026-11-19"
+}

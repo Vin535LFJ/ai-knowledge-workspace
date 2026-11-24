@@ -1,0 +1,622 @@
+{
+  "version": "1.0",
+  "updated": "2026-11-24",
+  "note": "来源登记表。种子来源来自现有验真队列与知识库中已引用过的权威文档；新增来源须填写 accessed 并可被 claim 引用。AI 生成内容不得自动标为 verified。",
+  "sources": [
+    {
+      "id": "SRC-ANDROID-MEDIACODEC",
+      "title": "Android MediaCodec API 文档",
+      "url": "https://developer.android.com/reference/android/media/MediaCodec",
+      "type": "official_doc",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "V01"
+      ]
+    },
+    {
+      "id": "SRC-FFMPEG-DOC",
+      "title": "FFmpeg 文档与教材（PTS/DTS、音视频同步）",
+      "url": "https://ffmpeg.org/documentation.html",
+      "type": "official_doc",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "V03",
+        "V10",
+        "V16"
+      ]
+    },
+    {
+      "id": "SRC-KHRONOS-OES",
+      "title": "OpenGL ES GL_TEXTURE_EXTERNAL_OES 扩展规范",
+      "url": "https://registry.khronos.org/OpenGL/extensions/OES/OES_EGL_image_external.txt",
+      "type": "spec",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "V04"
+      ]
+    },
+    {
+      "id": "SRC-AHARDWAREBuffer-EGLImage",
+      "title": "Android AHardwareBuffer 与 EGLImage 资料",
+      "url": "https://developer.android.com/reference/android/hardware/HardwareBuffer",
+      "type": "official_doc",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "V05"
+      ]
+    },
+    {
+      "id": "SRC-KHRONOS-GLES32",
+      "title": "OpenGL ES 3.2 Specification",
+      "url": "https://registry.khronos.org/OpenGL/specs/es/3.2/es_spec_3.2.pdf",
+      "type": "spec",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "V06"
+      ]
+    },
+    {
+      "id": "SRC-GPU-PIPELINE-BP",
+      "title": "GPU pipeline best practice docs（DrawCall 与状态切换）",
+      "url": "https://developer.nvidia.com/",
+      "type": "official_doc",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "V07"
+      ]
+    },
+    {
+      "id": "SRC-KTX2-SPEC",
+      "title": "KTX 2.0 Specification",
+      "url": "https://registry.khronos.org/KTX/specs/2.0/ktxspec.v2.html",
+      "type": "spec",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "V08"
+      ]
+    },
+    {
+      "id": "SRC-BASIS-UNIVERSAL",
+      "title": "Basis Universal 文档",
+      "url": "https://github.com/BinomialLLC/basis_universal",
+      "type": "official_doc",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "V08"
+      ]
+    },
+    {
+      "id": "SRC-W3C-WEBGPU",
+      "title": "W3C WebGPU Specification",
+      "url": "https://www.w3.org/TR/webgpu/",
+      "type": "spec",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "V09"
+      ]
+    },
+    {
+      "id": "SRC-ITU-H264",
+      "title": "ITU-T H.264 Specification",
+      "url": "https://www.itu.int/rec/T-REC-H.264",
+      "type": "spec",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "V11"
+      ]
+    },
+    {
+      "id": "SRC-YUV420-DERIVATION",
+      "title": "YUV420 相对 RGBA8888 空间节省的数学推导",
+      "url": "repo:01-基础理论/音视频基础理论.md",
+      "type": "derivation",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "V12"
+      ]
+    },
+    {
+      "id": "SRC-FOURCC-REF",
+      "title": "FOURCC pixel format references（NV12/NV21）",
+      "url": "https://www.fourcc.org/",
+      "type": "official_doc",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "V02"
+      ]
+    },
+    {
+      "id": "SRC-RN-AV-BASE",
+      "title": "AI Knowledge-to-Learning Engine 音视频基础理论（主知识文档）",
+      "url": "repo:01-基础理论/音视频基础理论.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "V13",
+        "V14",
+        "V16",
+        "V25",
+        "V26"
+      ]
+    },
+    {
+      "id": "SRC-MEDIA3-SEEK",
+      "title": "Android Media3/ExoPlayer 官方 Troubleshooting（精准 seek 静默解码）",
+      "url": "https://developer.android.com/media/media3/exoplayer/troubleshooting",
+      "type": "official_doc",
+      "accessed": "2026-11-19",
+      "used_by_claims": [
+        "V15"
+      ]
+    },
+    {
+      "id": "SRC-RN-DECODE-PIPELINE",
+      "title": "AI Knowledge-to-Learning Engine 解码与播放链路（主知识文档）",
+      "url": "repo:02-解码与播放链路/解码与播放链路.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-19",
+      "used_by_claims": [
+        "V15",
+        "V45"
+      ]
+    },
+    {
+      "id": "SRC-RN-VERIFICATION",
+      "title": "AI Knowledge-to-Learning Engine 验真队列与术语表",
+      "url": "repo:00-导航与索引/验真队列与术语表.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05",
+        "C06",
+        "C07",
+        "P01",
+        "P02",
+        "P03",
+        "P04",
+        "P05",
+        "P06",
+        "V27",
+        "V28"
+      ]
+    },
+    {
+      "id": "SRC-RN-CONCEPT-INTRO",
+      "title": "AI Knowledge-to-Learning Engine 概念引入说明",
+      "url": "repo:00-导航与索引/概念引入说明.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "E01",
+        "E02",
+        "E03",
+        "E04"
+      ]
+    },
+    {
+      "id": "SRC-VULKAN-SPEC",
+      "title": "Vulkan Specification（RenderPass/Subpass）",
+      "url": "https://registry.khronos.org/vulkan/specs/latest/html/vkspec.html",
+      "type": "spec",
+      "accessed": "2026-11-18",
+      "used_by_claims": [
+        "E04"
+      ]
+    },
+    {
+      "id": "SRC-RN-3D-TRANSFORM",
+      "title": "AI Knowledge-to-Learning Engine 3D 变换与坐标空间（主知识文档）",
+      "url": "repo:07-3D渲染与算法实现/3D变换与坐标空间.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-19",
+      "used_by_claims": [
+        "V17",
+        "V18",
+        "V19",
+        "V20"
+      ]
+    },
+    {
+      "id": "SRC-RN-COLORMGMT",
+      "title": "AI Knowledge-to-Learning Engine 色彩管理与采样滤波（主知识文档）",
+      "url": "repo:03-图形与GPU工程/色彩管理与采样滤波.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V21",
+        "V22",
+        "V23",
+        "V24",
+        "V47",
+        "V48"
+      ]
+    },
+    {
+      "id": "SRC-RN-GPU-BASE",
+      "title": "AI Knowledge-to-Learning Engine GPU 与渲染引擎基础与链路（主知识文档）",
+      "url": "repo:03-图形与GPU工程/GPU与渲染引擎基础与链路.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V29",
+        "V30",
+        "V31",
+        "V32",
+        "V34",
+        "V35",
+        "V43",
+        "V44",
+        "V45",
+        "V52"
+      ]
+    },
+    {
+      "id": "SRC-RN-GRAPHICS",
+      "title": "AI Knowledge-to-Learning Engine 图形与 GPU 工程（主知识文档）",
+      "url": "repo:03-图形与GPU工程/图形与GPU工程.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V33"
+      ]
+    },
+    {
+      "id": "SRC-RN-INTERVIEW-GL",
+      "title": "AI Knowledge-to-Learning Engine 车载渲染面试题库 · OpenGL 管线 FBO 与离屏渲染（06-面试知识库）",
+      "url": "repo:06-面试知识库/车载渲染引擎/01-OpenGL管线-FBO与离屏渲染.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V34"
+      ]
+    },
+    {
+      "id": "SRC-RN-RASDEPTH",
+      "title": "AI Knowledge-to-Learning Engine 光栅化、深度与移动 GPU 架构（主知识文档）",
+      "url": "repo:03-图形与GPU工程/光栅化深度与移动GPU架构.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V36",
+        "V37",
+        "V38"
+      ]
+    },
+    {
+      "id": "SRC-RN-EXPLICIT-API",
+      "title": "AI Knowledge-to-Learning Engine 显式 API 与同步原语（主知识文档）",
+      "url": "repo:04-跨平台与高性能架构/显式API与同步原语.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V39",
+        "V40",
+        "V41",
+        "V42"
+      ]
+    },
+    {
+      "id": "SRC-RN-INTERVIEW-VK",
+      "title": "AI Knowledge-to-Learning Engine 车载渲染面试题库 · Vulkan 与显式 API 对照",
+      "url": "repo:06-面试知识库/车载渲染引擎/02-Vulkan与显式API对照.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V39",
+        "V40",
+        "V41",
+        "V42"
+      ]
+    },
+    {
+      "id": "SRC-RN-LIGHTING",
+      "title": "AI Knowledge-to-Learning Engine 光照、材质与阴影（主知识文档）",
+      "url": "repo:07-3D渲染与算法实现/光照材质与阴影.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V46",
+        "V47",
+        "V60",
+        "V61",
+        "V62"
+      ]
+    },
+    {
+      "id": "SRC-RN-IMGALGO",
+      "title": "AI Knowledge-to-Learning Engine GPU 图像处理算法（主知识文档）",
+      "url": "repo:07-3D渲染与算法实现/GPU图像处理算法.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V49",
+        "V67"
+      ]
+    },
+    {
+      "id": "SRC-RN-BATCHING",
+      "title": "AI Knowledge-to-Learning Engine 批处理与 GPU 驱动管线（主知识文档）",
+      "url": "repo:07-3D渲染与算法实现/批处理与GPU驱动管线.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V50"
+      ]
+    },
+    {
+      "id": "SRC-RN-PRACTICE",
+      "title": "AI Knowledge-to-Learning Engine 项目实战指南（主知识文档）",
+      "url": "repo:05-项目实战/项目实战指南.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V51",
+        "V52",
+        "V53",
+        "V54"
+      ]
+    },
+    {
+      "id": "SRC-RN-ADAS",
+      "title": "AI Knowledge-to-Learning Engine 智驾渲染方案（主知识文档）",
+      "url": "repo:04-跨平台与高性能架构/智驾渲染方案.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V52"
+      ]
+    },
+    {
+      "id": "SRC-RN-INTERVIEW-LIST",
+      "title": "AI Knowledge-to-Learning Engine 车载渲染引擎面试速问速答清单",
+      "url": "repo:06-面试知识库/车载渲染引擎/00-面试速问速答清单.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V54",
+        "V55"
+      ]
+    },
+    {
+      "id": "SRC-RN-JOURNEY",
+      "title": "AI Knowledge-to-Learning Engine 一帧画面的探索之旅（叙事版知识地图）",
+      "url": "repo:00-导航与索引/一帧画面的探索之旅.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V54"
+      ]
+    },
+    {
+      "id": "SRC-RN-GAPS",
+      "title": "AI Knowledge-to-Learning Engine 知识缺口登记表",
+      "url": "repo:00-导航与索引/知识缺口登记表.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V56"
+      ]
+    },
+    {
+      "id": "SRC-RN-PROCEDURAL",
+      "title": "AI Knowledge-to-Learning Engine 程序化几何与旋转曲面（主知识文档）",
+      "url": "repo:07-3D渲染与算法实现/程序化几何与旋转曲面.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-20",
+      "used_by_claims": [
+        "V57",
+        "V58",
+        "V59"
+      ]
+    },
+    {
+      "id": "SRC-ANDROID-HDR",
+      "title": "Android Open Source Project · HDR video（官方播放/发现/管线要求）",
+      "url": "https://source.android.com/docs/core/display/hdr",
+      "type": "official_doc",
+      "accessed": "2026-11-21",
+      "used_by_claims": [
+        "V66",
+        "V65"
+      ]
+    },
+    {
+      "id": "SRC-ANDROID-MIXED-SDR-HDR",
+      "title": "Android Open Source Project · Mixed SDR and HDR composition（libtonemap/SDR dimming）",
+      "url": "https://source.android.com/docs/core/display/mixed-sdr-hdr",
+      "type": "official_doc",
+      "accessed": "2026-11-21",
+      "used_by_claims": [
+        "V66",
+        "V67"
+      ]
+    },
+    {
+      "id": "SRC-ITU-BT2100",
+      "title": "ITU-R BT.2100-3 (2025/02) · HDR-TV 图像参数（PQ/HLG 双系统）",
+      "url": "https://www.itu.int/rec/R-REC-BT.2100/en",
+      "type": "spec",
+      "accessed": "2026-11-21",
+      "used_by_claims": [
+        "V63",
+        "V64",
+        "V23"
+      ]
+    },
+    {
+      "id": "SRC-ITU-BT2408",
+      "title": "ITU-R BT.2408-3 (2019) 报告 · HDR 电视运营实践（PQ→BT.709 发灰/tone mapping 定义）",
+      "url": "https://www.itu.int/dms_pub/itu-r/opb/rep/R-REP-BT.2408-3-2019-MSW-E.docx",
+      "type": "official_doc",
+      "accessed": "2026-11-21",
+      "used_by_claims": [
+        "V67"
+      ]
+    },
+    {
+      "id": "SRC-UHDF-BLUEBOOK",
+      "title": "Ultra HD Forum Blue Book v3.2.0 · Ultra HD 制作与后期（PQ10/HLG10/HDR10 定义与元数据）",
+      "url": "https://ultrahdforum.org/wp-content/uploads/BlueBook-Ultra_HD_Production_and_Post_Production_3.2.0.pdf",
+      "type": "official_doc",
+      "accessed": "2026-11-21",
+      "used_by_claims": [
+        "V63",
+        "V65",
+        "V23"
+      ]
+    },
+    {
+      "id": "SRC-COLOUR-ST2084",
+      "title": "colour-science 官方文档 · eotf_ST2084（ST 2084:2014 常数/Barten 模型/100nit doctest）",
+      "url": "https://colour.readthedocs.io/en/v0.3.13/generated/colour.models.eotf_ST2084.html",
+      "type": "official_doc",
+      "accessed": "2026-11-21",
+      "used_by_claims": [
+        "V64"
+      ]
+    },
+    {
+      "id": "SRC-UPM-BT2100-TABLES",
+      "title": "UPM 硕士论文（PFC Miguel Prieto Losanez）· 逐字转载 BT.2100 Table 4/5（PQ 常数 + HLG OETF/gamma）",
+      "url": "https://oa.upm.es/48645/1/PFC_MIGUEL_PRIETO_LOSANEZ.pdf",
+      "type": "paper",
+      "accessed": "2026-11-21",
+      "used_by_claims": [
+        "V63",
+        "V64"
+      ]
+    },
+    {
+      "id": "SRC-RN-STREAMING",
+      "title": "AI Knowledge-to-Learning Engine 流媒体、HDR 与实时采集（主知识文档 §5）",
+      "url": "repo:02-解码与播放链路/流媒体与实时采集.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-21",
+      "used_by_claims": [
+        "V66",
+        "V67"
+      ]
+    },
+    {
+      "id": "SRC-RL-TEXTBOOK",
+      "title": "Robot_Learn textbook-embodied（具身智能教材 10 章，快照声明 2026-11-12，含 2026-11-14/17 增补）",
+      "url": "external-repo:Robot_Learn/knowledge/manual/textbook-embodied.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-24",
+      "used_by_claims": [
+        "V68",
+        "V69",
+        "V70",
+        "V71",
+        "V72",
+        "V73",
+        "V74",
+        "V79",
+        "V80",
+        "V81",
+        "V82",
+        "V83",
+        "V84"
+      ]
+    },
+    {
+      "id": "SRC-RL-PRINCIPLES",
+      "title": "Robot_Learn embodied-principles（6 章原理手册，authority=guide，快照 2026-11-17）",
+      "url": "external-repo:Robot_Learn/knowledge/manual/embodied-principles.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-24",
+      "used_by_claims": [
+        "V70",
+        "V71",
+        "V74",
+        "V83"
+      ]
+    },
+    {
+      "id": "SRC-RL-KB515",
+      "title": "Robot_Learn kb:5.15 原理深入（verified 块，机制与直觉，自动生成自 rerun/knowledge-base.md）",
+      "url": "external-repo:Robot_Learn/knowledge/content/embodied/ch05/5.15-5.15-原理深入(机制与直觉).md",
+      "type": "repo_doc",
+      "accessed": "2026-11-24",
+      "used_by_claims": [
+        "V70",
+        "V71",
+        "V72",
+        "V73",
+        "V74",
+        "V78",
+        "V79",
+        "V81"
+      ]
+    },
+    {
+      "id": "SRC-RL-KB516",
+      "title": "Robot_Learn kb:5.16 原理深挖（verified 块，运动学到策略学习，超出考纲声明）",
+      "url": "external-repo:Robot_Learn/knowledge/content/embodied/ch05/5.16-5.16-原理深挖-从运动学到策略学习(进阶,超出考纲).md",
+      "type": "repo_doc",
+      "accessed": "2026-11-24",
+      "used_by_claims": [
+        "V75",
+        "V76",
+        "V77",
+        "V78"
+      ]
+    },
+    {
+      "id": "SRC-RL-OPENLAB",
+      "title": "Robot_Learn embodied-openlab（生态选型+16 周路线，研究整理稿重排，未经独立核实声明+直查官方例外）",
+      "url": "external-repo:Robot_Learn/knowledge/manual/embodied-openlab.md",
+      "type": "repo_doc",
+      "accessed": "2026-11-24",
+      "used_by_claims": [
+        "V82"
+      ]
+    },
+    {
+      "id": "SRC-RL-KB-AUX",
+      "title": "Robot_Learn kb:5.1/5.3/5.5/5.8 辅助 verified 块（定义边界/六环/时空对齐/Sim2Real）",
+      "url": "external-repo:Robot_Learn/knowledge/content/embodied/ch05/",
+      "type": "repo_doc",
+      "accessed": "2026-11-24",
+      "used_by_claims": [
+        "V68",
+        "V69",
+        "V80"
+      ]
+    },
+    {
+      "id": "SRC-EXT-TOBIN2017",
+      "title": "Tobin et al., Domain Randomization for Transferring Deep Neural Networks from Simulation to the Real World (IROS 2017)",
+      "url": "https://arxiv.org/abs/1703.06907",
+      "type": "paper",
+      "accessed": "2026-11-24",
+      "used_by_claims": [
+        "V79"
+      ]
+    },
+    {
+      "id": "SRC-EXT-DAGGER2011",
+      "title": "Ross, Gordon & Bagnell, A Reduction of Imitation Learning and Structured Prediction to No-Regret Online Learning (AISTATS 2011, PMLR v15)",
+      "url": "https://proceedings.mlr.press/v15/ross11a.html",
+      "type": "paper",
+      "accessed": "2026-11-24",
+      "used_by_claims": [
+        "V78"
+      ]
+    },
+    {
+      "id": "SRC-EXT-MUJOCO-MJWARP",
+      "title": "MuJoCo 官方文档 MJWarp FAQ（GPU 确定性/float32 vs float64，google-deepmind/mujoco main）",
+      "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/doc/mjwarp/index.rst",
+      "type": "official_doc",
+      "accessed": "2026-11-24",
+      "used_by_claims": [
+        "V83"
+      ]
+    }
+  ]
+}
