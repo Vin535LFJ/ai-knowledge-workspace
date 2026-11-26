@@ -1,45 +1,41 @@
-# AI Knowledge 工作区快照（2026-11-26）
+# AI Knowledge 工作区（D22 统一收敛后，2026-11-26）
 
-> 用途：给外部专家评审用的**当前状态快照**。五个项目的**已提交**内容原样放进来（不含 git 历史，不含各仓被忽略的本机文件）。权威事实源是各自的代码仓与状态文档；本快照只是便于一次性浏览与评论。
->
-> 上一版快照（2026-11-24）用于外部 AI 复核；本版是刷新到最新已提交状态，供人工专家讨论"接下来该怎么做"。
+> **一个以知识为核心、由 AI 辅助生产和维护、以课程和学习网站为主要消费方式的知识管理与学习系统。**
+> 原五个项目已收敛为**两个仓库**（D22 决策）：核心系统 + 通用 Skills 来源库。整合证据与映射见核心仓 `docs/consolidation/`。
 
-## 一、五个目录与来源
+## 两个仓库
 
-| 目录 | 项目 | 本快照时的 commit | 正式远端 |
-|---|---|---|---|
-| `ai-knowledge-program/` | AI Knowledge Program（统筹层） | `ba35e4a`（18 笔） | 无（本地仓，PD-Q3 待决） |
-| `ai-knowledge-to-learning-engine/` | AI Knowledge-to-Learning Engine（**唯一主动开发主线**） | `3062b4a`（43 笔） | `Vin535LFJ/ai-knowledge-to-learning-engine` |
-| `matt-pocock-skills-zh-cn/` | Matt Pocock Skills 中文定制发行版 | `4e01df4`（142 笔） | `Vin535LFJ/matt-pocock-skills-zh-cn` |
-| `agent-workspace-governance/` | Agent Workspace Governance（维护期） | `7d9a187`（6 笔） | 无（本地仓） |
-| `github-project-radar/` | GitHub Project Radar（维护期） | `e2815d9`（5 笔） | 无（本地仓） |
+| 目录 | 职责 | 远端 |
+|---|---|---|
+| `ai-knowledge-to-learning-engine/` | **核心系统**：知识管理 + AI 辅助研究 + 证据核验 + 课程教材生产 + 离线学习站 + 内部治理（`.agent/`）+ 项目管理（`program/`）+ 外部研究入口（`integrations/github-radar/`）+ 归档（`legacy/`） | `Vin535LFJ/ai-knowledge-to-learning-engine` |
+| `matt-pocock-skills-zh-cn/` | **通用 Skills 来源库**：37 技能（发布 31）、双上游同步、4 处回填、多客户端分发 | `Vin535LFJ/matt-pocock-skills-zh-cn` |
 
-文件数：Program 31 · Engine 359 · Skills 162 · Governance 40 · Radar 39（合计 631）。
+原 Program / Governance / Radar 独立仓已退出使用：内容分别并入 `program/`、归档 `legacy/`、并入 `integrations/github-radar/`；原目录（含 git 历史）在 `C:\Users\Giant\Desktop\GITCODE\AI-Knowledge-backups\2026-11-26-consolidation\retired\`，bundle 恢复验证 PASS。
 
-## 二、只想花 30 分钟了解全貌，按这个顺序读
+## 30 分钟了解全貌
 
-1. **`ai-knowledge-program/NOW.md`** — 当前唯一主项目、阶段、当前任务、阻塞、下一步（只有 7 个字段，读完就知道现在卡在哪）
-2. `ai-knowledge-program/ROADMAP.md` — Now / Next / Later 阶段规划
-3. **`ai-knowledge-program/decisions/PENDING_DECISIONS.md`** — **需要人拍板的事**：PD-Q3、PD-Q4（仍待决）+ PD-Q9 至 PD-Q17（本轮新登记 9 项，均未批准），每项都有背景 / 影响 / 推荐方案 / 不处理的后果 / 是否阻塞
-4. `ai-knowledge-program/PARKING-LOT.md` — 明确**不做**的方向（范围控制记录）
-5. `ai-knowledge-program/plans/2026-11-25-stage-execution-report.md` + `plans/2026-11-25-stabilization-verification.md` — 上一轮做了什么、验证到什么程度（PASS WITH LIMITATIONS 没有被改写成 PASS）
-6. `ai-knowledge-program/AUDIT-REPORT.md` + `POST-AUDIT-SUMMARY.md` — 独立审计结论与真实状态纠偏
-7. **`ai-knowledge-to-learning-engine/reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md`** — **当前真正卡住的地方**：具身六课的人工验收材料（G1 21 条断言逐条依据与分类建议、G2 六课逐课依据与评分表、专项复核、审批登记顺序）。**所有裁决栏留空**
-8. `ai-knowledge-to-learning-engine/reviews/embodied-batch1/independent-review.md` + `recheck-planA-fixes.md` + `targeted-recheck.md` — 独立审读链（含"首轮审读报告因断网丢失"这一如实说明）
+1. **`ai-knowledge-to-learning-engine/README.md`** — 产品定位、能力、快速开始
+2. **`ai-knowledge-to-learning-engine/program/NOW.md`** — 当前主项目 / 阶段 / 任务 / 阻塞 / 下一步（七字段）
+3. `program/ROADMAP.md` + `program/decisions/PENDING_DECISIONS.md` — 规划与**需要人拍板的事**
+4. `docs/consolidation/TARGET-ARCHITECTURE.md` + `CONSOLIDATION-DECISIONS.md` — 为什么是这个结构
+5. **`reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md`** — 当前真正卡住的地方：具身六课人工验收（G1 21 条断言 / G2 评分 / 审批顺序），裁决栏全部留空
+6. `program/AUDIT-REPORT.md` + `program/audits/` — 独立审计与处置
 
-## 三、当前状态一句话
+## 当前状态一句话
 
-Engine 的端到端生产链已**真实跑通一次**（P10 done，2026-11-21）。本轮主线是第二批课程 `embodied-loop-journey` 的 6 课：已写完 → 独立审读 → 修复 → 复评（建议分 88/91/91/92/90/88，均过 85 线），**停在人工验收门前**：G1（断言升级）、G2（六课评分）、G3（审批）、KCR 四道门全部由人裁决，AI 不自评自批。周边三个项目进入维护期，只修缺陷、不扩功能。
+核心生产链已真实跑通一次（HDR 批 INTAKE→FEEDBACK done）；具身智能 6 课教材完成、停在人工验收门；D22 整合与多课程切换/检查点练习已上线并浏览器实测；门禁全绿（validate 20/0/0 · publish 33 · 105 claims 误标 0）。
 
-## 四、给专家的三个具体问题
+## 快速开始
 
-1. **具身六课的验收该按什么标准收口？** 验收包里的 G1 分级建议与 G2 十维度评分是否够用，还缺哪一类证据？
-2. **"单活跃线 + 三个项目维护期"的组织形态是否合理？** Governance 与 Engine 的文档类型口径不对齐（PD-Q14，真实 Engine 副本上 `validate` / `doctor` 均 exit 1），现在做映射还是等第二个真实项目？
-3. **仓库公开 vs 内部材料（PD-Q16）怎么取舍？** Engine 仓库为 Public，`reviews/`、`.agent/`、`.governance/` 等过程材料对外可见。
+```powershell
+cd ai-knowledge-to-learning-engine
+py -3 tools/build_site.py
+py -3 -m http.server 8791 --directory web
+# 打开 http://localhost:8791（或双击 web/index.html）
+```
 
-## 五、快照边界（重要）
+## 边界
 
-- 只含各仓**已跟踪**（已提交）文件：不含 git 历史，不含被 `.gitignore` 忽略的本机文件（Engine 的 `.agent/runs/` 运行态、`.workbuddy-ai/memory/`、Radar 的本地 `.db` 等）。
-- 三个本地仓（Program / Governance / Radar）没有 GitHub 远程；**本快照是它们目前唯一的远端副本**。
-- 2026-11-26 全部仓的提交作者已统一为 GitHub 身份 `Vin535LFJ <169535939+Vin535LFJ@users.noreply.github.com>`（公司邮箱已从公开历史移除，内容零改动），**所有旧 commit SHA 失效**；文档里出现的旧 SHA 指重写前的历史。
-- 本快照是**只读浏览副本**；要改动请回到五个仓本体。
+- 学习站 bundle 只含登记资产（发布边界 v2 默认拒绝）；内部审读/审批/运行态不进站点。
+- 在线发布未授权（D02）；公开仓可见性待用户裁决（PD-Q16）。
+- 快照仓 `Vin535LFJ/ai-knowledge-workspace` 是扁平快照（无子仓历史），仅供一次性浏览；权威事实源是上面两个仓。

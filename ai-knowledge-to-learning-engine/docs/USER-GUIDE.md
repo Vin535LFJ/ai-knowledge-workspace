@@ -406,22 +406,21 @@ frontmatter 与 tools/course.json 逐字一致；新断言登记 open/low；桥�
 
 ---
 
-## 8. 当前已知限制（审计实测，2026-11-23）
+## 8. 当前已知限制（2026-11-26 D22 整合后实测）
 
 1. **无资料导入工具**：INTAKE 靠人工清单；查重靠 `rg`。
-2. **单课程工具链**：validate §10 限制独立课程；多课程扩展未批准。
-3. **只有 5/19 课有 quiz**；7 个实验；无自动判分与学习分析。
-4. **反馈闭环为空**：`tools/feedback.json` entries=0，尚无真实反馈。
-5. **站点仅本地**：在线发布受 D02 未授权；GitHub Pages/Actions 未配置。
-6. **学习站混入内部文档**：`content.js` 当前包含 `DECISIONS.md`、`CHANGELOG.md`、`WORKFLOW_STATE.md`、`G2-审核材料-P6.md`、`教材质量诊断.md` 等（审计 P1-4）。
-7. **artifact hash 会过期**：run 记录的是登记时 hash；18 条中 7 条与现状不符（审读修复后未重登记）。
-8. **人工门身份不可独立验证**：approver 是字符串；无签名/独立审批文件。
-9. **README 数字过期**：仍写 26 篇/124 术语/19 课/31 断言/16 来源（实际 83 docs/129/20/84/43）。
-10. **两套站点**：`web/` 主用；`site-vitepress/` 构建受阻。
-11. **具身课程刚起步**：`RUN-2026-11-23-embodied-batch1` 在 RESEARCH，尚无教材。
-12. **开发者文档会进学习者 bundle**：本文件位于 `docs/`，下一次 `build_site.py` 会把它计入（83→84 篇）。若不想让使用指南出现在学习站，需在 `tools/publish_boundary.py` 排除 `docs/`（审计 P1-4 的一部分，属代码改动，需批准）。
+2. **站点仅本地**：在线发布受 D02 未授权；GitHub Pages/Actions 未配置。
+3. **反馈闭环为空**：`tools/feedback.json` entries=0，尚无真实反馈。
+4. **Radar 摄取端未接通**：导出契约就绪，但 Engine 侧无消费代码；真实库 human_selected=0；真实库 schema 升级待 PD-Q15。
+5. **人工门身份不可独立验证**：approver 是字符串；审批哈希证据链（approval_chain）可验文件版本，但无数字签名。
+6. **历史 run 哈希过期如实标注**：HDR run 6 个产物哈希与现状不符（后续编辑所致），审批链标 legacy/unverifiable；embodied run 24 个产物哈希全部有效。
+7. **Skills 运行时验证有限**：QwenWork 2 技能部分验证（会话重建后）；其余 35 技能/其他宿主未验证；全新会话未测。
+8. **公开仓含内部过程材料**：reviews/、.agent/、program/ 等在 Public 仓可见（PD-Q16 待用户裁决；学习站 bundle 已强制排除）。
+9. **两套站点**：`web/` 主用（零依赖）；`site-vitepress/` 在线镜像源（构建可用，发布未授权）。
+
+已修复（不再是限制）：多课程工具链（independent 命名空间 + 课程切换 UI）、quiz 全覆盖（11 份 38 题嵌入站点、选择判分/简答展开）、发布边界 v2 强制（内部文档不进 bundle）、README 数字对齐、具身 6 课教材完成（run 停 REVIEW 等人工裁决）。
 
 ---
 
-**最后验证**：2026-11-23，Engine `79c3fe8`（工作树 10 个未提交：D21 笔误修正 + embodied INTAKE）。
-**最近更新**：2026-11-23。
+**最后验证**：2026-11-26，D22 整合批次（validate 20/0/0 · publish 33 · 105 claims 误标 0 · 浏览器课程切换/quiz 实测通过）。
+**最近更新**：2026-11-26。

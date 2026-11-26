@@ -11,6 +11,11 @@
 __pycache__/
 .DS_Store
 
+# D22 consolidation: Radar local data & generated research output never enter git.
+integrations/github-radar/*.db
+integrations/github-radar/*.db-journal
+integrations/github-radar/research/
+
 # VitePress online site: only sources (package.json / .vitepress/config.mjs / README) are committed.
 site-vitepress/docs/
 site-vitepress/node_modules/

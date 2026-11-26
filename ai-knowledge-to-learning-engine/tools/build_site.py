@@ -607,6 +607,16 @@ def build_payload() -> dict:
                 if cdata.get("id") != course.get("id"):
                     courses_payload.append(cdata)
 
+    # D22 P0：quiz 检查点 payload（lesson id -> quiz）。与 course.json 同类的结构性
+    # 站点数据，逐个必须是已登记 site-data，否则构建失败（默认拒绝）。
+    quizzes_payload = {}
+    if courses_dir.exists():
+        for qf in sorted(courses_dir.glob("*/quizzes/*.json")):
+            qdata = load_site_data(qf.relative_to(ROOT).as_posix())
+            lid = qdata.get("lesson")
+            if lid:
+                quizzes_payload[lid] = qdata
+
     payload = {
         "generatedAt": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "repo": REPO_URL,
@@ -616,6 +626,7 @@ def build_payload() -> dict:
         "glossary": glossary,
         "course": course,
         "courses": courses_payload,
+        "quizzes": quizzes_payload,
         "labs": labs,
         "graph": graph,
         "curated": curated,

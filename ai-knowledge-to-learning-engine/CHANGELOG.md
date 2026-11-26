@@ -4,6 +4,19 @@
 > 权威口径见 `DECISIONS.md`；当前阶段见 `WORKFLOW_STATE.md`。
 > P5 + Part B 执行期间遵循 D09（不 commit/push）；2026-11-18 用户新授权 commit + push 到 origin/master，见文末"git 提交"段与 DECISIONS.md D09 更新。
 
+## 2026-11-26 · D22 项目群统一收敛（用户任务书授权：五项目 → 两仓）
+
+- **备份先行**：六仓 git bundle + ignored 数据 + SHA256 清单 + 恢复验证 **6/6 PASS**（AI-Knowledge-backups/2026-11-26-consolidation/）；原 Program/Governance/Radar 目录移入备份区 retired/（不删除，HEAD 完好）。
+- **并入**：Program 31 文件 → program/；Governance 40 文件 → legacy/agent-workspace-governance/（归档）；Radar 43 文件 → integrations/github-radar/（修 research.py 默认输出锚定模块根 + 测试断言更新）；Engine .governance/ 双轨残留 git mv → legacy/governance-engine-adaptation-20261121/。逐文件 git hash-object 保真验证（除 2 处有意修改外 0 差异）。
+- **Embed**：governance check_frontier/detect_dependency_cycles 改编并入 tools/run_state.py（new 拒绝依赖环、advance 校验依赖前沿 done），selftest 25→**28/28**。
+- **P0 多课程切换 + 检查点练习**：build_site 新增 quizzes payload（11 份 site-data 登记强制）；app.js 课程切换条（3 课程）+ 跨课程课时索引 + quiz 交互（选择判分/简答展开）；validate 新增 e1b quizzes 核对；publish 回归 32→**33**。浏览器实测 8 场景通过（reviews/consolidation-qa-course-switch-20261126.json）：切换/判分/展开/返回链/360px 无溢出/零报错。
+- **发布边界**：program/ legacy/ integrations/ 列入 NON_ASSET_PARTS（扫描层排除）+ 回归断言；docs/consolidation 8 份登记 excluded-internal。
+- **文档治理**：README 重写（当日实测数字）；AGENTS.md 新指针；program/NOW 重写、PROGRAM §4 结构更新、ROADMAP 审计指针补做、文档索引路径更新（135 链接 0 broken）；11-24 审计档案补做（program/audits/，GPT 原报告原文保存）；docs/USER-GUIDE §8 限制清单更新；工作区根 README 更新为两仓导航。
+- **Skills 仓**（独立一笔）：AGENT-COMPATIBILITY 更正注记（14/7→31/22 等）、in-progress 安装命令改本仓 slug、USER-GUIDE 锚点注记、本地记忆更正注记；两校验脚本 exit 0。
+- **门禁终态**：build 91 docs/673 cards/3152 KB · validate **20/0/0** · publish **33 OK** · 105 claims（24v/74o/7c）误标 0 · arc 0 FAIL · Floor OK · selftest 16/28/15 · radar 58 · governance 归档 41。
+- **人工门不变**：embodied run 仍 REVIEW/paused（24 artifacts 哈希全有效）；G1/G2/G3/KCR 等用户；AI 未升级断言、未填分、未代批。
+- **决策与证据**：DECISIONS D22；docs/consolidation/（ASSET-INVENTORY / REQUIREMENT-COVERAGE / TARGET-ARCHITECTURE / MIGRATION-MAP / CONSOLIDATION-DECISIONS / FINAL-ACCEPTANCE-REPORT + 三份审计）。
+
 ## 2026-11-26 · 提交作者统一重写（用户批准：公司邮箱不得作为公开仓作者）
 
 - **授权**：用户 2026-11-26 指令「提交的作者不能用公司邮箱，应该用项目 GitHub 的项目作者」，并批准全部重写方案（含公开仓强推授权）。

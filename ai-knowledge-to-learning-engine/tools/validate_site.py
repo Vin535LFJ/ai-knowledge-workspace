@@ -745,6 +745,22 @@ if PUBLISH_REGISTRY is not None:
         if "course" in bundle and publish_boundary.policy_for("tools/course.json", R) != "site-data":
             fail("[publish] embedded payload 'course' comes from unregistered site-data: tools/course.json")
 
+        # e1b. D22 P0：quizzes payload 必须恰覆盖磁盘全部 quiz 文件，且逐个为已登记 site-data。
+        disk_quizzes: dict[str, str] = {}
+        for qf in sorted((ROOT / "courses").glob("*/quizzes/*.json")):
+            qd = load_json(qf)
+            if qd and qd.get("lesson"):
+                disk_quizzes[str(qd["lesson"])] = qf.relative_to(ROOT).as_posix()
+        bundle_quizzes = bundle.get("quizzes")
+        if not isinstance(bundle_quizzes, dict):
+            fail("[publish] bundle missing quizzes payload（检查点练习未呈现）— run py -3 tools/build_site.py")
+        else:
+            if set(bundle_quizzes) != set(disk_quizzes):
+                fail(f"[publish] quizzes payload != disk quiz files (missing={sorted(set(disk_quizzes) - set(bundle_quizzes))}, extra={sorted(set(bundle_quizzes) - set(disk_quizzes))})")
+            for lid, rel in sorted(disk_quizzes.items()):
+                if publish_boundary.policy_for(rel, R) != "site-data":
+                    fail(f"[publish] quiz {rel} embedded but not registered site-data")
+
         # e2. 精选数据（curated-data，2026-11-25）：嵌入集合必须恰等于注册表登记、哈希可追溯；
         #     文档级证据引用只能指向精选来源注册表（claim-ledger 等内部数据永远不在其中）。
         curated_registered = {rel for rel, asset in R["_by_path"].items() if asset["policy"] == "curated-data"}

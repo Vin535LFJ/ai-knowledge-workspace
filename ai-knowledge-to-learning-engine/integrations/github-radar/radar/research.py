@@ -6,9 +6,14 @@
 
 import os
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any, Dict
 
 from .storage import Storage
+
+# D22 并入 Engine：默认输出锚定模块根（integrations/github-radar/research/），
+# 不再依赖 CWD，避免从 Engine 根运行时把研究模板写进核心仓根目录。
+MODULE_ROOT = Path(__file__).resolve().parent.parent
 
 SECTIONS = [
     ("Executive Summary", "执行摘要"),
@@ -31,12 +36,12 @@ def render_research_template(
     repo: Dict[str, Any],
     evaluation: Dict[str, Any],
     research_objective: str = "",
-    output_dir: str = "research",
+    output_dir: str | None = None,
 ) -> Dict[str, Any]:
     """渲染单个项目的研究模板，返回 {filename, markdown, path?}。
 
-    默认输出到 research/owner__repo.md（文件名 = safe_name + '.md'）；
-    传入 output_dir 可覆盖该默认路径。
+    默认输出到模块根 research/owner__repo.md（文件名 = safe_name + '.md'）；
+    传入 output_dir 可覆盖该默认路径（相对路径按 CWD 解析，调用方自行负责）。
     """
     full_name = repo.get("full_name", "unknown/unknown")
     safe_name = full_name.replace("/", "__")
@@ -74,7 +79,7 @@ def render_research_template(
     filename = f"{safe_name}.md"
     result = {"filename": filename, "markdown": md, "path": None}
     if output_dir is None:
-        output_dir = "research"
+        output_dir = str(MODULE_ROOT / "research")
     if output_dir:
         os.makedirs(output_dir, exist_ok=True)
         path = os.path.join(output_dir, filename)
@@ -85,7 +90,7 @@ def render_research_template(
 
 
 def render_from_candidate(
-    storage: Storage, candidate_id: int, output_dir: str = "research"
+    storage: Storage, candidate_id: int, output_dir: str | None = None
 ) -> Dict[str, Any]:
     """根据候选 id 从库中组装仓库与评分数据并渲染模板。"""
     row = None

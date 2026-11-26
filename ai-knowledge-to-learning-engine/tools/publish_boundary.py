@@ -57,6 +57,9 @@ NON_ASSET_PARTS = frozenset({
     ".github",             # D15
     ".governance",         # 2026-11-24：治理产物
     "reviews",             # 2019-11-19：治理/审核材料，不进学习站
+    "program",             # D22：项目级管理层（内部决策/审计/交接），不进学习站
+    "legacy",              # D22：归档区（Governance 整仓 + 旧适配产物），不进学习站
+    "integrations",        # D22：外部研究入口模块（代码/数据/文档），不进学习站
     ".qoder-input-images", # 工具输入缓存
 })
 NON_ASSET_FILES = frozenset({"CLAUDE.md", "AGENTS.md"})  # D15：根适配入口是指针

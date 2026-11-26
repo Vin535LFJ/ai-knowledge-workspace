@@ -4,7 +4,7 @@ type: adapter
 status: active
 owner: qwenwork
 created: 2026-11-19
-updated: 2026-11-25
+updated: 2026-11-26
 related_adr: [ADR-0001]
 generated: false
 ---
@@ -20,3 +20,7 @@ generated: false
 - **文档有效性**：先查 `.agent/indexes/document-registry.json`，不遍历仓库猜测
 - **人工关卡**：`reviews/DECISION_REQUIRED.md`（未答复不视为同意）
 - **决策**：`DECISIONS.md`（历史索引）+ `.agent/decisions/`（MADR）
+- **项目管理**（目标 / 优先级 / 待决 / 交接）：`program/NOW.md` → `program/ROADMAP.md` → `program/decisions/PENDING_DECISIONS.md`（D22 并入，原独立 Program 仓已退出）
+- **外部项目发现**（GitHub 候选 / 人工批准 / 导出）：`integrations/github-radar/INTEGRATION.md`（只读研究入口，不自动导入知识）
+- **归档区**（Governance 工具包 / 旧适配产物，只读不维护）：`legacy/README.md`
+- **整合决策与验收**（D22 结构 / 映射 / 证据）：`docs/consolidation/TARGET-ARCHITECTURE.md`

@@ -7,7 +7,7 @@
   "default": "deny",
   "owner": "human",
   "created": "2026-11-19",
-  "updated": "2026-11-25",
+  "updated": "2026-11-26",
   "approved": "2026-11-24 用户批准学习站发布政策（审计整改 TASK 2；advisory 模式废除）",
   "note": "强制发布边界 v2：默认拒绝（default=deny），所有发布资产逐个登记，不放行整个目录。archive/ 依 D10.4 保留在离线站只读发布（offline-read-only：不进默认搜索与课程导航，不自动扩大为公开在线站点）；evidence/ 与 knowledge-model/ 为资产级精选登记（curated-data 嵌入 payload，excluded-internal 只登记不发布）。内部文档（DECISIONS/CHANGELOG/WORKFLOW_STATE/reviews/.agent/.governance/课程根审核材料）只登记不发布。未登记资产进入可发布空间 = build 与 validate 双双 FAIL。切换回 advisory 或批量放行目录需人工裁决。",
   "policies": {
@@ -496,6 +496,106 @@
     {
       "path": "courses/embodied-loop-journey/README.md",
       "policy": "public"
+    },
+    {
+      "path": "docs/consolidation/ASSET-INVENTORY.md",
+      "policy": "excluded-internal",
+      "reason": "D22 整合盘点（内部审计材料）"
+    },
+    {
+      "path": "docs/consolidation/REQUIREMENT-COVERAGE.md",
+      "policy": "excluded-internal",
+      "reason": "D22 需求对照（内部审计材料）"
+    },
+    {
+      "path": "docs/consolidation/TARGET-ARCHITECTURE.md",
+      "policy": "excluded-internal",
+      "reason": "D22 架构决策（内部决策材料）"
+    },
+    {
+      "path": "docs/consolidation/audit-governance.md",
+      "policy": "excluded-internal",
+      "reason": "只读审计报告（内部审读材料）"
+    },
+    {
+      "path": "docs/consolidation/audit-radar.md",
+      "policy": "excluded-internal",
+      "reason": "只读审计报告（内部审读材料）"
+    },
+    {
+      "path": "docs/consolidation/audit-skills.md",
+      "policy": "excluded-internal",
+      "reason": "只读审计报告（内部审读材料）"
+    },
+    {
+      "path": "courses/embodied-loop-journey/quizzes/E01.json",
+      "policy": "site-data",
+      "reason": "D22 P0：课时检查点练习数据，build 显式嵌入"
+    },
+    {
+      "path": "courses/embodied-loop-journey/quizzes/E02.json",
+      "policy": "site-data",
+      "reason": "D22 P0：课时检查点练习数据，build 显式嵌入"
+    },
+    {
+      "path": "courses/embodied-loop-journey/quizzes/E03.json",
+      "policy": "site-data",
+      "reason": "D22 P0：课时检查点练习数据，build 显式嵌入"
+    },
+    {
+      "path": "courses/embodied-loop-journey/quizzes/E04.json",
+      "policy": "site-data",
+      "reason": "D22 P0：课时检查点练习数据，build 显式嵌入"
+    },
+    {
+      "path": "courses/embodied-loop-journey/quizzes/E05.json",
+      "policy": "site-data",
+      "reason": "D22 P0：课时检查点练习数据，build 显式嵌入"
+    },
+    {
+      "path": "courses/embodied-loop-journey/quizzes/E06.json",
+      "policy": "site-data",
+      "reason": "D22 P0：课时检查点练习数据，build 显式嵌入"
+    },
+    {
+      "path": "courses/video-rendering-journey/quizzes/L01.json",
+      "policy": "site-data",
+      "reason": "D22 P0：课时检查点练习数据，build 显式嵌入"
+    },
+    {
+      "path": "courses/video-rendering-journey/quizzes/L02.json",
+      "policy": "site-data",
+      "reason": "D22 P0：课时检查点练习数据，build 显式嵌入"
+    },
+    {
+      "path": "courses/video-rendering-journey/quizzes/L06.json",
+      "policy": "site-data",
+      "reason": "D22 P0：课时检查点练习数据，build 显式嵌入"
+    },
+    {
+      "path": "courses/video-rendering-journey/quizzes/L11.json",
+      "policy": "site-data",
+      "reason": "D22 P0：课时检查点练习数据，build 显式嵌入"
+    },
+    {
+      "path": "courses/video-rendering-journey/quizzes/L13.json",
+      "policy": "site-data",
+      "reason": "D22 P0：课时检查点练习数据，build 显式嵌入"
+    },
+    {
+      "path": "docs/consolidation/MIGRATION-MAP.md",
+      "policy": "excluded-internal",
+      "reason": "D22 迁移映射（内部决策材料）"
+    },
+    {
+      "path": "docs/consolidation/CONSOLIDATION-DECISIONS.md",
+      "policy": "excluded-internal",
+      "reason": "D22 逐项决策（内部决策材料）"
+    },
+    {
+      "path": "docs/consolidation/FINAL-ACCEPTANCE-REPORT.md",
+      "policy": "excluded-internal",
+      "reason": "D22 最终验收报告（内部审计材料）"
     }
   ]
 }

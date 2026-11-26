@@ -188,3 +188,13 @@
 - **工具链多课程最小扩展（报批中，WRITE 前需批准）**：validate §10 independent 课程命名空间 + build_site additive courses[] payload + publish-allowlist 08-具身智能。未批则首批先以知识文档形态产出。
 - **push 回执补记**：用户授权 7 笔已推（Engine e848d28..3115cad / Skills e1936f2..7326522，ls-remote 实测一致）；回执笔 79c3fe8 推送成功，ls-remote 复核初遇网络抖动、本会话重试成功（远端 master=79c3fe8 一致）。
 - **commit/push**：本批（笔误修正 + INTAKE）改动未提交，待授权。
+
+## D22 · 项目群统一收敛：方案 B（核心仓 + 独立 Skills 库）（2026-11-26）
+
+- **用户任务书授权**：允许合并/重建/归档/删除自有项目，前提是可靠备份与保留有价值资产；不要求维持五仓结构。
+- **决策**：采纳方案 B。核心仓沿用 ai-knowledge-to-learning-engine（保留历史与远端，不再重写作者）；Program 并入 `program/`；Governance 整仓归档至 `legacy/`（仅 Embed check_frontier/detect_dependency_cycles 填补 run_state 依赖检查空白）；Radar 并入 `integrations/github-radar/`（修 3 处路径假设，.db 保持 ignored）；Skills 库保留独立仓。依据：docs/consolidation/ 三份审计 + ASSET-INVENTORY + TARGET-ARCHITECTURE。
+- **备份先行**：六仓 bundle + ignored 数据 + SHA256 清单 + 恢复验证 6/6 PASS（AI-Knowledge-backups/2026-11-26-consolidation/）。原 Program/Governance/Radar 目录验证后移入备份区 retired/，不删除。
+- **双轨治理清除**：Engine 遗留 .governance/（183 条过时注册表）移入 legacy/；文档注册表与运行状态各只保留一套。
+- **P0 质量收口**：学习站多课程切换 + quiz 检查点呈现（此前 bundle 无 quiz payload、教材模式仅主课程）；文档与实测对齐。
+- **人工门不变**：embodied run 仍 REVIEW/paused，G1/G2/G3/KCR 等用户；AI 不升级断言、不填分、不代批。
+- **公开边界**：核心仓 Public 含内部材料为既有状态（PD-Q16 待决）；本机无 gh/API 凭据，可见性变更只能由用户操作；本轮不新增密钥/运行态入库。

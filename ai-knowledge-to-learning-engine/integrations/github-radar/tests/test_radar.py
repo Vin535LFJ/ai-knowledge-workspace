@@ -11,6 +11,7 @@ import os
 import sys
 import tempfile
 import unittest
+from pathlib import Path
 from datetime import datetime, timedelta, timezone
 
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -596,13 +597,17 @@ class SourceAdapterTests(unittest.TestCase):
 
 
 class ResearchPathTests(unittest.TestCase):
-    """深度研究默认输出 research/owner__repo.md。"""
+    """D22：默认输出锚定模块根 integrations/github-radar/research/（不再依赖 CWD）。"""
 
-    def test_default_output_dir_is_research(self):
+    def test_default_output_dir_is_module_root_research(self):
         import inspect
 
-        self.assertEqual(inspect.signature(render_research_template).parameters["output_dir"].default, "research")
-        self.assertEqual(inspect.signature(render_from_candidate).parameters["output_dir"].default, "research")
+        from radar.research import MODULE_ROOT
+
+        self.assertIsNone(inspect.signature(render_research_template).parameters["output_dir"].default)
+        self.assertIsNone(inspect.signature(render_from_candidate).parameters["output_dir"].default)
+        self.assertEqual(MODULE_ROOT.name, "github-radar")
+        self.assertEqual(MODULE_ROOT, Path(__file__).resolve().parent.parent)
 
     def test_filename_and_output_override(self):
         tmp = tempfile.TemporaryDirectory()

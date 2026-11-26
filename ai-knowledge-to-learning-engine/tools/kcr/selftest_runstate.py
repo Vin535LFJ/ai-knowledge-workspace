@@ -350,5 +350,61 @@ class CliTests(unittest.TestCase):
         self.assertEqual(p.returncode, 1)
 
 
+class DependencyTests(unittest.TestCase):
+    """D22：依赖环检测 + 依赖前沿（改编自 governance kit 纯函数，legacy/ 有出处）。"""
+
+    def test_cycle_detection_pure(self):
+        runs = [{"run_id": "A", "dependencies": ["B"]},
+                {"run_id": "B", "dependencies": ["C"]},
+                {"run_id": "C", "dependencies": ["A"]}]
+        cycles = rs._detect_dependency_cycles(runs)
+        self.assertEqual(len(cycles), 1)
+        self.assertEqual(sorted(cycles[0]), ["A", "B", "C"])
+        self.assertEqual(rs._detect_dependency_cycles([{"run_id": "A", "dependencies": []}]), [])
+        # 自环
+        self.assertEqual(rs._detect_dependency_cycles([{"run_id": "A", "dependencies": ["A"]}]), [["A"]])
+        # 未知依赖不参与环判定
+        self.assertEqual(rs._detect_dependency_cycles([{"run_id": "A", "dependencies": ["ghost"]}]), [])
+
+    def test_frontier_and_advance_gate(self):
+        with tempfile.TemporaryDirectory() as td:
+            runs = Path(td)
+            rs.new_run(runs, "RUN-dep-a", "tester")
+            rs.new_run(runs, "RUN-dep-b", "tester", dependencies=["RUN-dep-a"])
+            rs.start(runs, "RUN-dep-b")
+            art = Path(td) / "intake.md"
+            art.write_text("intake", encoding="utf-8")
+            rs.add_artifact(runs, "RUN-dep-b", str(art))
+            ready, unsat = rs.check_frontier(rs.load_run(runs, "RUN-dep-b"), runs)
+            self.assertFalse(ready)
+            self.assertEqual(unsat, ["RUN-dep-a"])
+            with self.assertRaises(rs.RunStateError) as ctx:
+                rs.advance(runs, "RUN-dep-b", reason="should block")
+            self.assertIn("依赖前沿未就绪", str(ctx.exception))
+            # 依赖 run 完成（测试夹具直接置 done，模拟其自身走完全流程）
+            fa = runs / "RUN-dep-a.json"
+            state_a = json.loads(fa.read_text(encoding="utf-8"))
+            state_a["status"] = "done"
+            fa.write_text(json.dumps(state_a, ensure_ascii=False), encoding="utf-8")
+            ready, unsat = rs.check_frontier(rs.load_run(runs, "RUN-dep-b"), runs)
+            self.assertTrue(ready)
+            self.assertEqual(unsat, [])
+            state_b = rs.advance(runs, "RUN-dep-b", reason="dep done")
+            self.assertEqual(state_b["phase"], "RESEARCH")
+
+    def test_new_run_rejects_cyclic_state(self):
+        with tempfile.TemporaryDirectory() as td:
+            runs = Path(td)
+            rs.new_run(runs, "RUN-cyc-a", "tester")
+            # 手工把 a 的依赖指向即将创建的 b（模拟被篡改/外部编辑的运行态）
+            fa = runs / "RUN-cyc-a.json"
+            state_a = json.loads(fa.read_text(encoding="utf-8"))
+            state_a["dependencies"] = ["RUN-cyc-b"]
+            fa.write_text(json.dumps(state_a, ensure_ascii=False), encoding="utf-8")
+            with self.assertRaises(rs.RunStateError) as ctx:
+                rs.new_run(runs, "RUN-cyc-b", "tester", dependencies=["RUN-cyc-a"])
+            self.assertIn("依赖环拒绝", str(ctx.exception))
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

@@ -154,6 +154,60 @@ def _check_write_conflict(runs_dir: Path, write_paths: list[str], exclude_run: s
                                 "先等其 done 或 release-path")
 
 
+def _detect_dependency_cycles(runs: list[dict]) -> list[list[str]]:
+    """依赖环检测（三色 DFS）。改编自 governance kit detect_dependency_cycles
+    （legacy/agent-workspace-governance/cli/governance.py，D22 并入；对象口径改为 run_id/dependencies）。"""
+    graph = {}
+    for r in runs:
+        rid = r.get("run_id")
+        if rid:
+            graph[rid] = list(r.get("dependencies") or [])
+    known = set(graph)
+    graph = {k: [d for d in v if d in known] for k, v in graph.items()}
+    cycles: list[list[str]] = []
+    seen: set[tuple] = set()
+    WHITE, GRAY, BLACK = 0, 1, 2
+    color = {node: WHITE for node in graph}
+    stack: list[str] = []
+
+    def dfs(node: str) -> None:
+        color[node] = GRAY
+        stack.append(node)
+        for nxt in graph.get(node, []):
+            if color.get(nxt) == WHITE:
+                dfs(nxt)
+            elif color.get(nxt) == GRAY and nxt in stack:
+                cycle = stack[stack.index(nxt):]
+                key = tuple(sorted(cycle))
+                if key not in seen:
+                    seen.add(key)
+                    cycles.append(list(cycle))
+        stack.pop()
+        color[node] = BLACK
+
+    for node in list(graph):
+        if color.get(node) == WHITE:
+            dfs(node)
+    return cycles
+
+
+def check_frontier(state: dict, runs_dir: Path) -> tuple[bool, list[str]]:
+    """依赖前沿：依赖 run 必须 done 才算就绪。改编自 governance kit check_frontier
+    （legacy/agent-workspace-governance/cli/governance.py，D22 并入；就绪口径=run status done）。"""
+    unsatisfied = []
+    for dep in state.get("dependencies") or []:
+        ready = False
+        f = _run_file(runs_dir, dep)
+        if f.exists():
+            try:
+                ready = json.loads(f.read_text(encoding="utf-8")).get("status") == "done"
+            except (OSError, json.JSONDecodeError):
+                ready = False
+        if not ready:
+            unsatisfied.append(dep)
+    return (len(unsatisfied) == 0, unsatisfied)
+
+
 def new_run(runs_dir: Path, run_id: str, owner: str, *, title: str = "",
             dependencies: list[str] | None = None, write_paths: list[str] | None = None,
             gate: str | None = None, kcr: bool = False) -> dict:
@@ -168,6 +222,9 @@ def new_run(runs_dir: Path, run_id: str, owner: str, *, title: str = "",
     for d in deps:
         if not _run_file(runs_dir, d).exists():
             raise RunStateError(f"依赖 run 不存在：{d}")
+    cycles = _detect_dependency_cycles([{"run_id": run_id, "dependencies": deps}] + list(_iter_runs(runs_dir)))
+    if cycles:
+        raise RunStateError(f"依赖环拒绝：{cycles}（依赖必须构成 DAG，不得成环）")
     paths = [_norm_path(p) for p in (write_paths or [])]
     _check_write_conflict(runs_dir, paths, run_id)
     now = _now()
@@ -325,6 +382,9 @@ def advance(runs_dir: Path, run_id: str, *, reason: str = "", operator: str | No
     state = _mutate(runs_dir, run_id)
     if state["status"] != "running":
         raise RunStateError(f"advance 仅接受 running，当前 {state['status']}（paused→resume，failed→retry）")
+    ready, unsatisfied = check_frontier(state, runs_dir)
+    if not ready:
+        raise RunStateError(f"依赖前沿未就绪：{unsatisfied} 尚未 done，不能推进本 run（D22 依赖检查）")
     cur = state["phase"]
     if not any(a["phase"] == cur for a in state["artifacts"]):
         raise RunStateError(f"完成条件未满足：{cur} 还没有 artifact（{PHASE_INFO[cur][1]}）")

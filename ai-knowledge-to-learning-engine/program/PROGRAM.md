@@ -42,17 +42,20 @@ updated: 2026-11-25
 | Governance | 管理 Agent 协作过程、文档、任务和规范的机制 | 现阶段 = Engine 自有 `.agent/`；通用抽取暂缓 |
 | Program | 管理整个项目群的目标和优先级 | 本文件夹，只管项目级状态 |
 
-## 4. 目录结构（2026-11-19 实测，位置唯一权威）
+## 4. 目录结构（2026-11-26 D22 统一收敛后，位置唯一权威）
 
 ```
 C:\Users\Giant\Desktop\GITCODE\AI-Knowledge\
-├── ai-knowledge-program\               ← 统筹层（本仓库，仅本地 git；目标大小写名 AI-Knowledge-Program，可选改）
-├── ai-knowledge-to-learning-engine\    ← Engine（唯一活跃线；本地与 GitHub 均已改名 = Vin535LFJ/ai-knowledge-to-learning-engine）
-├── matt-pocock-skills-zh-cn\           ← Skills 来源库（本地与 GitHub 均已改名 = Vin535LFJ/matt-pocock-skills-zh-cn）
-├── agent-workspace-governance\         ← 维护期（本地 git，无远程；仅允许明确范围内的缺陷修复与必要可靠性验证，不扩展功能）
-└── github-project-radar\               ← 维护期（本地 git，无远程；仅允许明确范围内的缺陷修复与必要可靠性验证，不扩展功能）
+├── ai-knowledge-to-learning-engine\    ← 核心仓（唯一活跃线；= Vin535LFJ/ai-knowledge-to-learning-engine）
+│   ├── program\                        ← 统筹层（本目录，D22 并入；原独立仓退出）
+│   ├── integrations\github-radar\      ← 外部研究入口模块（D22 并入）
+│   ├── legacy\                         ← Governance 整仓归档 + 旧适配产物（只读不维护）
+│   └── docs\consolidation\             ← D22 决策/盘点/映射/审计/验收
+├── matt-pocock-skills-zh-cn\           ← Skills 来源库（独立仓 = Vin535LFJ/matt-pocock-skills-zh-cn）
+└── README.md                           ← 工作区导航（两仓）
 ```
 
+- **D22（2026-11-26）**：五项目 → 两仓。Program/Governance/Radar 原目录移入 `AI-Knowledge-backups\2026-11-26-consolidation\retired\`（bundle 恢复验证 PASS，不删除）。决策与映射：`../docs/consolidation/TARGET-ARCHITECTURE.md` / `MIGRATION-MAP.md`。
 - 2026-11-19：Render_Notes 自 `GITCODE\Render_Notes` 迁入（PD-002 收尾）；同日经用户批准**本地目录改名**为 `ai-knowledge-to-learning-engine` 与 `matt-pocock-skills-zh-cn`（Move-Item 成功，git 完好：Engine HEAD=`e848d28`、Skills HEAD=`e1936f2`；改名后门禁复跑 validate 11/0/0、37 claims 误标 0）。
 - **过渡态已消除（2026-11-20 T1 执行完成）**：本地目录、GitHub 仓库名、git remote 均为新名（remote set-url ×2 已执行，ls-remote 复核通过）；仓库 URL 引用已按迁移方案 Phase 2/4/5 集中更新（含品牌文案 + README 正式名）。旧 URL 重定向兜底不再依赖。详见 `plans/2026-11-19-rename-audit-and-migration.md`（status 已改 completed）。
 - 父文件夹本身不是 git 仓库；各子项目是独立仓库。任何再迁移必须先改本节 + 记 PD 决策。

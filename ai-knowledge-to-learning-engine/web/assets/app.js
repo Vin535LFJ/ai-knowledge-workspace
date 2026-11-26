@@ -80,6 +80,15 @@
   const LESSONS = COURSE.lessons || [];
   const LESSON_MAP = new Map(LESSONS.map((lesson) => [lesson.id, lesson]));
   const UNIT_MAP = new Map((COURSE.units || []).map((unit) => [unit.id, unit]));
+  // D22 P0：多课程索引。主课程在首位；pilot 子集复用 L## id，不覆盖主课程条目。
+  const COURSES = (DATA.courses && DATA.courses.length) ? DATA.courses : [COURSE];
+  const courseKeyOf = (c) => c.id || "main";
+  const COURSE_BY_KEY = new Map(COURSES.map((c) => [courseKeyOf(c), c]));
+  const LESSON_INDEX = new Map();
+  COURSES.forEach((c) => (c.lessons || []).forEach((lesson) => {
+    if (!LESSON_INDEX.has(lesson.id)) LESSON_INDEX.set(lesson.id, { lesson: lesson, course: c, key: courseKeyOf(c) });
+  }));
+  const QUIZZES = DATA.quizzes || {};
   const LABS = (DATA.labs && DATA.labs.labs) || [];
   const LAB_MAP = new Map(LABS.map((lab) => [lab.id, lab]));
   const PROGRESS_KEY = "rn-course-progress";
@@ -125,8 +134,9 @@
     return "#/glossary" + (termName ? "?term=" + encodeURIComponent(termName) : "");
   }
 
-  function courseRoute(lessonId) {
-    return "#/course" + (lessonId ? "/" + encodeURIComponent(lessonId) : "");
+  function courseRoute(lessonId, key) {
+    if (lessonId) return "#/course/" + encodeURIComponent(lessonId);
+    return "#/course" + (key && key !== "main" ? "?c=" + encodeURIComponent(key) : "");
   }
 
   function labRoute(labId) {
@@ -153,7 +163,10 @@
       const match = query.match(/(?:^|&)h=([^&]*)/);
       return { id: id, anchor: match ? match[1] : "" };
     }
-    if (raw === "course" || raw.startsWith("course?")) return { course: true };
+    if (raw === "course" || raw.startsWith("course?")) {
+      const cm = raw.match(/[?&]c=([^&]*)/);
+      return { course: true, courseKey: cm ? safeDecode(cm[1]) : "main" };
+    }
     if (raw.startsWith("course/")) return { course: true, lesson: safeDecode(raw.slice(7)) };
     if (raw === "lab" || raw.startsWith("lab?")) return { lab: true, labId: "" };
     if (raw.startsWith("lab/")) return { lab: true, labId: safeDecode(raw.slice(4)) };
@@ -502,9 +515,11 @@
     saveCourseProgress(list);
   }
 
-  function courseProgress() {
-    const done = getCourseProgress().filter((id) => LESSON_MAP.has(id)).length;
-    return { done: done, total: LESSONS.length, percent: LESSONS.length ? Math.round((done / LESSONS.length) * 100) : 0 };
+  function courseProgress(lessons) {
+    const list = lessons || LESSONS;
+    const ids = new Set(list.map((l) => l.id));
+    const done = getCourseProgress().filter((id) => ids.has(id)).length;
+    return { done: done, total: list.length, percent: list.length ? Math.round((done / list.length) * 100) : 0 };
   }
 
   /* ---------------- local feedback loop (no network, no auto-upload) ---------------- */
@@ -595,38 +610,44 @@
     }
   }
 
-  function nextLessonId(id) {
-    const index = LESSONS.findIndex((lesson) => lesson.id === id);
-    return index >= 0 && index < LESSONS.length - 1 ? LESSONS[index + 1].id : "";
+  function nextLessonId(id, lessons) {
+    const list = lessons || LESSONS;
+    const index = list.findIndex((lesson) => lesson.id === id);
+    return index >= 0 && index < list.length - 1 ? list[index + 1].id : "";
   }
 
-  function courseGraph() {
+  function courseGraph(course) {
+    const c = course || COURSE;
+    const lessons = c.lessons || [];
     const lines = ["graph LR"];
-    (COURSE.units || []).forEach((unit) => {
+    (c.units || []).forEach((unit) => {
       lines.push('  subgraph ' + unit.id + '["' + unit.title + '"]');
-      LESSONS.filter((lesson) => lesson.unit === unit.id).forEach((lesson) => {
+      lessons.filter((lesson) => lesson.unit === unit.id).forEach((lesson) => {
         lines.push('    ' + lesson.id + '["' + lesson.id + " " + lesson.title + '"]');
       });
       lines.push("  end");
     });
-    LESSONS.forEach((lesson) => {
+    lessons.forEach((lesson) => {
       (lesson.prerequisites || []).forEach((pre) => lines.push("  " + pre + " --> " + lesson.id));
     });
     return lines.join("\n");
   }
 
-  function renderCourse() {
+  function renderCourse(key) {
+    const course = COURSE_BY_KEY.get(key || "main") || COURSE;
+    const cKey = courseKeyOf(course);
+    const lessons = course.lessons || [];
     currentId = null;
     renderToken++;
-    document.title = "教材模式 · AI Knowledge-to-Learning Engine";
+    document.title = "教材模式 · " + (course.title || "AI Knowledge-to-Learning Engine");
     els.breadcrumb.innerHTML =
       '<span>AI Knowledge-to-Learning Engine</span><span class="crumb-sep">/</span><span class="crumb-current">教材模式</span>';
 
-    const progress = courseProgress();
-    const next = LESSONS.find((lesson) => !isLessonDone(lesson.id)) || LESSONS[0];
-    const unitsHtml = (COURSE.units || [])
+    const progress = courseProgress(lessons);
+    const next = lessons.find((lesson) => !isLessonDone(lesson.id)) || lessons[0];
+    const unitsHtml = (course.units || [])
       .map((unit) => {
-        const cards = LESSONS.filter((lesson) => lesson.unit === unit.id)
+        const cards = lessons.filter((lesson) => lesson.unit === unit.id)
           .map(
             (lesson) =>
               '<a class="lesson-card' + (isLessonDone(lesson.id) ? " done" : "") + '" href="' + courseRoute(lesson.id) + '">' +
@@ -646,20 +667,32 @@
       })
       .join("");
 
+    // D22 P0：课程切换条（全部课程可达，不依赖搜索或特殊路径）
+    const switchHtml =
+      '<nav class="course-switch no-term" aria-label="课程切换">' +
+      COURSES.map((c) => {
+        const k = courseKeyOf(c);
+        const n = (c.lessons || []).length;
+        return '<a class="course-switch-chip' + (k === cKey ? " active" : "") + '" href="' + courseRoute(null, k) + '">' +
+          escapeHtml(c.title || k) + "<small>" + n + " 课</small></a>";
+      }).join("") +
+      "</nav>";
+
     els.content.innerHTML =
+      switchHtml +
       '<section class="course-hero no-term">' +
       '<span class="hero-eyebrow">教材模式 · 按认知顺序学习</span>' +
-      "<h1>从“是什么”走到“为什么”</h1>" +
-      "<p>现有文档是知识资产，教材模式只负责重排阅读顺序：每课明确前置、目标、阅读步骤、关键术语和自检题。</p>" +
+      "<h1>" + (cKey === "main" ? "从“是什么”走到“为什么”" : escapeHtml(course.title || cKey)) + "</h1>" +
+      "<p>" + escapeHtml(course.subtitle || "每课明确前置、目标、阅读步骤、关键术语和自检题。") + "</p>" +
       '<div class="course-progress"><div class="course-progress-bar"><span style="width:' + progress.percent + '%"></span></div>' +
       "<span>已完成 " + progress.done + " / " + progress.total + " 课（" + progress.percent + "%）</span></div>" +
       (next ? '<a class="course-continue" href="' + courseRoute(next.id) + '">继续学习：' + escapeHtml(next.id + " " + next.title) + " →</a>" : "") +
       "</section>" +
       '<section class="course-map no-term"><h2>学习依赖图</h2>' +
-      '<pre><code class="language-mermaid">' + escapeHtml(courseGraph()) + "</code></pre></section>" +
+      '<pre><code class="language-mermaid">' + escapeHtml(courseGraph(course)) + "</code></pre></section>" +
       unitsHtml;
 
-    els.tocNav.innerHTML = (COURSE.units || [])
+    els.tocNav.innerHTML = (course.units || [])
       .map((unit) => '<a class="toc-link level-2" href="#unit-' + escapeHtml(unit.id) + '" data-target="unit-' + escapeHtml(unit.id) + '">' + escapeHtml(unit.title) + "</a>")
       .join("");
     els.tocNav.querySelectorAll("a").forEach((link) => {
@@ -669,23 +702,45 @@
         if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
       });
     });
-    els.tocFooter.textContent = LESSONS.length + " 课 · 进度自动保存在本地";
+    els.tocFooter.textContent = lessons.length + " 课 · 进度自动保存在本地";
 
     enhanceCode(els.content, renderToken);
     window.scrollTo({ top: 0, behavior: "auto" });
     updateProgress();
   }
 
+  function quizSectionHtml(quiz) {
+    const items = (quiz.questions || []).map((q) => {
+      const claims = (q.claim_ids || []).map((c) => '<span class="quiz-claim">' + escapeHtml(c) + "</span>").join("");
+      if (q.type === "choice") {
+        const opts = (q.options || []).map((opt, oi) =>
+          '<button type="button" class="quiz-option" data-quiz-option="' + oi + '" data-answer="' + Number(q.answer) + '">' +
+          '<span class="quiz-option-key">' + String.fromCharCode(65 + oi) + "</span><span>" + escapeHtml(opt) + "</span></button>").join("");
+        return '<li class="quiz-item" data-quiz="choice"><div class="quiz-prompt">' + escapeHtml(q.prompt) + "</div>" +
+          '<div class="quiz-options">' + opts + "</div>" +
+          '<div class="quiz-feedback" hidden></div><div class="quiz-claims">' + claims + "</div></li>";
+      }
+      return '<li class="quiz-item" data-quiz="short"><div class="quiz-prompt">' + escapeHtml(q.prompt) + "</div>" +
+        '<button type="button" class="quiz-reveal" data-quiz-reveal>显示参考答案</button>' +
+        '<div class="quiz-answer" hidden>' + escapeHtml(q.answer || "") + "</div>" +
+        '<div class="quiz-claims">' + claims + "</div></li>";
+    }).join("");
+    return '<section class="lesson-block no-term quiz-block"><h2>检查点练习</h2>' +
+      '<p class="quiz-hint">简答题先自己作答，再展开参考答案对照；选择题点击选项立即判分。练习结果不上传。</p>' +
+      '<ol class="quiz-list">' + items + "</ol></section>";
+  }
+
   function renderLesson(lessonId) {
-    const lesson = LESSON_MAP.get(lessonId);
-    if (!lesson) {
+    const meta = LESSON_INDEX.get(lessonId);
+    if (!meta) {
       renderCourse();
       return;
     }
+    const lesson = meta.lesson;
     currentId = null;
     renderToken++;
     document.title = lesson.id + " " + lesson.title + " · 教材模式";
-    const unit = UNIT_MAP.get(lesson.unit) || { title: "教材" };
+    const unit = (meta.course.units || []).find((u) => u.id === lesson.unit) || { title: "教材" };
     els.breadcrumb.innerHTML =
       '<span>教材模式</span><span class="crumb-sep">/</span>' +
       "<span>" + escapeHtml(unit.title) + "</span><span class=\"crumb-sep\">/</span>" +
@@ -694,7 +749,8 @@
     const done = isLessonDone(lesson.id);
     const prereqs = (lesson.prerequisites || [])
       .map((id) => {
-        const pre = LESSON_MAP.get(id);
+        const preEntry = LESSON_INDEX.get(id);
+        const pre = preEntry && preEntry.lesson;
         if (!pre) return "";
         const ok = isLessonDone(id);
         return '<a class="prereq-chip' + (ok ? " done" : "") + '" href="' + courseRoute(id) + '">' +
@@ -712,7 +768,8 @@
       .map((name) => '<a class="term-chip" href="' + glossaryRoute(name) + '">' + escapeHtml(name) + "</a>")
       .join("");
     const checkpoints = (lesson.checkpoint || []).map((q) => "<li>" + escapeHtml(q) + "</li>").join("");
-    const nextId = lesson.next || nextLessonId(lesson.id);
+    const quizHtml = QUIZZES[lesson.id] ? quizSectionHtml(QUIZZES[lesson.id]) : "";
+    const nextId = lesson.next || nextLessonId(lesson.id, meta.course.lessons || []);
     const labLinks = LABS.filter((lab) => lab.lesson === lesson.id)
       .map((lab) => '<a class="lesson-lab" href="' + labRoute(lab.id) + '">⌁ 打开实验：' + escapeHtml(lab.title) + "</a>")
       .join("");
@@ -723,7 +780,7 @@
       "<h1>" + escapeHtml(lesson.title) + "</h1>" +
       '<p class="lesson-question">核心问题：' + escapeHtml(lesson.question) + "</p>" +
       '<div class="lesson-meta"><span>' + lesson.minutes + " 分钟</span><span>" +
-      (done ? "已完成" : "未完成") + "</span><a href=\"" + courseRoute() + "\">← 课程地图</a></div>" +
+      (done ? "已完成" : "未完成") + "</span><a href=\"" + courseRoute(null, meta.key) + "\">← 课程地图</a></div>" +
       "</section>" +
       '<section class="lesson-block no-term"><h2>学习目标</h2><ol>' +
       (lesson.objectives || []).map((o) => "<li>" + escapeHtml(o) + "</li>").join("") +
@@ -734,6 +791,7 @@
       '<section class="lesson-block no-term"><h2>按顺序阅读</h2><ol class="reading-list">' + reading + "</ol></section>" +
       '<section class="lesson-block no-term"><h2>关键术语</h2><div class="lesson-terms">' + terms + "</div></section>" +
       '<section class="lesson-block no-term"><h2>学完自检</h2><ul>' + checkpoints + "</ul></section>" +
+      quizHtml +
       '<section class="lesson-actions no-term">' +
       labLinks +
       '<button type="button" class="lesson-toggle" data-lesson="' + escapeHtml(lesson.id) + '">' +
@@ -748,7 +806,15 @@
   }
 
   function lessonsForDoc(docId) {
-    return LESSONS.filter((lesson) => (lesson.reading || []).some((item) => item.doc === docId));
+    const out = [];
+    const seen = new Set();
+    COURSES.forEach((c) => (c.lessons || []).forEach((lesson) => {
+      if (!seen.has(lesson.id) && (lesson.reading || []).some((item) => item.doc === docId)) {
+        seen.add(lesson.id);
+        out.push(lesson);
+      }
+    }));
+    return out;
   }
 
   function labsForDoc(docId) {
@@ -3913,7 +3979,7 @@
     if (target.home) renderHome();
     else if (target.course) {
       if (target.lesson) renderLesson(target.lesson);
-      else renderCourse();
+      else renderCourse(target.courseKey || "main");
     } else if (target.glossary) renderGlossary(target.term);
     else if (target.graph) renderGraph(target.viewId);
     else if (target.tech) renderTechIndex();
@@ -3980,6 +4046,41 @@
       if (event.target.closest(".term")) hideTermTooltip(false);
     });
     els.content.addEventListener("click", (event) => {
+      // D22 P0：检查点练习交互（选择题判分 / 简答题参考答案展开）
+      const opt = event.target.closest("[data-quiz-option]");
+      if (opt) {
+        event.preventDefault();
+        const item = opt.closest(".quiz-item");
+        if (!item || item.dataset.answered) return;
+        item.dataset.answered = "1";
+        const chosen = Number(opt.dataset.quizOption);
+        const answer = Number(opt.dataset.answer);
+        const ok = chosen === answer;
+        opt.classList.add(ok ? "correct" : "wrong");
+        if (!ok) {
+          const right = item.querySelector('[data-quiz-option="' + answer + '"]');
+          if (right) right.classList.add("correct");
+        }
+        const fb = item.querySelector(".quiz-feedback");
+        if (fb) {
+          fb.hidden = false;
+          fb.textContent = ok ? "回答正确。" : "正确答案是 " + String.fromCharCode(65 + answer) + "。";
+          fb.classList.add(ok ? "ok" : "no");
+        }
+        item.querySelectorAll(".quiz-option").forEach((b) => { b.disabled = true; });
+        return;
+      }
+      const reveal = event.target.closest("[data-quiz-reveal]");
+      if (reveal) {
+        event.preventDefault();
+        const item = reveal.closest(".quiz-item");
+        const ans = item && item.querySelector(".quiz-answer");
+        if (ans) {
+          ans.hidden = !ans.hidden;
+          reveal.textContent = ans.hidden ? "显示参考答案" : "收起参考答案";
+        }
+        return;
+      }
       const toggle = event.target.closest("[data-lesson]");
       if (toggle) {
         event.preventDefault();

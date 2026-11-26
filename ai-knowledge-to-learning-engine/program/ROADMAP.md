@@ -31,9 +31,12 @@ updated: 2026-11-25
 - 首批验收后：embodied 课程扩到 12–19 课（源材料够，见盘点）；或按用户裁决转其他领域（gpu/procedural/ai-engineering journey）。
 - 研究队列闭合（C1–C7/U1–U3/P07）+ G2 历史评分清零 + 源笔误修正。
 - LXD 成熟化持续从真实页面迭代提炼（Skill 已 active，不建独立仓库）。两个真实案例：教材页 L13、交互实验页 transform-mvp。
-- 审计整改：2026-11-24 第一批中 TASK 0 推送、TASK 1 Program 一致性、TASK 2 Engine 发布边界强制化均已完成；**TASK 3 审计档案归档未执行**（会话中断，`audits/2026-11-24-post-implementation-audit/` 目录不存在，待执行）。2026-11-25 任务书六项执行结论见 `plans/2026-11-25-stage-execution-report.md`。
+- 审计整改：2026-11-24 第一批 TASK 0 推送、TASK 1 Program 一致性、TASK 2 Engine 发布边界强制化均已完成；**TASK 3 审计档案归档已补做（2026-11-26 D22）**：`audits/2026-11-24-post-implementation-audit/`（原报告原文 + 本机核实 + 处置表）。2026-11-25 任务书六项执行结论见 `plans/2026-11-25-stage-execution-report.md`。
+- **D22 统一收敛（2026-11-26）已完成**：五项目 → 两仓（核心仓 + Skills 库）；Program 并入 `program/`、Radar 并入 `integrations/github-radar/`、Governance 归档 `legacy/`；多课程切换 + 检查点练习上线（浏览器实测）。见 `../docs/consolidation/`。
 
-## LATER · Governance / Radar（已解冻验证，按需维护）
+## LATER · Governance / Radar（D22 后：归档 / 内部模块，按需维护）
+
+> **D22（2026-11-26）更新**：Governance 整仓归档至核心仓 `legacy/agent-workspace-governance/`（仅 check_frontier/detect_dependency_cycles 并入 run_state）；Radar 并入核心仓 `integrations/github-radar/`。以下历史段落保留原时间点口径，不再是当前结构描述。
 
 - **Governance**：2026-11-21 阶段 3 解冻执行——ENGINE 真实适配实跑（183 docs）+ IGNORE_DIRS 修复（`6aec3d3`+`1b4a880`）。**审计口径修正（2026-11-24）**：原称「9/9 验收」为文档自证，实际示例项目 doctor 不通过、真实项目 0 task/0 agent/0 ADR，独立审计判定 PARTIAL。此后**维护期**：仅修缺陷与可靠性验证（示例项目过 doctor、已有 AGENTS.md 的项目接入），不追加新功能；无第二个持续真实项目需求前不抽取。反向接入/独立抽取仍须 ADR + 用户批准。**P0 已修**（2026-11-25，`2ab2891`）：示例 doctor 退出码 0、init 接入已有 AGENTS.md 且幂等，41 tests；**2026-11-25 副本验证更正**：Engine 里已有被 git 跟踪的 `.governance/`（2026-11-21 适配写入，5 个文件）；在 Engine 副本上 `init` 安全且幂等、AGENTS.md 原文保留，但 `validate` exit 1、`doctor` exit 1（Engine 文档类型不在 13 类枚举、146 条登记为 unknown），原因是两套规范的类型口径未对齐，非 P0 回归（PD-Q14）。
 - **Radar**：2026-11-21 阶段 4 解冻执行——rest.py 匿名真实采集 121 仓 + 首份周报 + Intake 导出 1 条（`b7442da`）。**审计口径修正（2026-11-24）**：原称「200 快照」实为 20 秒内 4 次搜索（增长数据全空）；`analyze` 会覆盖人工复核状态、`--approved` 不写人工批准字段、导出物 `human_selected_for_research=false`，独立审计判定 PARTIAL。此后**维护期**：仅修 P0/P1 缺陷（人工状态保留/人工门字段/增长口径），不追加功能；PAT（PD-Q4）未申请、不自动导入 Engine；持续采集成为明确负担时再评估自动化。**P0 已修**（2026-11-25，`dbff9c7`）：analyze 不再覆盖人工状态、`--approved` 写入完整人工批准字段，58 tests；已在真实库的隔离副本上验证通过（2026-11-25：人工状态不被重置、批准幂等、非法转换被拒，58 tests）；真实库仍是修复前结构，升级待批（PD-Q15）。

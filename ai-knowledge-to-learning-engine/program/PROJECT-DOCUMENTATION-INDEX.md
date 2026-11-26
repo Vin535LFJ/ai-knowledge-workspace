@@ -4,7 +4,7 @@ type: doc-index
 status: active
 owner: qwenwork
 created: 2026-11-23
-updated: 2026-11-25
+updated: 2026-11-26
 ---
 
 # 全项目文档导航（PROJECT-DOCUMENTATION-INDEX）
@@ -17,11 +17,11 @@ updated: 2026-11-25
 | 项目 | 使用指南 | 快速开始 | 技术文档 | 测试说明 | 当前状态 |
 |---|---|---|---|---|---|
 | AI Knowledge Program | [USER-GUIDE.md](USER-GUIDE.md) | §4 启动 PM / §6 查状态 | [PROGRAM.md](PROGRAM.md) · [PROGRAM-MANAGER.md](PROGRAM-MANAGER.md) · [ROADMAP.md](ROADMAP.md) | 无自动化（文档层） | 审计 **PASS WITH LIMITATIONS** |
-| AI Knowledge-to-Learning Engine | [docs/USER-GUIDE.md](../ai-knowledge-to-learning-engine/docs/USER-GUIDE.md) | §2 Quick Start | [AGENTS.md](../ai-knowledge-to-learning-engine/AGENTS.md) · [DECISIONS.md](../ai-knowledge-to-learning-engine/DECISIONS.md) · [WORKFLOW_STATE.md](../ai-knowledge-to-learning-engine/WORKFLOW_STATE.md) | 指南 §2.5 + §6 | 审计 **PASS WITH LIMITATIONS**；P10 done |
-| Matt Pocock Skills 中文发行版 | [docs/USER-GUIDE.md](../matt-pocock-skills-zh-cn/docs/USER-GUIDE.md) | §6 安装 / §7 验证发现 | [SYNC.md](../matt-pocock-skills-zh-cn/SYNC.md) · [BACKPORTS.md](../matt-pocock-skills-zh-cn/BACKPORTS.md) · [AGENT-COMPATIBILITY.md](../matt-pocock-skills-zh-cn/AGENT-COMPATIBILITY.md) | 指南 §11（check-translation / audit-english） | 审计 **PASS WITH LIMITATIONS**；37 技能维护态；QwenWork 实机验证 **PARTIAL** |
-| Learning Experience Design | [USAGE.md](../ai-knowledge-to-learning-engine/.agent/skills/learning-experience-design/USAGE.md) | §7 标准流程 | [SKILL.md](../ai-knowledge-to-learning-engine/.agent/skills/learning-experience-design/SKILL.md) · `references/` | 指南 §10/§12（Floor + build/validate） | 审计 **PASS WITH LIMITATIONS**；1 个真实试点 |
-| Agent Workspace Governance | [docs/USER-GUIDE.md](../agent-workspace-governance/docs/USER-GUIDE.md) | §4 init / §15 迁移 | [README](../agent-workspace-governance/README.md) · [specification](../agent-workspace-governance/docs/specification.md) · [architecture](../agent-workspace-governance/docs/architecture.md) | 指南 §13（41 tests） | 审计 **PARTIAL** |
-| GitHub Project Radar | [docs/USER-GUIDE.md](../github-project-radar/docs/USER-GUIDE.md) | §7 首次运行 | [data-model](../github-project-radar/docs/data-model.md) · [engine-interface](../github-project-radar/docs/engine-interface.md) · [operating-guide](../github-project-radar/docs/operating-guide.md) | 指南 §7 + §19 | 审计 **PARTIAL** |
+| AI Knowledge-to-Learning Engine | [docs/USER-GUIDE.md](../docs/USER-GUIDE.md) | §2 Quick Start | [AGENTS.md](../AGENTS.md) · [DECISIONS.md](../DECISIONS.md) · [WORKFLOW_STATE.md](../WORKFLOW_STATE.md) | 指南 §2.5 + §6 | 审计 **PASS WITH LIMITATIONS**；P10 done |
+| Matt Pocock Skills 中文发行版 | [docs/USER-GUIDE.md](../../matt-pocock-skills-zh-cn/docs/USER-GUIDE.md) | §6 安装 / §7 验证发现 | [SYNC.md](../../matt-pocock-skills-zh-cn/SYNC.md) · [BACKPORTS.md](../../matt-pocock-skills-zh-cn/BACKPORTS.md) · [AGENT-COMPATIBILITY.md](../../matt-pocock-skills-zh-cn/AGENT-COMPATIBILITY.md) | 指南 §11（check-translation / audit-english） | 审计 **PASS WITH LIMITATIONS**；37 技能维护态；QwenWork 实机验证 **PARTIAL** |
+| Learning Experience Design | [USAGE.md](../.agent/skills/learning-experience-design/USAGE.md) | §7 标准流程 | [SKILL.md](../.agent/skills/learning-experience-design/SKILL.md) · `references/` | 指南 §10/§12（Floor + build/validate） | 审计 **PASS WITH LIMITATIONS**；1 个真实试点 |
+| Agent Workspace Governance | [docs/USER-GUIDE.md](../legacy/agent-workspace-governance/docs/USER-GUIDE.md) | §4 init / §15 迁移 | [README](../legacy/agent-workspace-governance/README.md) · [specification](../legacy/agent-workspace-governance/docs/specification.md) · [architecture](../legacy/agent-workspace-governance/docs/architecture.md) | 指南 §13（41 tests） | 审计 **PARTIAL** |
+| GitHub Project Radar | [docs/USER-GUIDE.md](../integrations/github-radar/docs/USER-GUIDE.md) | §7 首次运行 | [data-model](../integrations/github-radar/docs/data-model.md) · [engine-interface](../integrations/github-radar/docs/engine-interface.md) · [operating-guide](../integrations/github-radar/docs/operating-guide.md) | 指南 §7 + §19 | 审计 **PARTIAL** |
 
 ## 2. 审计与验收
 
@@ -31,7 +31,7 @@ updated: 2026-11-25
 | [POST-AUDIT-SUMMARY.md](POST-AUDIT-SUMMARY.md) | 审计后收口：已生成文档、验证结果、未解决问题、下一步 |
 | [plans/2026-11-25-stage-execution-report.md](plans/2026-11-25-stage-execution-report.md) | 发布边界收口 + 六项后续任务逐项判定、提交、待裁决与遗留 |
 | [plans/2026-11-25-stabilization-verification.md](plans/2026-11-25-stabilization-verification.md) | 人工验收与稳定化（2026-11-25）：验收包与专项复核结论、Radar 真实库副本验证、Governance Engine 副本接入、LXD 七实验回归、Skills 新证据、Git 同步审查 |
-| [../ai-knowledge-to-learning-engine/reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md](../ai-knowledge-to-learning-engine/reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md) | 六课人工验收包（Engine）：G1 V68–V87 裁决表、G2 六课评分表、专项复核、待批修复、审批登记顺序（裁决栏留空） |
+| [../reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md](../reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md) | 六课人工验收包（Engine）：G1 V68–V87 裁决表、G2 六课评分表、专项复核、待批修复、审批登记顺序（裁决栏留空） |
 | [final-acceptance-2026-11-21.md](final-acceptance-2026-11-21.md) | 六阶段总验收（历史记录；其中 Radar→Engine 第 4 项已被本次审计更正） |
 | [NOW.md](NOW.md) | 当前主目标与最近快照 |
 | [ROADMAP.md](ROADMAP.md) | NOW / NEXT / LATER / COMPLETED |
@@ -41,15 +41,15 @@ updated: 2026-11-25
 | 我想… | 去这里 |
 |---|---|
 | 启动一次 AI 会话并恢复上下文 | [Program USER-GUIDE §4/§5](USER-GUIDE.md) |
-| 跑一遍 Engine 的构建、门禁、本地站点 | [Engine USER-GUIDE §2](../ai-knowledge-to-learning-engine/docs/USER-GUIDE.md) |
-| 生产一篇新教材 | [Engine USER-GUIDE §3.5/§7-B](../ai-knowledge-to-learning-engine/docs/USER-GUIDE.md) |
-| 做知识变更影响分析（KCR） | [Engine USER-GUIDE §3.9](../ai-knowledge-to-learning-engine/docs/USER-GUIDE.md) |
-| 恢复中断的 Engine 任务 | [Engine USER-GUIDE §3.10/§7-E](../ai-knowledge-to-learning-engine/docs/USER-GUIDE.md) |
-| 安装 / 验证 Skills | [Skills USER-GUIDE §6–§8](../matt-pocock-skills-zh-cn/docs/USER-GUIDE.md) |
-| 同步上游 / 维护回填 | [Skills USER-GUIDE §11–§12](../matt-pocock-skills-zh-cn/docs/USER-GUIDE.md) |
-| 改一个学习页面 | [LXD USAGE §7/§11](../ai-knowledge-to-learning-engine/.agent/skills/learning-experience-design/USAGE.md) |
-| 给已有项目接治理 | [Governance USER-GUIDE §15](../agent-workspace-governance/docs/USER-GUIDE.md) |
-| 跑一次 GitHub 项目发现与周报 | [Radar USER-GUIDE §7–§14](../github-project-radar/docs/USER-GUIDE.md) |
+| 跑一遍 Engine 的构建、门禁、本地站点 | [Engine USER-GUIDE §2](../docs/USER-GUIDE.md) |
+| 生产一篇新教材 | [Engine USER-GUIDE §3.5/§7-B](../docs/USER-GUIDE.md) |
+| 做知识变更影响分析（KCR） | [Engine USER-GUIDE §3.9](../docs/USER-GUIDE.md) |
+| 恢复中断的 Engine 任务 | [Engine USER-GUIDE §3.10/§7-E](../docs/USER-GUIDE.md) |
+| 安装 / 验证 Skills | [Skills USER-GUIDE §6–§8](../../matt-pocock-skills-zh-cn/docs/USER-GUIDE.md) |
+| 同步上游 / 维护回填 | [Skills USER-GUIDE §11–§12](../../matt-pocock-skills-zh-cn/docs/USER-GUIDE.md) |
+| 改一个学习页面 | [LXD USAGE §7/§11](../.agent/skills/learning-experience-design/USAGE.md) |
+| 给已有项目接治理 | [Governance USER-GUIDE §15](../legacy/agent-workspace-governance/docs/USER-GUIDE.md) |
+| 跑一次 GitHub 项目发现与周报 | [Radar USER-GUIDE §7–§14](../integrations/github-radar/docs/USER-GUIDE.md) |
 | 判断某个项目现在能不能用 | [AUDIT-REPORT §B](AUDIT-REPORT.md) + 各指南「已知限制」 |
 
 ## 4. 阅读顺序建议

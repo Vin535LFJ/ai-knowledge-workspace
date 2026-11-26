@@ -442,7 +442,11 @@ class RealArtifactTests(unittest.TestCase):
     def test_internal_files_never_in_bundle(self):
         leaked = [p for p in INTERNAL_CANARIES if p in self.docs]
         self.assertEqual(leaked, [], f"内部文件泄露进学习站: {leaked}")
-        self.assertEqual([p for p in self.docs if p.startswith(("reviews/", ".agent/", ".governance/"))], [])
+        self.assertEqual([p for p in self.docs if p.startswith(("reviews/", ".agent/", ".governance/",
+                                                                "program/", "legacy/", "integrations/"))], [])
+        # D22：管理层/归档区/集成模块不是发布候选空间，扫描层面即排除
+        scanned = pb.scan_assets(ROOT)
+        self.assertEqual([p for p in scanned if p.startswith(("program/", "legacy/", "integrations/"))], [])
         for rel, policy in self.reg["_by_path"].items():
             if policy == "excluded-internal":
                 self.assertNotIn(rel, self.docs, rel)
@@ -525,6 +529,22 @@ class RealArtifactTests(unittest.TestCase):
                     bad.append(d.get("path"))
                     break
         self.assertEqual(bad, [], f"公式块内出现术语链接（会致 KaTeX 乱码）: {bad}")
+
+    def test_quizzes_payload_covers_disk(self):
+        # D22 P0：检查点练习必须嵌入 bundle（lesson id -> quiz），键必须是已知课时
+        quizzes = self.bundle.get("quizzes")
+        self.assertIsInstance(quizzes, dict)
+        disk = {}
+        for qf in sorted((ROOT / "courses").glob("*/quizzes/*.json")):
+            qd = json.loads(qf.read_text(encoding="utf-8"))
+            disk[qd["lesson"]] = qd
+        self.assertEqual(set(quizzes), set(disk), "quizzes payload 必须恰覆盖磁盘 quiz 文件")
+        self.assertIn("E01", quizzes)
+        self.assertIn("L01", quizzes)
+        lesson_ids = set()
+        for c in self.bundle.get("courses", []):
+            lesson_ids.update(l["id"] for l in c.get("lessons", []))
+        self.assertTrue(set(quizzes) <= lesson_ids, "quiz 键必须是课程契约中的课时 id")
 
     def test_registry_still_indexes_reviews(self):
         registry = ROOT / ".agent" / "indexes" / "document-registry.json"
