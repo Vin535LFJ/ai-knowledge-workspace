@@ -4,6 +4,16 @@
 > 权威口径见 `DECISIONS.md`；当前阶段见 `WORKFLOW_STATE.md`。
 > P5 + Part B 执行期间遵循 D09（不 commit/push）；2026-11-18 用户新授权 commit + push 到 origin/master，见文末"git 提交"段与 DECISIONS.md D09 更新。
 
+## 2026-11-26 · post-D22 定点修复批次（外部审核驱动，不重做架构）
+
+- **Pilot 课程上下文修复（真实导航缺陷）**：视频渲染 Pilot 复用主课程 L## ID 导致下一课/返回链按主课程走。修复 `web/assets/app.js`：课程上下文 `?c=<courseKey>` 贯穿 parseRoute / 课时查找 / renderLesson 的下一课、前置、返回链；前置不属于当前精选路径时按明确规则回退主课程；主课程路由不带 `?c` 行为不变。浏览器回归 3 场景全过（`reviews/consolidation-qa-pilot-context-20261126.json`）：Pilot L01→L02→**L06**→L11、Pilot L06 返回 Pilot 地图、主课程 L02→L03→L04 不受影响；零报错、360px 无溢出。
+- **永久回归门禁**：`tools/test_publish_boundary.py` 新增 pilot 上下文静态不变量 + 数据级 next 链断言，publish 33→**34**。
+- **文档状态漂移修正**：program/NOW.md（D22/Skills 已收口口径）；PENDING_DECISIONS（PD-Q10/Q13 核实关闭、PD-Q17 移出活跃、PD-Q12/Q14 随 Governance 归档转非活跃、Q9/Q11/Q15/Q16 保留）；RC/FAR/ASSET-INVENTORY/README 数字统一（registry **292**、runstate selftest **28**、唯一课时 **26** + Pilot 入口 **5**、bundle **3153 KB**）；FAR 追加 §8 补记。
+- **Radar 入口文档迁移**：`integrations/github-radar/README.md` 重写为 Engine 内部 Research Discovery 模块口径（与 INTEGRATION.md 一致），命令从 Engine 根运行，移除旧绝对路径/旧审计指针；AGENTS.md 更正与 rest.py 矛盾的"不发起网络请求"旧约束。
+- **验收包版本说明更正**：方案甲修复已含于提交 `ecab4b9`（原"未提交"表述过时）；G1 21 条断言仍 open/low、AI 建议分仍标注修复前评分，未替用户裁决。
+- **门禁终态**：validate 20/0/0 · publish 34 · 105 claims 误标 0 · arc 两门课程 0 FAIL · selftest 28/16/15 · Floor 6/6 · registry 292。
+- **保留待决（不代裁）**：PD-Q16 公开仓可见性（publish-allowlist 不控制 GitHub 文件可见性）；独立 CI 复核（无 workflows，本轮为本地实跑证据）。
+
 ## 2026-11-26 · D22 项目群统一收敛（用户任务书授权：五项目 → 两仓）
 
 - **备份先行**：六仓 git bundle + ignored 数据 + SHA256 清单 + 恢复验证 **6/6 PASS**（AI-Knowledge-backups/2026-11-26-consolidation/）；原 Program/Governance/Radar 目录移入备份区 retired/（不删除，HEAD 完好）。

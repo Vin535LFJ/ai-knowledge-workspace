@@ -23,8 +23,9 @@ updated: 2026-11-26
 ## 3. 当前任务
 
 1. **用户完成六课裁决**。材料：`../reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md`（G1 V68–V88 共 21 条、G2 六课评分表、专项复核、审批登记顺序）。裁决栏全部留空；AI 没有升级断言、没有填分。
-2. **D22 整合产物待提交/推送**：核心仓工作树含 program/ integrations/ legacy/ 并入、课程切换与 quiz UI、文档治理改动（分组提交方案见 `../docs/consolidation/MIGRATION-MAP.md`）。
-3. Skills 库过时文档修复（AGENT-COMPATIBILITY 旧数字、in-progress 安装命令等，审计清单 audit-skills.md §6）。
+2. **PD-Q 待决清单逐项裁决**（`decisions/PENDING_DECISIONS.md`）：活跃项 PD-Q3/Q4/Q9/Q11/Q15/Q16；PD-Q12/Q14 因 Governance 已归档转为非活跃（如重新启用再议）。
+
+> 已收口（不再是当前任务）：D22 整合产物已分组提交并推送（核心仓 HEAD `67ac3ec`、Skills `d6fa00f`，ls-remote 核实一致）；Skills 过时文档修复已随 `d6fa00f` 完成；**视频 pilot 课程上下文缺陷已修复**（路由/下一课/返回链贯穿 `?c=`，3 个浏览器回归场景通过，证据 `../reviews/consolidation-qa-pilot-context-20261126.json`）。
 
 ## 4. 阻塞问题（需人工，AI 不自批）
 
@@ -37,11 +38,11 @@ updated: 2026-11-26
 1. 用户读验收包，填 G1 裁决栏与 G2 评分。
 2. AI 按裁决更新台账与课文状态说明，重建并跑门禁，报结果。
 3. 用户确认文件不再改动后：登记审批 → G3 → KCR → resume → PUBLISH（本地口径，D02 约束在线发布）→ FEEDBACK → done。
-4. 穿插：D22 产物分组提交与推送（需授权）；Skills 全新会话确认；PD-Q9~Q16 逐项裁决。
+4. 穿插：Skills 全新会话确认；PD-Q 活跃项逐项裁决（Q3/Q4/Q9/Q11/Q15/Q16）。
 
 ## 6. 最近状态更新时间
 
-**2026-11-26 18:30**（D22 统一收敛执行完成：备份 6/6 PASS、三仓并入、双轨治理清除、多课程切换 + quiz 检查点上线并浏览器实测、门禁全绿）。逐日明细以 Engine `../CHANGELOG.md` / `../WORKFLOW_STATE.md` 为准。
+**2026-11-26 19:30**（外部审核定点修复批次：视频 pilot 课程上下文缺陷修复 + 3 浏览器回归通过；文档治理收口——NOW/PENDING 关闭 Q10/Q13/Q17、Q12/Q14 转非活跃，REQUIREMENT-COVERAGE/FINAL-ACCEPTANCE/README 数字与课时口径更正，Radar README/AGENTS 改为内部模块口径，验收包版本说明更正为 ecab4b9）。D22 统一收敛已于本日 earlier 完成（备份 6/6 PASS、三仓并入、多课程切换 + quiz 上线）。逐日明细以 Engine `../CHANGELOG.md` / `../WORKFLOW_STATE.md` 为准。
 
 ## 7. 关键状态文件链接
 

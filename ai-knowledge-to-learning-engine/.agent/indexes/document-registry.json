@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated_at": "2026-11-26T10:24:30+00:00",
+  "generated_at": "2026-11-26T11:55:53+00:00",
   "generator": "tools/build_document_registry.py",
   "total": 292,
   "counts_by_status": {
@@ -2655,9 +2655,9 @@
    "type": "project-state",
    "type_source": "heuristic",
    "status": "unregistered",
-   "owner": "\"github-project-radar\"",
+   "owner": "\"qwenwork\"",
    "created": "\"2026-11-19\"",
-   "updated": "\"2026-11-19\"",
+   "updated": "\"2026-11-26\"",
    "supersedes": [],
    "related_adr": [],
    "related_task": "",
@@ -2751,7 +2751,7 @@
    "type": "knowledge",
    "type_source": "heuristic",
    "status": "unregistered",
-   "owner": "\"github-project-radar\"",
+   "owner": "\"qwenwork\"",
    "created": "\"2026-11-19\"",
    "updated": "\"2026-11-26\"",
    "supersedes": [],

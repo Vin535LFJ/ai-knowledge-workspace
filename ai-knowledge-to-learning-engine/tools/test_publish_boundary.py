@@ -552,6 +552,31 @@ class RealArtifactTests(unittest.TestCase):
             self.skipTest("注册表尚未生成")
         self.assertIn("reviews/", registry.read_text(encoding="utf-8", errors="replace"), "文档注册表应继续索引 reviews/ 治理文档")
 
+    def test_pilot_course_context_navigation(self):
+        """回归：pilot 复用主课程 L## id，课程上下文必须贯穿路由/下一课/返回链。
+
+        证据：reviews/consolidation-qa-pilot-context-20261126.json（3 浏览器场景）。
+        此处守住代码不变量与数据级 next 链，防止修复被意外回退。
+        """
+        app = (ROOT / "web" / "assets" / "app.js").read_text(encoding="utf-8")
+        # 1) courseRoute 对非主课程课时链接携带 ?c=
+        self.assertIn('const suffix = key && key !== "main" ? "?c=" + encodeURIComponent(key) : "";', app)
+        self.assertIn('return "#/course/" + encodeURIComponent(lessonId) + suffix;', app)
+        # 2) parseRoute 的 course/<id> 分支读取课程上下文
+        self.assertIn('courseKey: cm ? safeDecode(cm[1]) : "main"', app)
+        # 3) renderLesson 接受课程参数并经课程感知解析
+        self.assertIn("function renderLesson(lessonId, courseKey)", app)
+        self.assertIn("function lessonMeta(lessonId, courseKey)", app)
+        # 4) 路由分发把课程上下文传入 renderLesson
+        self.assertIn('renderLesson(target.lesson, target.courseKey || "main")', app)
+        # 数据级：pilot 的 L02 下一课必须是 L06（精选路径），而非主课程的 L03
+        pilot = next((c for c in self.bundle.get("courses", [])
+                      if c.get("id") == "video-rendering-journey"), None)
+        self.assertIsNotNone(pilot, "bundle 应含 video-rendering-journey 课程")
+        by_id = {l["id"]: l for l in pilot.get("lessons", [])}
+        self.assertEqual(by_id["L02"].get("next"), "L06", "pilot L02 的下一课必须是 L06")
+        self.assertEqual([l["id"] for l in pilot["lessons"]], ["L01", "L02", "L06", "L11", "L13"])
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

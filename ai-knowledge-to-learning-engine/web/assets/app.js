@@ -95,6 +95,7 @@
   const FEEDBACK_KEY = "rn-feedback-queue";
 
   let currentId = null;
+  let currentCourseKey = "main";
   let renderToken = 0;
   let searchHits = [];
   let searchSelected = 0;
@@ -135,8 +136,11 @@
   }
 
   function courseRoute(lessonId, key) {
-    if (lessonId) return "#/course/" + encodeURIComponent(lessonId);
-    return "#/course" + (key && key !== "main" ? "?c=" + encodeURIComponent(key) : "");
+    // 课程上下文贯穿导航：非主课程的课时链接必须携带 ?c=<key>，
+    // 否则复用 L## id 的精选路径（pilot）会丢失课程上下文。
+    const suffix = key && key !== "main" ? "?c=" + encodeURIComponent(key) : "";
+    if (lessonId) return "#/course/" + encodeURIComponent(lessonId) + suffix;
+    return "#/course" + suffix;
   }
 
   function labRoute(labId) {
@@ -167,7 +171,13 @@
       const cm = raw.match(/[?&]c=([^&]*)/);
       return { course: true, courseKey: cm ? safeDecode(cm[1]) : "main" };
     }
-    if (raw.startsWith("course/")) return { course: true, lesson: safeDecode(raw.slice(7)) };
+    if (raw.startsWith("course/")) {
+      const question = raw.indexOf("?");
+      const path = question >= 0 ? raw.slice(0, question) : raw;
+      const query = question >= 0 ? raw.slice(question + 1) : "";
+      const cm = query.match(/(?:^|&)c=([^&]*)/);
+      return { course: true, lesson: safeDecode(path.slice(7)), courseKey: cm ? safeDecode(cm[1]) : "main" };
+    }
     if (raw === "lab" || raw.startsWith("lab?")) return { lab: true, labId: "" };
     if (raw.startsWith("lab/")) return { lab: true, labId: safeDecode(raw.slice(4)) };
     if (raw === "graph" || raw.startsWith("graph?")) return { graph: true, viewId: "" };
@@ -638,6 +648,7 @@
     const cKey = courseKeyOf(course);
     const lessons = course.lessons || [];
     currentId = null;
+    currentCourseKey = cKey;
     renderToken++;
     document.title = "教材模式 · " + (course.title || "AI Knowledge-to-Learning Engine");
     els.breadcrumb.innerHTML =
@@ -650,7 +661,7 @@
         const cards = lessons.filter((lesson) => lesson.unit === unit.id)
           .map(
             (lesson) =>
-              '<a class="lesson-card' + (isLessonDone(lesson.id) ? " done" : "") + '" href="' + courseRoute(lesson.id) + '">' +
+              '<a class="lesson-card' + (isLessonDone(lesson.id) ? " done" : "") + '" href="' + courseRoute(lesson.id, cKey) + '">' +
               '<span class="lesson-id">' + escapeHtml(lesson.id) + "</span>" +
               "<strong>" + escapeHtml(lesson.title) + "</strong>" +
               "<span>" + escapeHtml(lesson.short) + "</span>" +
@@ -686,7 +697,7 @@
       "<p>" + escapeHtml(course.subtitle || "每课明确前置、目标、阅读步骤、关键术语和自检题。") + "</p>" +
       '<div class="course-progress"><div class="course-progress-bar"><span style="width:' + progress.percent + '%"></span></div>' +
       "<span>已完成 " + progress.done + " / " + progress.total + " 课（" + progress.percent + "%）</span></div>" +
-      (next ? '<a class="course-continue" href="' + courseRoute(next.id) + '">继续学习：' + escapeHtml(next.id + " " + next.title) + " →</a>" : "") +
+      (next ? '<a class="course-continue" href="' + courseRoute(next.id, cKey) + '">继续学习：' + escapeHtml(next.id + " " + next.title) + " →</a>" : "") +
       "</section>" +
       '<section class="course-map no-term"><h2>学习依赖图</h2>' +
       '<pre><code class="language-mermaid">' + escapeHtml(courseGraph(course)) + "</code></pre></section>" +
@@ -730,14 +741,26 @@
       '<ol class="quiz-list">' + items + "</ol></section>";
   }
 
-  function renderLesson(lessonId) {
-    const meta = LESSON_INDEX.get(lessonId);
+  // 课程感知的课时解析：先在指定课程内查找（pilot 复用 L## id，必须按课程区分），
+  // 找不到再回退主课程索引。返回 { lesson, course, key }。
+  function lessonMeta(lessonId, courseKey) {
+    if (courseKey && courseKey !== "main") {
+      const c = COURSE_BY_KEY.get(courseKey);
+      const l = c && (c.lessons || []).find((x) => x.id === lessonId);
+      if (l) return { lesson: l, course: c, key: courseKeyOf(c) };
+    }
+    return LESSON_INDEX.get(lessonId);
+  }
+
+  function renderLesson(lessonId, courseKey) {
+    const meta = lessonMeta(lessonId, courseKey);
     if (!meta) {
-      renderCourse();
+      renderCourse(courseKey || "main");
       return;
     }
     const lesson = meta.lesson;
     currentId = null;
+    currentCourseKey = meta.key;
     renderToken++;
     document.title = lesson.id + " " + lesson.title + " · 教材模式";
     const unit = (meta.course.units || []).find((u) => u.id === lesson.unit) || { title: "教材" };
@@ -747,13 +770,17 @@
       '<span class="crumb-current">' + escapeHtml(lesson.id + " " + lesson.title) + "</span>";
 
     const done = isLessonDone(lesson.id);
+    const courseLessonIds = new Set((meta.course.lessons || []).map((l) => l.id));
     const prereqs = (lesson.prerequisites || [])
       .map((id) => {
-        const preEntry = LESSON_INDEX.get(id);
+        // 前置属于当前课程路径 → 留在本课程；否则按明确规则链接到主课程。
+        const inCourse = courseLessonIds.has(id);
+        const preEntry = inCourse ? lessonMeta(id, meta.key) : LESSON_INDEX.get(id);
         const pre = preEntry && preEntry.lesson;
         if (!pre) return "";
         const ok = isLessonDone(id);
-        return '<a class="prereq-chip' + (ok ? " done" : "") + '" href="' + courseRoute(id) + '">' +
+        const preKey = inCourse ? meta.key : "main";
+        return '<a class="prereq-chip' + (ok ? " done" : "") + '" href="' + courseRoute(id, preKey) + '">' +
           escapeHtml(pre.id + " " + pre.title) + "<small>" + (ok ? "已完成" : "未完成") + "</small></a>";
       })
       .join("");
@@ -796,7 +823,7 @@
       labLinks +
       '<button type="button" class="lesson-toggle" data-lesson="' + escapeHtml(lesson.id) + '">' +
       (done ? "标记为未完成" : "标记本课完成") + "</button>" +
-      (nextId ? '<a class="lesson-next" href="' + courseRoute(nextId) + '">下一课 →</a>' : '<a class="lesson-next" href="' + courseRoute() + '">回到课程地图 →</a>') +
+      (nextId ? '<a class="lesson-next" href="' + courseRoute(nextId, meta.key) + '">下一课 →</a>' : '<a class="lesson-next" href="' + courseRoute(null, meta.key) + '">回到课程地图 →</a>') +
       "</section>" +
       feedbackPanelHtml(lesson.id, lesson.id);
 
@@ -3978,7 +4005,7 @@
     const target = parseRoute();
     if (target.home) renderHome();
     else if (target.course) {
-      if (target.lesson) renderLesson(target.lesson);
+      if (target.lesson) renderLesson(target.lesson, target.courseKey || "main");
       else renderCourse(target.courseKey || "main");
     } else if (target.glossary) renderGlossary(target.term);
     else if (target.graph) renderGraph(target.viewId);
@@ -4085,7 +4112,7 @@
       if (toggle) {
         event.preventDefault();
         toggleLessonDone(toggle.dataset.lesson);
-        renderLesson(toggle.dataset.lesson);
+        renderLesson(toggle.dataset.lesson, currentCourseKey);
         return;
       }
       // Local feedback loop: submit / export / clear. Never preventDefault on

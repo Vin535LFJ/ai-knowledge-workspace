@@ -24,7 +24,7 @@ updated: 2026-11-26
 ## 2. 整合与结构（Phase 2）
 
 - 五项目 → 两仓（核心仓 + Skills 库）；program/ 31 文件、legacy/ 40+5 文件、integrations/github-radar/ 43 文件并入。
-- 双轨治理清除：`.governance/` git mv → legacy/；文档注册表唯一（291 条）、运行状态唯一（run_state）。
+- 双轨治理清除：`.governance/` git mv → legacy/；文档注册表唯一（292 条）、运行状态唯一（run_state）。
 - .gitignore 补 radar db/research 规则；`git check-ignore` 实测两个 .db 被忽略。
 - **状态：已实现并验证。**
 
@@ -32,9 +32,9 @@ updated: 2026-11-26
 
 | 检查 | 命令 | 退出码 | 结果 |
 |---|---|---|---|
-| 构建 | `py -3 tools/build_site.py` | 0 | 91 docs / 25 lessons / 7 labs / 673 term cards / 3152 KB |
+| 构建 | `py -3 tools/build_site.py` | 0 | 91 docs / 20 lessons（build 打印主课程口径；唯一课时 26 + pilot 5 入口见 README）/ 7 labs / 673 term cards / 3153 KB |
 | 结构门禁 | `py -3 tools/validate_site.py` | 0 | **20 checks / 0 FAIL / 0 WARN**（含 quizzes payload e1b 新检查） |
-| 发布边界回归 | `py -3 tools/test_publish_boundary.py` | 0 | **Ran 33 / OK (skipped=1)**（skip=符号链接权限环境限制；junction 逃逸演练此前已单独验证） |
+| 发布边界回归 | `py -3 tools/test_publish_boundary.py` | 0 | **Ran 34 / OK (skipped=1)**（33 + post-D22 pilot 上下文回归 1；skip=符号链接权限环境限制；junction 逃逸演练此前已单独验证） |
 | 断言状态 | `py -3 tools/review_gate.py` | 0 | **105 claims（24v/74o/7c）误标 0** |
 | 章节弧（主课程） | `check_chapter_arc.py`（19 份展开） | 0 | 0 FAIL |
 | LXD Floor（具身 6 课） | `check_visual_floor.py` | 0 | OK |
@@ -88,7 +88,28 @@ updated: 2026-11-26
 
 ## 7. 如实清单
 
-**等待人工**：embodied G1（V68–V88）/G2/G3/KCR；PD-Q9~Q16（含公开边界 PD-Q16、Radar 真实库升级 PD-Q15）；Skills 全新会话验证；远端归档/可见性操作。
+**等待人工**：embodied G1（V68–V88）/G2/G3/KCR；活跃待决 PD-Q9/Q11/Q15/Q16（含公开边界 PD-Q16、Radar 真实库升级 PD-Q15；Q10/Q13 已关闭、Q12/Q14 随 Governance 归档转非活跃，见 PENDING_DECISIONS）；Skills 全新会话验证；远端归档/可见性操作。
 **有意不做**：摄取端自动化、中央注册平台、Orchestrator、Dashboard、调度平台、在线自动发布、自动审批、全面重写旧教材/重设计实验。
 **技术债**：审批人字符串（无签名）；HDR 历史 run 6 哈希过期（如实标注）；Radar 真实库旧 schema；Skills 35 技能运行时未验证、tag 指向孤儿历史（不再重写）；`query` 子命令只读靠自律。
 **未验证项**：公网部署（未授权）；全新会话 Skills 调用；其余宿主运行时。
+
+## 8. post-D22 定点修复补记（2026-11-26，外部审核驱动）
+
+外部只读审核确认 D22 方向通过，但指出 1 项真实导航缺陷与若干文档漂移。本批只做定点修复，不重做架构。
+
+**① Pilot 课程上下文丢失（代码缺陷，已修复并浏览器验证）**
+- 根因：视频渲染 Pilot 复用主课程 L## ID，`LESSON_INDEX` 主课程先入不覆盖、`courseRoute`/`parseRoute`/`renderLesson` 不携带课程上下文，导致从 Pilot 进入 L02 后下一课按主课程走 L03（Pilot 定义应为 L06），返回链丢 `?c`。
+- 修复：课程上下文以 `?c=<courseKey>` 贯穿路由解析、课时查找、下一课/前置/返回链；前置课时不属于当前精选路径时按明确规则回退主课程。主课程路由不带 `?c`，行为不变。
+- 浏览器回归 3 场景全过（证据 `reviews/consolidation-qa-pilot-context-20261126.json`）：Pilot L01→L02→**L06**→L11 顺序正确且全程带 `?c`；Pilot L06 返回回到 Pilot 地图（5 课）；主课程 L02→L03→L04 不受影响。零报错、360px 无溢出。
+- 永久回归门禁：`test_publish_boundary.py` 新增 pilot 上下文静态不变量 + 数据级 next 链断言（publish 33→**34**）。
+
+**② 文档状态漂移（已逐项修正）**
+- program/NOW.md：D22 产物与 Skills 修复的"待提交/待执行"旧表述更正为已收口（`67ac3ec`/`d6fa00f` 已推送）。
+- PENDING_DECISIONS：PD-Q10（课程切换/测验可达）与 PD-Q13（审计档案）核实后关闭；PD-Q17 移出活跃待决；PD-Q12/Q14 随 Governance 归档转非活跃；PD-Q9/Q11/Q15/Q16 保留待决。
+- 数字口径统一：registry **292**、runstate selftest **28**、唯一课时内容 **26** + Pilot 精选入口 **5**（复用主课程内容，路径入口合计 31）、bundle **3153 KB**（RC/FAR/ASSET-INVENTORY/README 同步）。
+- Radar README 重写为"Engine 内部 Research Discovery 模块"口径（与 INTEGRATION.md 一致：不自动摄取、真实库旧 schema、人工批准边界），命令改从 Engine 根运行，移除旧绝对路径与旧审计指针；AGENTS.md 同步更正与 rest.py 矛盾的"不发起网络请求"旧约束。
+- 具身六课验收包教材版本说明更正：方案甲修复已含于提交 `ecab4b9`（原"未提交"表述过时）。G1 21 条断言仍 open/low、AI 建议分仍标注为修复前评分，未替用户裁决。
+
+**③ 审核指出但本批不处理（保留待决）**
+- PD-Q16 公开仓可见性：publish-allowlist 只管学习站发布，不控制 GitHub 文件可见性；须用户在 Settings 决定，AI 不代裁。
+- 独立 CI 复核：仓库无 `.github/workflows/`，本轮证据为本地实跑 + 浏览器 QA 留存，不声称远端独立复现。
