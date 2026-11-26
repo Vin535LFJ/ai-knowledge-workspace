@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-11-24",
+  "updated": "2026-11-25",
   "note": "来源登记表。种子来源来自现有验真队列与知识库中已引用过的权威文档；新增来源须填写 accessed 并可被 claim 引用。AI 生成内容不得自动标为 verified。",
   "sources": [
     {
@@ -520,7 +520,11 @@
         "V81",
         "V82",
         "V83",
-        "V84"
+        "V84",
+        "V85",
+        "V86",
+        "V87",
+        "V88"
       ]
     },
     {
@@ -573,7 +577,9 @@
       "type": "repo_doc",
       "accessed": "2026-11-24",
       "used_by_claims": [
-        "V82"
+        "V82",
+        "V86",
+        "V87"
       ]
     },
     {
@@ -614,6 +620,26 @@
       "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/doc/mjwarp/index.rst",
       "type": "official_doc",
       "accessed": "2026-11-24",
+      "used_by_claims": [
+        "V83"
+      ]
+    },
+    {
+      "id": "SRC-EXT-BEVFORMER",
+      "title": "Li et al., BEVFormer: Learning Bird's-Eye-View Representation from Multi-Camera Images via Spatiotemporal Transformers (ECCV 2022, arXiv 2203.17270)",
+      "url": "https://arxiv.org/abs/2203.17270",
+      "type": "paper",
+      "accessed": "2026-11-25",
+      "used_by_claims": [
+        "V85"
+      ]
+    },
+    {
+      "id": "SRC-EXT-MUJOCO-REPRODUCIBILITY",
+      "title": "MuJoCo 官方文档 Computation 章 Reproducibility 节（CPU 确定性与三条注意事项，google-deepmind/mujoco main）",
+      "url": "https://raw.githubusercontent.com/google-deepmind/mujoco/main/doc/computation/index.rst",
+      "type": "official_doc",
+      "accessed": "2026-11-25",
       "used_by_claims": [
         "V83"
       ]

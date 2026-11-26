@@ -4,6 +4,115 @@
 > 权威口径见 `DECISIONS.md`；当前阶段见 `WORKFLOW_STATE.md`。
 > P5 + Part B 执行期间遵循 D09（不 commit/push）；2026-11-18 用户新授权 commit + push 到 origin/master，见文末"git 提交"段与 DECISIONS.md D09 更新。
 
+## 2026-11-26 · 提交作者统一重写（用户批准：公司邮箱不得作为公开仓作者）
+
+- **授权**：用户 2026-11-26 指令「提交的作者不能用公司邮箱，应该用项目 GitHub 的项目作者」，并批准全部重写方案（含公开仓强推授权）。
+- **执行**：`git filter-branch --env-filter` 只改作者/committer 元数据。42 笔全部统一为 `Vin535LFJ <169535939+Vin535LFJ@users.noreply.github.com>`（原 40 笔 `fangjun <lifangjun@mgtv.com>` + 2 笔个人邮箱提交）。
+- **零内容改动证据**：重写前后 tree 哈希一致（`173c37938d73f91df7fb38df18f9891a3229db7f`）；`git diff refs/original/refs/heads/master HEAD` 为空；提交数 42 不变；`stash@{0}`（`ad67c17`）原样未动。
+- **SHA 变化**：重写前 HEAD=`6af1871` → 重写后（本条提交前）HEAD=`ecab4b9`。**全部旧 SHA 失效**；`refs/original/refs/heads/master` 保留本地回滚备份（`git reset --hard refs/original/refs/heads/master` 可回滚）。GitHub 侧旧提交转为不可达，约 90 天内直链仍可打开；彻底清除需联系 GitHub 支持。
+- **历史材料口径**：CHANGELOG / DECISIONS / reviews / handoffs 等历史记录中的旧 SHA 均指重写前历史，不改写；现行操作指针以本文档与 Program `NOW.md` 为准。
+- **推送**：`git push --force-with-lease origin master`（经系统代理单次命令参数，`http.postBuffer` 调大）；`ls-remote` 核实远端与本地一致。
+
+## 2026-11-25 · 方案甲修复（用户批准）：验收包 §6 的 11 项最小修复执行 + 独立复核 + 产物哈希重登记
+
+- **授权**：用户选定方案甲（先修再裁决）。上一条记录里"未执行 11 项修复 / V88 待批 / V83 的'未直核'措辞尚未同步 / 产物哈希失效 0 个"四句自本条起不再成立。
+- **改动**：
+  - E06 课文：L113 "θ2 是不是 0" → "0° 或 180°"，"所以" → "换句话说"；L160 第 2 题指向改为 §1 与 §4.2 第 0 周验收标准，末句改为"起步三件由练习 1 覆盖；生态四组没有练习或自测题覆盖"；L90 小节标题 → "先问设备，再问物理后端"；L22 / L92 / L96 / L164 的 CPU 行出处由"课源转述、未直核"改为 MuJoCo 官方文档 Reproducibility 节并注明取文日期。
+  - E06 测验第 3 题答案：CPU 行出处同步。
+  - 课源 `08-具身智能/06`：L12、L44（补官方原文逐字引文）、L65（外部核验记录）补 CPU 行出处；L66 关联断言补 V86、V87；frontmatter `updated` → 2026-11-25。
+  - 台账：**V83** 的 claim、evidence（新增 SRC-EXT-MUJOCO-REPRODUCIBILITY）、conditions 更新，状态仍为 open/low；**新登记 V88**（容差三笔账，open/low，单源，locator §6.3 L526–529 / §6 L487）。来源注册表新增 1 条（共 54）、SRC-RL-TEXTBOOK 的 used_by_claims 补 V88。
+  - E03：frontmatter claims、§4.5 正文、§8 边界说明挂接 V88；course.json 的 E03 claims 同步。
+  - 术语表"可复现性分层"词条：CPU 一行点名 MuJoCo 官方文档。课程 README L33：断言范围 V68–V85 → V68–V88（此前就漏了 V86、V87）。
+  - G1 队列：标题与说明更新为 V68–V88 / 21 条；V83 行按 GPU / CPU 两行分别给出处与日期；新增 V88 行；§1 补 MuJoCo CPU 官方原文核验记录；裁决栏保持空白。
+- **独立复核**（未参与写作与修复的只读审读代理，`reviews/embodied-batch1/recheck-planA-fixes.md`）：9 项改动全部修对；自行重算 detJ 在 θ2 = 180° 确实奇异、V88 全部数字；直取 MuJoCo 官方原文与 Robot_Learn L482–533 逐字核对引文与 locator。无新的事实错误或内部矛盾。其指出的 6 处收尾问题：V88 locator 章节号、V83 条件第一条、课源 frontmatter 日期、E06 日期表述、产物哈希与本记录 5 处已处理；"逐位可复现"措辞经其判定不构成错误，保留。范围外既有问题（来源注册表 `SRC-BASIS-UNIVERSAL` / `SRC-RN-CONCEPT-INTRO` 两处双向不一致）未处理。
+- **审读记录更正**：`independent-review.md` 原写"复评后 2 处 minor 修正未再独立复审"，现已补两轮独立复核（修复前 `targeted-recheck.md`、修复后 `recheck-planA-fixes.md`），该条已更新。此前记录"技能目录在会话开始时固定"已由会话重建后的实测修正（见上条）。
+- **run 与哈希**：run 仍 REVIEW / paused，G3 open，KCR REVIEWING，无审批记录。本轮改动或新增的 10 个产物已用 `run_state.py artifact` 重新登记（33 条记录，24 个文件哈希全部有效）。
+- **门禁**：validate 20/0/0；发布回归 32 项（1 项跳过）；105 claims（24v/74o/7c）误标 0；arc 两门课程 0 FAIL；runstate 25/25、KCR 16/16、审批链 15/15；六课 Floor 全过。站点包重建（仅构建时间戳变化）。
+- **未做（如实）**：没有在浏览器里打开修改后的页面；没有升级任何断言；没有填写任何分数；全部改动未提交、未推送。
+
+## 2026-11-25 · 人工验收准备（稳定化阶段）：用户验收包 + 专项复核 + 七实验回归（教材与断言零改动）
+
+- **run 未被推进**：`RUN-2026-11-23-embodied-batch1` 仍为 REVIEW / paused，G3 open，KCR REVIEWING，无审批记录；21 个已登记产物哈希失效 0 个。六课课文、测验、课程契约、断言台账均未改动；没有升级任何断言，没有填写任何分数。
+- **用户验收包**：`reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md`。G1 把 V68–V87 分成三类（建议升级 verified 7 条 / conditional 6 条 / 保持 open-low 7 条，更正类 6 条待确认口径，无 contested），逐条给出依据、来源矛盾、下游影响；G2 六课逐课依据与评分表（AI 建议分 88 / 91 / 91 / 92 / 90 / 88，注明不是正式评分）；专项复核结论；11 项待批的最小修复；审批登记顺序与"审批人只是字符串"的限制说明。裁决栏全部留空。
+- **专项复核（独立审读代理，只读）**：`reviews/embodied-batch1/targeted-recheck.md`。E03 三维框算例成立；E06 GPU 非确定性表述已限定；**两处"修复后未复审"的小修各只修对一半**（E06 L113 "θ2 是不是 0" 漏 180°，与 E04 L127 不一致；E06 L160 第 2 题指向应为 §1，末句对练习覆盖范围的说明不属实）。无 blocker、无 major，8 条 minor。**未修复**，列为验收包 §6 待批。
+- **新证据**：直取 MuJoCo 官方文档 `doc/computation/index.rst` 的 Reproducibility 节（main 分支，2026-11-25），原文 "MuJoCo's simulation pipeline is entirely deterministic and reproducible" 及三条注意事项，与 E06 L99 逐条对应。V83 的 CPU 行由此有官方原文；课文与台账里"未直核官方文档"的说法已落后于事实，**尚未同步**（它们是已登记哈希的产物，待裁决时一并处理）。
+- **新发现的证据链缺口**：E03 §4.5 容差算例（+49.6% / 33.2% / 34.7 mm / 25%）没有任何断言覆盖；建议登记 V88（open / low），待批。
+- **七实验样式回归**：对当前构建重测七个实验，小字对比度浅色 3.04 → 6.39、深色 4.63 → 7.76；画布输出字节在基线 / 上轮复测 / 本轮三次完全相同；阶段数值一致，零报错，三档宽度无整页横向滚动。证据：`.agent/skills/learning-experience-design/preview/lab-mvp/regress-20261125.json` 与 `regress-compare-20261125.txt`。
+- **Skills 更正**：本会话开头 `handoff` 与 `writing-for-agents` 检索、加载均失败；会话重建后两者都能被检索并通过宿主技能工具加载，执行测试通过（`handoff` 写出交接文档；`writing-for-agents` 在临时夹具上改写）。上一条记录"技能目录在会话开始时固定"应修正为"会话重建或新会话后可用"；全新会话仍未验证，状态保持 PARTIAL。记录见 Skills 仓 `docs/HOST-VERIFICATION-2026-11-25.md` §8。
+- **门禁**：validate 20 / 0 / 0；发布回归 32 项（1 项跳过）；104 条断言误标 0；runstate 25 / 25；KCR 16 / 16；审批链 15 / 15。
+- **未做（如实）**：没有在浏览器里打开六课页面；没有执行 11 项修复；本轮产物未提交、未推送。跨项目验证结论（Radar 真实库副本、Governance Engine 副本、Git 审查）见 Program 仓 `plans/2026-11-25-stabilization-verification.md`。
+
+## 2026-11-25 · Skills 实机验证（TASK 6：QwenWork 宿主，结论 PARTIAL）+ 根入口技能指针
+
+- **验证结果**（记录在 Skills 仓库 `docs/HOST-VERIFICATION-2026-11-25.md`，提交 `9ac74ea`）：`handoff`（用户点名型）与 `writing-for-agents`（自动调用型）手动投放到 `C:\Users\Giant\.qwenworkcn\skills\`，逐文件 SHA256 与仓库一致；宿主设置清单**立即**列出两者（无需重启）；但**安装它的这个会话里技能检索与加载都失败**（原文 `Skill not found`），安装后启动的子代理结果相同——技能目录在会话开始时固定。新会话能否发现并调用：**未验证**。`handoff` 按仓库指南不得用读取方式绕过，判 NOT VERIFIED。
+- **本仓相关的一处真实修改**：按 `writing-for-agents` 的 context pointer 写法（指南允许 model-invoked 技能退化为读取执行；不等于宿主调用成功），在根 `AGENTS.md` 补一行技能指针（`4951d99`），两个分支各一个触发条件，指向 `.agent/skills/` 下两个技能。补的是 TASK 5 暴露的入口缺口。
+- **阶段收口**：2026-11-25 任务书 TASK 0–6 全部执行，逐项判定（PASS / PASS WITH LIMITATIONS / PARTIAL）与证据见 Program 仓 `plans/2026-11-25-stage-execution-report.md`（Program `175a957`）。
+
+## 2026-11-25 · LXD 第二案例：transform-mvp 交互实验页（TASK 5：真实浏览器基线 → 最小增强 → 复测）
+
+- **Skill 发现与调用（如实）**：QwenWork 宿主技能目录**未收录** LXD Skill（按名称搜索无结果）；仓库内发现链三步实测存在（根 `AGENTS.md` L16 → `.agent/README.md` L67 → `SKILL.md`）。调用方式为读取 `SKILL.md` / `USAGE.md` / 原型 D / 签发单并按其流程执行，不是宿主级技能加载。
+- **基线（改动前，Edge headless，站点复制到临时目录经本地 HTTP 加载）**：7 个实验 × 360 / 768 / 1280 三档 × 明暗主题。无整页横向滚动；控件全部有名称、画布有无障碍名称、标题无跳级；交互冒烟零报错。**问题**：浅色主题下承载内容的小字（图例、分阶段说明、矩阵说明、实验备注、卡片页脚）对比度 **3.04:1**（门槛 4.5:1，深色 4.63:1）；7 个实验均无实验目标、观察记录、键盘操作说明（对照原型 D 结构）；动手任务复选框未与文字关联。
+- **改动（最小增强，不重写）**：① `styles.css` 五处 `--text-subtle` → `--text-muted`（7 个实验共享）；② `labFooterHtml` 复选框包进 `label`（共享）；③ 试点页 transform-mvp 新增实验目标 3 条与「观察记录」输入区（按实验存本机，`labs.json` 新增可选字段 `goal` / `observe`，其余实验未动）；④ 试点页交互画布下加键盘操作提示。有意不做：未推广到另 6 个实验（铁律 1，待用户确认）；未动字号、阅读宽度、配色体系与页面骨架；「已完成任务划线变浅」与页头小标签保留并记录豁免理由。
+- **复测与回归**：小字对比度浅色 **3.04 → 6.39:1**、深色 4.63 → 7.76:1（7 个实验）；复选框全部关联文字且勾选照常保存；三档宽度均无整页横向滚动，360px 下越界元素与基线相同（都在各自横向滚动容器内）；7 个实验冒烟零报错，**画布输出字节数与分阶段数值样本与基线逐项相同**；DAG 实验另测 3 个开关（能改变数值、复位一致）。transform-mvp 页面 8 → 9 个区块，14 个控件全部有名称。
+- **证据**：`.agent/skills/learning-experience-design/preview/PILOT-LAB-mvp.md`（复盘 + 签发单），`preview/lab-mvp/{baseline,after}.json`（原始测量）与 `before/after-{1280,360}.png`（截图；像素取样确认是浅色主题）。
+- **一个被实测纠正的判断**：让视觉模型描述"优化前"截图，它称页面为深色主题、小字对比度尚可；像素取样显示背景纯白（浅色），计算值 3.04:1。可读性结论以像素与计算值为准。
+- **未做（如实）**：1024 / 1440 两档未测；未做真实键盘 Tab 走查；未拍深色主题截图；未做屏幕阅读器实测；测量脚本是一次性的（临时目录，未入库）。Skill 流程里"先出多个方案、用户确认设计方向"未单独做（任务书直接授权执行一个试点页）。
+- **文档回填**：`SKILL.md` 试点记录新增试点 02；`USAGE.md` §13 / §4 / §14 更新成熟度结论、宿主发现实测与已知限制；`.agent/README.md` 对该 Skill 的描述更正。
+- **门禁**：build 3133 KB · validate 20/0/0 · publish 32（31 ok / 1 skipped）· arc 两门课程 0 FAIL · 104 claims 误标 0 · kcr 16/16 · runstate 25/25 · approval 15/15 · registry 209。
+
+## 2026-11-25 · 审批证据链持久化（TASK 4：人工批准对应到具体文件版本 + 发布前复核）
+
+- **做法**：不建审批平台，在现有状态机上做最小扩展。新增 `tools/approval_chain.py`（stdlib-only）：`record`（仅人工执行）把 run 当前每个产物（同一路径取最后一次登记）冻结为「相对路径 + SHA256 + 所处阶段」，连同审批人、时间、决定、范围、批准时的提交号与未提交文件数，写入 `reviews/approvals/<run_id>/<gate>-NN.json`——**只增不改**（独占创建，无更新/删除命令；重新批准生成新编号，旧记录保留）。`verify` 重算哈希并检查范围、审批人、时间、决定。
+- **接入发布门**：`run_state.advance` 与人工 `skip` 进入 PUBLISH / FEEDBACK 时，在原有「gate passed」之外**必须通过复核**。拦截情形：批准后任一产物内容变化；批准时的产物被移走；批准后在已批准阶段新增产物；记录被改坏；决定不是 approved；关卡已过但无审批记录。批准之后才可能产生的后续阶段产物（如 PUBLISH 的发布记录）不计入越权。`gate --pass` 的审批人必须与登记审批的人名一致。
+- **契约**：第五契约 `tools/kcr/schema/approval-record.schema.json`；`validate_kcr.py` 四契约 → 五契约，硬规则入 semantic_errors（approver / approved_at 非空；artifacts ≥1 且路径不含 `..`；record_id = `<run_id>/<gate>-NN`）。
+- **历史审批（8.3，不补造）**：`reviews/approvals/README.md` 登记 HDR 批次的 G1 / G2 / KCR / G3——有书面证据（评分表 91 分、裁决栏、运行态通过时间），但都没有绑定文件版本，一律标 **legacy / unverifiable**；并如实写明运行态里的审批人字符串是当时 AI 按用户授权写入的。`verify` 对该 run 返回 legacy-unverifiable（它已 done，不受新规则影响）。
+- **自测**：新增 `tools/kcr/selftest_approval.py` **15/15**（契约正反 / 登记守卫 / 只增不改 / 变化拦截与还原恢复 / 越权新增 / 后续阶段不误伤 / legacy 不补造 / 记录改坏 / 与状态机联动含 skip / 临时 git 仓库提交号采集 / CLI）；`selftest_runstate` 25/25（「一路到 done」用例按新规则改为先登记审批，并断言无记录时被拦）；`selftest_impact` 16/16。
+- **真实数据演练**（运行态副本与审批记录写临时目录，真实目录零污染）：具身 run 登记条目 23、去重 21 个产物，**按当前文件重算哈希失效 0 个**；历史 HDR run 去重 16 个产物、哈希失效 6 个（登记后被编辑过，无批准时快照可判断先后——正是本工具要消除的不确定性）。真实仓库演练：登记记下提交 `3fc54e5` 与「当时 6 个未提交文件」，复核通过；批准后偷加一个 REVIEW 阶段产物被精确拦下；移除后状态机放行到 PUBLISH。
+- **文档**：`docs/USER-GUIDE.md` §5 G3 改为两步并更新审计提示与排障；`reviews/kcr/RUN-STATE-TOOL.md` 五条不变量 → 六条 + CLI 与自测说明。
+- **已知限制（如实）**：`approver` 仍是字符串，技术上无法证明由人输入（与 `gate --pass` 相同）；未登记为产物的文件不在批准范围内（可用 `--path` 追加）；哈希是整文件级，一处标点改动也会触发重新登记（有意的保守选择）。
+- **门禁**：validate 20/0/0 · publish 32（31 ok / 1 skipped）· kcr 16/16 · runstate 25/25 · approval 15/15 · review_gate 104 claims 误标 0 · registry 208。
+
+## 2026-11-25 · 具身六课独立审读闭环（TASK 1：审读 → 修复 → 复审 → 整改 → 复评；run 推进 REVIEW）
+
+- **审读过程**：首轮由三位未参与写作的审读代理只读审读（1 blocker / 18 major；完整报告在会话断网时丢失，仅存执行方汇总表——如实记为记录缺口）；执行方修复后，由另一位独立审读代理复审 17 条修复点（16 已修复 / 1 部分修复），并**抓出修复新引入的 1 个 major**（E03 三维框算例设定被改坏而数字未跟）与 4 个 minor；随后出具 G2 诊断建议分（整改前 E06 = 82，低于通过线）并列出 7 项未解决问题；执行方整改后复评，**六课建议分 88 / 91 / 91 / 92 / 90 / 88（E01–E06），全部 ≥85**。记录见 `reviews/embodied-batch1/independent-review.md`（过程）、`recheck-after-fix.md`（复审）、`g2-diagnostic.md`（§0–§4 过程记录，§7 复评）。
+- **首轮主要修复**：E02 把「3τ 建立时间」与「延迟 × 速度 = 位置落后」混为一谈（blocker）；E03 元数据字段配错行、测验答案对时间戳 t 的含义说错；E04 肘上/肘下标签标反（源头在 Robot_Learn 原文）、测验答案把力的方向说反、力矩与奇异因果错位；E06 测验两题无正文依据、GPU 非确定被扩大成普适结论。
+- **整改（诊断后）**：证据链缺口——E06 学习目标 3（九条坑）原先无断言覆盖，登记 **V87**（open/low，单源）并挂接课文/契约/测验/来源索引；V86（十六周路线验收）本轮补登记。台账与课文同步三处（V69 失真是否放大取决于回路增益 / V73 采样率严格高于两倍 / V83 CPU 一行为课源转述），V72、V76 补登记前提与勘误。课文精度：E04 力方向理由改写、逆解表直接标明肘上/肘下；E02 τ 上限与「3τ 不能当延迟」；E01 自测答案指引；E03 练习速度口径、删除无依据的「主节拍更粗」括注；E05 测验答案删去超出正文的建议；E06 可复现性定义、表头依据标注、九条坑三组分类并逐条对应前几课、自测第 1 题改为覆盖目标 3。术语表新增 `开环控制`、`慢回路与快回路`、`可复现性`（embodied-ai 组 18 → 21 词）。
+- **源勘误**：G1 队列 §3 由 12 项扩为 15 项（#13 肘上/肘下标签写反、#14 容差「每边放宽」歧义、#15 采样率「≥24 Hz」与「高于两倍」不一致）。Robot_Learn 只读零改动。
+- **呈现验证（实测）**：Edge headless 渲染 E02/E05/E06 文档页——标题、学习目标、公式、术语卡、证据面板正常，无归档横幅、无未渲染标记（E05 有一次 5 KB 空渲染，重跑两次均正常，判为无头浏览器偶发加载失败）；首页有具身课程 7 个可点击入口，搜索覆盖六课；重建后 bundle 内 11 条旧句为 0、新句全部出现。六课 Floor 全部 exit 0。
+- **run**：`RUN-2026-11-23-embodied-batch1` WRITE → DESIGN → PRACTICE → **REVIEW / paused**，23 个产物带哈希登记，KCR PROPOSED → REVIEWING，G3 保持 open。**AI 不自批**：G1（V68–V87 升级）、G2（六课评分确认）、G3（发布门）待用户裁决。
+- **门禁终态**：build **91 docs / 669 cards / 3130 KB** · validate **20/0/0** · publish tests **32（31 ok / 1 skipped）** · arc 主课程与具身课程均 0 FAIL · review_gate **104 claims（24v/73o/7c）误标 0** · kcr 16/16 · runstate 25/25 · registry 207。
+- **未解决（如实）**：学习站「教材模式」只展示主课程，课后检查点测验在界面上走不到（补课程切换入口已登记 Program PARKING-LOT，待裁决）；无绑定交互实验；`review_gate.py` 的 G2 段不覆盖具身课程；V68–V87 共 20 条断言全部 open/low；复评后的 2 处 minor 修正未再独立复审；E06 学习目标 1 无检查点题（由练习 1 覆盖）。
+
+## 2026-11-25 · 发布边界 v2 审计收口：精选数据真正呈现 + 路径逃逸实测（TASK 0 验收）
+
+- **审计范围与结论**：按用户 2026-11-25 任务书对 `ae60f34` 做全链复核（注册表 / `publish_boundary.py` / `build_site.py` / `build_vitepress_content.py` / `validate_site.py` / 实际调用链）。注册表 108 资产 = 72 public + 19 offline-read-only + 9 excluded-internal（均带 reason）+ 2 curated-data + 6 site-data，无通配/重复/大小写冲突，注册表↔磁盘零漂移；三个消费者全部经 `publish_boundary`，旧 `check_allowlist`/`load_allowlist`/`include_archive`/`EXCLUDED_TOP_DIRS` 无残留调用；build 先审计后生成、失败不写产物、临时文件回读后原子替换。**结构与调用链合格，发现 1 个真缺口。**
+- **缺口：curated-data「已登记、未呈现」**。`evidence/source-registry.json` 与 `knowledge-model/concepts.json` 登记为精选数据，但 `build_site` 从未加载，站点零呈现——不满足验收条件「精选 evidence / knowledge-model 可以正确呈现」（上一条记录中登记为另批项；本任务书将其列为 TASK 0 验收条件并授权最小修复）。
+- **最小修复**：`build_site` 显式加载注册表全部 curated-data（经 `require_site_data` 强制校验）→ `payload.curated`；每篇文档附 `evidence`（正文断言编号 ∩ 来源注册表 `used_by_claims` → 来源 ID/标题/链接/类型/支撑的断言编号；非 http(s) 链接不输出）与 `concepts`（`definition_ref` 指向本文的概念：ID/名称/路由/已登记关系）；`publishManifest.curated` 记录路径 + SHA256。**不输出断言验证状态**（claim-ledger.json 仍为 excluded-internal，测试断言其内容不以任何形式进入 payload）。`validate_site` 第 13 节新增 e2：嵌入集合必须恰等于注册表 curated-data、哈希可追溯、文档级证据引用只能指向精选来源注册表。`app.js` 新增 `buildEvidencePanel`（复用 term-panel 样式，「证据与概念」折叠面板），`styles.css` +3 行；注册表 `curated-data.embed` false→true 并改写描述。
+- **回归测试 29 → 32 项（31 ok / 1 skipped）**：夹具用例「精选数据嵌入且内部台账不得借道」「evidence 内未登记资产 = 构建失败」；真实产物用例「curated-data 确实呈现」（嵌入集合 == 注册表、哈希、≥20 篇有证据、embodied 六课有证据、≥10 篇有概念、概念字段集严格为 id/name/route/relations）。
+- **实测证据**：① 泄露演练——往 `courses/video-rendering-journey/` 放未登记的伪装内部材料 → build **exit 2**（bundle SHA 不变、无 .tmp 残留）/ validate **4 FAIL** 精确定位；诱饵走回收站后恢复全绿。② 过期检测——改动 `concepts.json` 一个字节 → validate **exit 1**「curated-data … sha256 mismatch」，逐字节还原后 20/0/0。③ **路径逃逸实测**——本机无创建符号链接特权（该用例仍 skipped），改用不需特权的目录联接（`_winapi.CreateJunction`，Python 3.12 下 `is_symlink()=False`）在临时目录演练：`scan_assets` 与 `safe_relpath` 均抛 `RegistryError: path escapes repository root`。④ 浏览器 QA（Edge headless，http）——E05 页面渲染出「证据与概念 · 6 条」面板，DAgger（PMLR）/ Tobin 2017（arXiv）为可点击外链，Robot_Learn 内部文档为纯文本卡片；面板内无验证状态字段。
+- **门禁终态**：build **91 docs（72 public + 19 archive）/ 663 cards / 3106 KB** · validate **20/0/0** · publish tests **32（31 ok / 1 skipped）** · 在线镜像 **72 docs + index，无 archive/** · arc 19/19 · review_gate **102 claims（24v/71o/7c）误标 0** · kcr 16/16 · runstate 25/25 · registry 203。
+- **TASK 0 结论：PASS**（唯一环境限制：符号链接实链接用例在本机无法执行，逃逸判定已由目录联接实测覆盖）。在线发布仍受 D02 约束，本轮无授权。
+
+## 2026-11-25 · 发布边界 v2 强制收口（TASK 0，用户批准的学习站发布政策）
+
+- **审计结论（实施前实测）**：强制化代码**此前并未落地**——注册表 v2（`tools/publish-allowlist.json`，100 资产/5 策略/enforce/deny）已生成但无任何消费者；`publish_boundary.py` 仍是 advisory 旧 API；build/validate/vitepress 三个工具各自维护排除表，均未读注册表。上一窗口"开始实现强制化代码"后中断。
+- **`tools/publish_boundary.py` 重写为 v2 强制 API**：唯一判定来源 = 注册表；未登记默认拒绝、无目录通配；`excluded-internal` 优先于一切允许规则；注册表缺失/JSON 损坏/Schema 错误/未知 policy/advisory/通配符/重复或大小写冲突/excluded 无 reason/offline-read-only 越出 archive → `RegistryError`（fail closed，无 advisory 回退）。路径安全：只接受规范相对 POSIX 路径（拒绝绝对路径/盘符/反斜杠/`..`/`.`/空段/通配/NUL），`safe_relpath` 解析后越出仓库根即拒绝，扫描空间遇符号链接直接失败。目标类型：`offline`（public + offline-read-only）/ `online`（仅 public）。旧 `check_allowlist`/`load_allowlist`/`include_archive` 已移除。
+- **三个消费者统一**：`build_site.py`（加载注册表 → 注册表↔磁盘审计，未登记即失败 → 文档只取注册表允许集 → 站点数据 `require_site_data` → 每篇带 `publishPolicy` + `publishManifest`{path, policy, sha256} → 临时文件回读校验后 `os.replace` 原子替换，失败不写产物）；`validate_site.py`（删除自带第二套排除表，新增第 13 节：审计、bundle==注册表 offline 集、内部文件零泄露、manifest 可追溯、嵌入站点数据已登记、在线树只含 public 且无 archive）；`build_vitepress_content.py`（删除 `EXCLUDED_TOP_DIRS`，改走注册表 `online`，失败不动现有站点树）。
+- **archive 按 D10.4 只读**：19 篇 `offline-read-only` 一一对应；app.js 两处最小改动——默认搜索排除归档（`policies.offline-read-only.search=false`）、文档头显示「历史归档 · 只读 · 不作为最新结论来源」；在线镜像无 archive（online=forbidden）。
+- **注册表元数据如实修正**：`scan` 描述改为 v2 口径（原文引用已废除的旧 API）；`curated-data.embed` true→false（app.js 对 evidence/knowledge-model 数据零消费，无呈现 UI；精选数据嵌入与呈现方案登记 Program PARKING-LOT 另批）。
+- **测试抓到的真实缺陷**：`audit_registry()` 初版对未登记资产只收集不置失败，build 会静默跳过——已修（未登记 = 审计失败 = 构建失败）。
+- **回归测试 `tools/test_publish_boundary.py` 重写：12 → 29 项（28 通过 / 1 跳过）**，夹具在临时目录：未登记 md、courses 内伪装教材、evidence 未授权提取记录、knowledge-model 未审核中间模型、excluded-internal、archive 非注册文件、注册表缺失/损坏/14 类 Schema 错误、路径穿越、符号链接逃逸（**本机 Windows 无创建符号链接特权，实链接用例跳过**；逃逸判定由不依赖特权的仓库外文件用例覆盖）、build 失败不留半成品、bundle==注册表、内部 canary 零泄露、archive 19、manifest SHA、在线树、旧 API 已移除。
+- **真实仓库负向演练**：往 courses/ 放未登记文件 → build exit 2（bundle SHA 不变、无 .tmp）/ validate 4 FAIL 精确定位 / vitepress 构建失败；演练文件走回收站后全绿。
+- **浏览器 QA（Edge headless，http）**：归档页渲染出只读标记、现行页无标记、KaTeX 正常。
+- **门禁实测**：build **84 docs（65 public + 19 archive）/ 587 cards / 2865 KB** · vitepress **65 docs** · validate **14/0/0**（12→14）· publish tests **29（28 ok / 1 skipped）** · arc 19/19 · review_gate **101 claims（24v/70o/7c）误标 0** · registry 195。
+- **边界**：在线发布仍受 D02 约束（本轮无授权）；断言/教材正文/stash 零触碰；embodied run 不变（EVIDENCE）。
+
+
+- **动作**：`courses/video-rendering-journey/G2-审核材料-P6.md` → `reviews/G2-审核材料-P6.md`（git mv，提交历史保留；reviews/ 是现有内部审核目录，治理材料不进学习站）。背景：2026-11-24 独立审计发现该 P6 内部审核材料因位于 courses/ 而随目录扫描进入学习站 bundle（审计 P1-4 的遗漏点）。
+- **影响面核查**：活引用仅两处——文档注册表（已重建，195 篇）与 `docs/USER-GUIDE.md` 限制条目（发布边界强制化批次 TASK 2b 修）；其余均为历史留痕（CHANGELOG/DECISIONS/archive/reviews 快照），按纪律不改写。
+- **门禁实测**：build **91 docs / 639 cards / 3255 KB** · validate **12/0/0** · arc **19/19** · publish **12/12**（计数断言 92→91）· review_gate **101 claims（24v/70o/7c）误标 0** · registry **195** · bundle 内 G2-P6 与 reviews/ 均为 0。
+- **边界**：仅移动 + 注册表/bundle 重建；断言/教材正文/stash 零触碰；embodied run 不变（EVIDENCE/running）。
+
 ## 2026-11-24 · 工具链多课程最小扩展（用户批准）+ embodied 首批 RESEARCH 完成（run 推进 EVIDENCE）
 
 - **工具链三项扩展（用户批准，夹具演练验收）**：① validate §10 声明 `independent: true` 的课程跳过"派生自主课程"检查（id 唯一性/前置/unit/frontmatter/quiz 仍全量校验）；② build_site additive `courses[]` payload（主课程首位 + courses/*/course.json，旧 UI 读 .course 不受影响）；③ allowlist += 08-具身智能。**演练**：临时 independent 夹具课程 T01 → 12/0/0 通过；independent=false → "not derived" 精确 FAIL；夹具走回收站、registry 重建恢复 187/12-0-0（演练中另发现并规避 PowerShell Set-Content BOM 破坏 frontmatter 的环境坑）。

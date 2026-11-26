@@ -10,21 +10,31 @@ No third-party Python packages are required.
 
 from __future__ import annotations
 
+import hashlib
 import json
+import os
 import posixpath
 import re
+import sys
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import quote
 
-from publish_boundary import is_publishable  # 2026-11-19：集中发布边界，reviews/ 不进知识 bundle
+# 2026-11-24 强制发布边界 v2（用户批准）：注册表 tools/publish-allowlist.json 是唯一判定来源。
+# 旧版路径排除 API（is_publishable(include_archive=...) / check_allowlist）已废除。
+from publish_boundary import (  # noqa: E402
+    RegistryError,
+    audit_registry,
+    load_registry,
+    policy_for,
+    require_site_data,
+    scan_assets,
+)
 
 ROOT = Path(__file__).resolve().parent.parent
 OUTPUT = ROOT / "web" / "content.js"
-GLOSSARY_PATH = ROOT / "tools" / "glossary.json"
-COURSE_PATH = ROOT / "tools" / "course.json"
-LABS_PATH = ROOT / "tools" / "labs.json"
 GRAPH_PATH = ROOT / "tools" / "graph.json"
+PUBLISH_TARGET = "offline"  # 离线学习站；在线镜像（VitePress）用 target="online"
 
 # Map each glossary group to a technical-index category. Groups not listed fall back to "concept".
 TECH_CATEGORY_BY_GROUP = {
@@ -451,38 +461,111 @@ def build_tech_index(glossary: dict) -> dict:
     }
 
 
-def main() -> None:
-    # 集中发布边界（2026-11-19）：原内联排除项全部迁入 publish_boundary，并新增 reviews/ 排除。
-    # include_archive=True 保持 D10.4 离线站行为（archive/ 仍发布）。
-    markdown_files = [
-        path
-        for path in ROOT.rglob("*.md")
-        if is_publishable(relpath(path), include_archive=True)
-    ]
+def build_payload() -> dict:
+    # 强制发布边界 v2（2026-11-24）：
+    #  1. 注册表缺失/损坏/不合规 → RegistryError → 构建失败（fail closed，无 advisory 回退）。
+    #  2. 注册表 ↔ 磁盘审计：扫描空间内未登记资产 = 构建失败（默认拒绝，必须显式登记）。
+    #  3. 文档只从注册表允许进入本 target 的资产中产生；excluded-internal 永不进入。
+    registry = load_registry()
+    audit = audit_registry(registry, ROOT)
+    if not audit["ok"]:
+        lines = [f"  - {m}" for m in audit["errors"]]
+        lines += [f"  - unregistered asset (default=deny): {p}" for p in audit["unregistered"]]
+        raise RegistryError("publish registry / disk mismatch:\n" + "\n".join(lines))
+
+    def load_site_data(rel: str):
+        require_site_data(rel, registry=registry)
+        return json.loads((ROOT / rel).read_text(encoding="utf-8"))
+
+    markdown_files: list[Path] = []
+    doc_policies: dict[str, str] = {}
+    for rel in scan_assets(ROOT):  # 符号链接逃逸在此处抛错
+        if not rel.endswith(".md"):
+            continue
+        policy = policy_for(rel, registry)
+        if policy in ("public", "offline-read-only"):
+            doc_policies[rel] = policy
+            markdown_files.append(ROOT / rel)
     markdown_files.sort(key=lambda p: sort_key(relpath(p)))
     all_doc_ids = [relpath(path) for path in markdown_files]
 
-    glossary = json.loads(GLOSSARY_PATH.read_text(encoding="utf-8"))
-    course = json.loads(COURSE_PATH.read_text(encoding="utf-8"))
-    labs = json.loads(LABS_PATH.read_text(encoding="utf-8"))
-    graph = json.loads(GRAPH_PATH.read_text(encoding="utf-8")) if GRAPH_PATH.exists() else {"nodes": [], "edges": [], "views": []}
+    glossary = load_site_data("tools/glossary.json")
+    course = load_site_data("tools/course.json")
+    labs = load_site_data("tools/labs.json")
+    graph = load_site_data("tools/graph.json") if GRAPH_PATH.exists() else {"nodes": [], "edges": [], "views": []}
     term_entries = build_term_entries(glossary)
 
+    # 2026-11-25 精选数据呈现（TASK 0 收口）：注册表 policy=curated-data 的资产（证据来源注册表、
+    # 知识模型）是**唯一**被授权进入站点的证据/知识数据，这里显式嵌入 payload.curated，
+    # 并经 require_site_data 强制校验（未登记 / excluded-internal → 构建失败）。
+    # claim-ledger.json（含未审核断言与内部验证状态）永远不在此集合中。
+    curated: dict = {}
+    curated_manifest: list = []
+    for rel in sorted(registry["_by_path"]):
+        if registry["_by_path"][rel]["policy"] == "curated-data":
+            curated[rel] = load_site_data(rel)
+            curated_manifest.append({
+                "path": rel,
+                "sha256": hashlib.sha256((ROOT / rel).read_bytes()).hexdigest(),
+            })
+    # 断言编号 → 来源（只取来源注册表的 used_by_claims 反向索引；不读断言台账）。
+    sources_by_claim: dict[str, list] = {}
+    for source in curated.get("evidence/source-registry.json", {}).get("sources", []):
+        for cid in source.get("used_by_claims") or []:
+            sources_by_claim.setdefault(str(cid), []).append(source)
+    # 定义文档 → 概念（知识模型只发布概念 ID/名称/路由/已登记关系）。
+    concepts_by_doc: dict[str, list] = {}
+    for concept in curated.get("knowledge-model/concepts.json", {}).get("concepts", []):
+        concepts_by_doc.setdefault(concept.get("definition_ref"), []).append(concept)
+
     docs = []
+    manifest_docs = []
     sections = []
     linked_term_total = 0
     for path in markdown_files:
         doc_path = relpath(path)
         key = section_key(doc_path)
-        markdown = path.read_text(encoding="utf-8", errors="replace")
+        raw_bytes = path.read_bytes()  # 读取失败 = OSError = 构建失败，不静默跳过
+        markdown = raw_bytes.decode("utf-8", errors="replace")
         markdown, _frontmatter = strip_frontmatter(markdown)
         fallback = path.stem
         plain = plain_text(markdown)
         enriched, term_meta = augment_markdown(markdown, doc_path, term_entries, all_doc_ids)
         linked_term_total += len(term_meta)
+        # 本文引用的证据来源：正文出现的断言编号 ∩ 来源注册表。只输出引用信息（标题/链接/类型），
+        # 不输出断言的验证状态（那在 claim-ledger.json，属 excluded-internal）。
+        mentioned = set(re.findall(r"\bV\d{2,3}\b", markdown)) & set(sources_by_claim)
+        cited: dict[str, list] = {}
+        for cid in sorted(mentioned):
+            for source in sources_by_claim[cid]:
+                cited.setdefault(source.get("id"), []).append(cid)
+        evidence = []
+        for sid in sorted(cited):
+            source = next(s for c in cited[sid] for s in sources_by_claim[c] if s.get("id") == sid)
+            url = str(source.get("url") or "")
+            evidence.append({
+                "id": sid,
+                "title": str(source.get("title") or sid),
+                "url": url if url.startswith(("http://", "https://")) else "",
+                "type": str(source.get("type") or ""),
+                "claims": sorted(cited[sid]),
+            })
+        concepts = [
+            {
+                "id": str(c.get("id") or ""),
+                "name": str(c.get("name") or ""),
+                "route": str(c.get("route") or ""),
+                "relations": [
+                    {"type": str(r.get("type") or ""), "target": str(r.get("target") or ""), "source_claim": str(r.get("source_claim") or "")}
+                    for r in (c.get("relations") or []) if isinstance(r, dict)
+                ],
+            }
+            for c in concepts_by_doc.get(doc_path, [])
+        ]
         doc = {
             "id": doc_path,
             "path": doc_path,
+            "publishPolicy": doc_policies[doc_path],
             "title": extract_title(markdown, fallback),
             "sectionKey": key,
             "section": format_section(key),
@@ -492,8 +575,15 @@ def main() -> None:
             "markdown": enriched,
             "plain": plain,
             "terms": term_meta,
+            "evidence": evidence,
+            "concepts": concepts,
         }
         docs.append(doc)
+        manifest_docs.append({
+            "path": doc_path,
+            "policy": doc_policies[doc_path],
+            "sha256": hashlib.sha256(raw_bytes).hexdigest(),
+        })
         if not sections or sections[-1]["key"] != key:
             sections.append(
                 {
@@ -506,14 +596,14 @@ def main() -> None:
 
     # 2026-11-24 多课程最小扩展（用户批准）：additive courses[] payload。
     # 主课程在首位，courses/*/course.json 依次追加；旧 UI 读 .course 不受影响。
-    # 新课程站点导航属后续 LXD/app.js 工作（另批）。
+    # 每个课程契约必须是已登记的 site-data，否则构建失败。
     courses_payload = [course]
     courses_dir = ROOT / "courses"
     if courses_dir.exists():
         for cd in sorted(p for p in courses_dir.iterdir() if p.is_dir()):
             cj = cd / "course.json"
             if cj.exists():
-                cdata = json.loads(cj.read_text(encoding="utf-8"))
+                cdata = load_site_data(cj.relative_to(ROOT).as_posix())
                 if cdata.get("id") != course.get("id"):
                     courses_payload.append(cdata)
 
@@ -528,24 +618,62 @@ def main() -> None:
         "courses": courses_payload,
         "labs": labs,
         "graph": graph,
+        "curated": curated,
         "techIndex": build_tech_index(glossary),
         "sectionMeta": SECTION_META,
+        # 可追溯的最终发布清单：每篇文档的策略与源文件 SHA256（审批证据链据此比对）。
+        "publishManifest": {
+            "registry": "tools/publish-allowlist.json",
+            "registryVersion": registry["version"],
+            "target": PUBLISH_TARGET,
+            "docs": manifest_docs,
+            "curated": curated_manifest,
+        },
     }
+    return payload
+
+
+def main() -> None:
+    try:
+        payload = build_payload()
+    except (RegistryError, OSError, ValueError) as exc:
+        # 构建失败：不写任何产物，已有 bundle 保持原样（不会被半成品污染）。
+        print(f"BUILD FAILED: {exc}", file=sys.stderr)
+        sys.exit(2)
 
     # Escape sequences that would otherwise terminate the inline <script> block.
     raw = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
     raw = raw.replace("</", "<\\/").replace("\u2028", "\\u2028").replace("\u2029", "\\u2029")
+    content = "window.RENDER_NOTES = " + raw + ";\n"
+    # 先写临时文件并回读校验，再原子替换正式产物；失败时正式 bundle 不变。
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text("window.RENDER_NOTES = " + raw + ";\n", encoding="utf-8")
+    tmp = OUTPUT.with_name(OUTPUT.name + ".tmp")
+    try:
+        tmp.write_text(content, encoding="utf-8")
+        check = tmp.read_text(encoding="utf-8")
+        json.loads(check[len("window.RENDER_NOTES = "):].rstrip().rstrip(";"))
+        os.replace(tmp, OUTPUT)
+    except (OSError, ValueError) as exc:
+        print(f"BUILD FAILED: cannot write {OUTPUT.relative_to(ROOT)}: {exc}", file=sys.stderr)
+        sys.exit(2)
 
+    course = payload["course"]
+    glossary = payload["glossary"]
+    labs = payload["labs"]
+    docs = payload["docs"]
+    sections = payload["sections"]
     term_count = sum(len(group["terms"]) for group in glossary["groups"])
     print(f"Wrote {OUTPUT.relative_to(ROOT)}")
-    print(f"  {len(docs)} documents, {len(sections)} sections")
+    print(f"  {len(docs)} documents, {len(sections)} sections (publish boundary v2: default=deny)")
     print(f"  {len(glossary['groups'])} glossary groups, {term_count} terms")
     print(f"  {len(course['units'])} course units, {len(course['lessons'])} lessons")
     print(f"  {len(labs['labs'])} interactive labs")
-    print(f"  {linked_term_total} chapter term cards generated")
+    print(f"  {count_term_cards(docs)} chapter term cards generated")
     print(f"  {OUTPUT.stat().st_size / 1024:.0f} KB")
+
+
+def count_term_cards(docs: list[dict]) -> int:
+    return sum(len(d.get("terms") or []) for d in docs)
 
 
 if __name__ == "__main__":

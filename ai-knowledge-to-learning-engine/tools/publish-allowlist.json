@@ -1,45 +1,501 @@
 {
   "doc_id": "publish-allowlist",
+  "version": 2,
   "type": "data-config",
-  "status": "draft",
-  "owner": "qwenwork",
+  "status": "active",
+  "policy": "enforce",
+  "default": "deny",
+  "owner": "human",
   "created": "2026-11-19",
-  "updated": "2026-11-24",
-  "policy": "advisory",
-  "note": "咨询性发布清单（非强制）。列出当前经人工确认可发布的一级命名空间。reviews/ 明确排除：治理与审核材料不进学习站 bundle。archive/ 依 D10.4 保留在离线站发布（2026-11-24 文档治理：P6 过程文档六份移入 archive/process-history/，根目录条目随之移除；program-office-delivery 已于 2026-11-19 清理；新增 docs/ 使用指南）。切换为强制 allowlist 需人工裁决。",
-  "allowed_top_levels": [
-    "00-导航与索引",
-    "01-基础理论",
-    "02-解码与播放链路",
-    "03-图形与GPU工程",
-    "04-跨平台与高性能架构",
-    "05-项目实战",
-    "06-面试知识库",
-    "07-3D渲染与算法实现",
-    "08-具身智能",
-    "courses",
-    "archive",
-    "docs",
-    "evidence",
-    "knowledge-model",
-    "CHANGELOG.md",
-    "DECISIONS.md",
-    "README.md",
-    "WORKFLOW_STATE.md"
-  ],
-  "excluded_top_levels": [
-    "reviews",
-    ".agent",
-    ".workbuddy-ai",
-    ".git",
-    ".github",
-    ".gemini",
-    ".cursor",
-    ".zcode",
-    ".qoder-input-images",
-    "web",
-    "site-vitepress",
-    "node_modules",
-    "tools"
+  "updated": "2026-11-25",
+  "approved": "2026-11-24 用户批准学习站发布政策（审计整改 TASK 2；advisory 模式废除）",
+  "note": "强制发布边界 v2：默认拒绝（default=deny），所有发布资产逐个登记，不放行整个目录。archive/ 依 D10.4 保留在离线站只读发布（offline-read-only：不进默认搜索与课程导航，不自动扩大为公开在线站点）；evidence/ 与 knowledge-model/ 为资产级精选登记（curated-data 嵌入 payload，excluded-internal 只登记不发布）。内部文档（DECISIONS/CHANGELOG/WORKFLOW_STATE/reviews/.agent/.governance/课程根审核材料）只登记不发布。未登记资产进入可发布空间 = build 与 validate 双双 FAIL。切换回 advisory 或批量放行目录需人工裁决。",
+  "policies": {
+    "public": {
+      "nav": true,
+      "search": true,
+      "online": "allowed",
+      "desc": "学习者可见"
+    },
+    "offline-read-only": {
+      "nav": true,
+      "search": false,
+      "online": "forbidden",
+      "badge": "历史归档 · 只读",
+      "desc": "D10.4：archive/ 保留在离线站只读发布，与现行课程分离，不默认混入搜索，不扩大为公开在线站点"
+    },
+    "curated-data": {
+      "nav": false,
+      "search": false,
+      "online": "allowed",
+      "embed": true,
+      "desc": "evidence/knowledge-model 资产级精选数据集（source-registry.json / concepts.json）。2026-11-25 起由 build_site 显式嵌入 payload.curated（经 require_site_data 强制校验，validate 核对嵌入集合与 SHA256）：每篇文档底部「证据与概念」面板只输出引用信息（来源标题/链接/类型/支撑的断言编号）与概念（ID/名称/路由/已登记关系），不输出断言验证状态（claim-ledger.json 为 excluded-internal，永不嵌入）。evidence/README.md 与 knowledge-model/README.md（public）继续说明证据层。"
+    },
+    "site-data": {
+      "nav": false,
+      "search": false,
+      "online": "allowed",
+      "desc": "站点运行数据（课程结构/术语/图/实验），非文档"
+    },
+    "excluded-internal": {
+      "nav": false,
+      "search": false,
+      "online": "forbidden",
+      "desc": "位于可发布空间但明确不发布的内部文件（登记原因见 reason）"
+    }
+  },
+  "scan": {
+    "md": "仓库根内全部 .md，除非位于非资产空间（publish_boundary.NON_ASSET_PARTS/FILES：.git/web/site-vitepress/node_modules/.agent/.workbuddy-ai/.zcode/.gemini/.cursor/.github/.governance/reviews 及根 CLAUDE.md/AGENTS.md）。空间内每个 .md 必须逐个登记，未登记 = build 与 validate 双双 FAIL。",
+    "json": "仅 evidence/** 与 knowledge-model/**（资产级精选登记空间）。tools/*.json 与 courses/*/course.json 等站点数据由 build 显式加载并经 require_site_data 强制校验。",
+    "site_data": "build_site 显式加载并嵌入 payload 的数据：tools/{course,glossary,graph,labs}.json + courses/*/course.json，策略必须为 site-data。"
+  },
+  "assets": [
+    {
+      "path": "00-导航与索引/Render_Notes_2.0_双线规划.md",
+      "policy": "public"
+    },
+    {
+      "path": "00-导航与索引/一帧画面的探索之旅.md",
+      "policy": "public"
+    },
+    {
+      "path": "00-导航与索引/学习路径指南.md",
+      "policy": "public"
+    },
+    {
+      "path": "00-导航与索引/概念引入说明.md",
+      "policy": "public"
+    },
+    {
+      "path": "00-导航与索引/知识架构总览.md",
+      "policy": "public"
+    },
+    {
+      "path": "00-导航与索引/知识缺口登记表.md",
+      "policy": "public"
+    },
+    {
+      "path": "00-导航与索引/验真队列与术语表.md",
+      "policy": "public"
+    },
+    {
+      "path": "01-基础理论/音视频基础理论.md",
+      "policy": "public"
+    },
+    {
+      "path": "02-解码与播放链路/流媒体与实时采集.md",
+      "policy": "public"
+    },
+    {
+      "path": "02-解码与播放链路/解码与播放链路.md",
+      "policy": "public"
+    },
+    {
+      "path": "03-图形与GPU工程/GPU与渲染引擎基础与链路.md",
+      "policy": "public"
+    },
+    {
+      "path": "03-图形与GPU工程/光栅化深度与移动GPU架构.md",
+      "policy": "public"
+    },
+    {
+      "path": "03-图形与GPU工程/图形与GPU工程.md",
+      "policy": "public"
+    },
+    {
+      "path": "03-图形与GPU工程/色彩管理与采样滤波.md",
+      "policy": "public"
+    },
+    {
+      "path": "04-跨平台与高性能架构/显式API与同步原语.md",
+      "policy": "public"
+    },
+    {
+      "path": "04-跨平台与高性能架构/智驾渲染方案.md",
+      "policy": "public"
+    },
+    {
+      "path": "04-跨平台与高性能架构/跨平台与高性能架构.md",
+      "policy": "public"
+    },
+    {
+      "path": "05-项目实战/项目实战指南.md",
+      "policy": "public"
+    },
+    {
+      "path": "06-面试知识库/车载渲染引擎/00-面试速问速答清单.md",
+      "policy": "public"
+    },
+    {
+      "path": "06-面试知识库/车载渲染引擎/01-OpenGL管线-FBO与离屏渲染.md",
+      "policy": "public"
+    },
+    {
+      "path": "06-面试知识库/车载渲染引擎/02-Vulkan与显式API对照.md",
+      "policy": "public"
+    },
+    {
+      "path": "06-面试知识库/车载渲染引擎/03-引擎架构-Cocos与Unity.md",
+      "policy": "public"
+    },
+    {
+      "path": "06-面试知识库/车载渲染引擎/04-3D图形学与几何原理.md",
+      "policy": "public"
+    },
+    {
+      "path": "06-面试知识库/车载渲染引擎/05-Shader编程与手写题库.md",
+      "policy": "public"
+    },
+    {
+      "path": "06-面试知识库/车载渲染引擎/06-车载座舱专题与项目表达.md",
+      "policy": "public"
+    },
+    {
+      "path": "06-面试知识库/车载渲染引擎/07-DrawCall优化与渲染管线定制.md",
+      "policy": "public"
+    },
+    {
+      "path": "06-面试知识库/面试知识库.md",
+      "policy": "public"
+    },
+    {
+      "path": "07-3D渲染与算法实现/3D变换与坐标空间.md",
+      "policy": "public"
+    },
+    {
+      "path": "07-3D渲染与算法实现/GPU图像处理算法.md",
+      "policy": "public"
+    },
+    {
+      "path": "07-3D渲染与算法实现/README.md",
+      "policy": "public"
+    },
+    {
+      "path": "07-3D渲染与算法实现/光照材质与阴影.md",
+      "policy": "public"
+    },
+    {
+      "path": "07-3D渲染与算法实现/批处理与GPU驱动管线.md",
+      "policy": "public"
+    },
+    {
+      "path": "07-3D渲染与算法实现/程序化几何与旋转曲面.md",
+      "policy": "public"
+    },
+    {
+      "path": "08-具身智能/01-闭环判据与错误落点.md",
+      "policy": "public"
+    },
+    {
+      "path": "08-具身智能/02-六环闭环与时间预算.md",
+      "policy": "public"
+    },
+    {
+      "path": "08-具身智能/03-时空对齐与标定.md",
+      "policy": "public"
+    },
+    {
+      "path": "08-具身智能/04-运动学与雅可比奇异.md",
+      "policy": "public"
+    },
+    {
+      "path": "08-具身智能/05-模仿学习复合误差与Sim2Real.md",
+      "policy": "public"
+    },
+    {
+      "path": "08-具身智能/06-开源生态与实践路径.md",
+      "policy": "public"
+    },
+    {
+      "path": "08-具身智能/README.md",
+      "policy": "public"
+    },
+    {
+      "path": "README.md",
+      "policy": "public"
+    },
+    {
+      "path": "archive/10-主知识体系学习笔记.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/OpenGL渲染管线.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/README.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/process-history/CURRENT_GAPS.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/process-history/IMPLEMENTATION_PLAN.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/process-history/Master Prompt：构建 AI Knowledge-to-Learning Engine.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/process-history/NEXT_PHASE_PLAN.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/process-history/PROJECT_CURRENT_STATE.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/process-history/README.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/process-history/Render_Notes：从知识库到 AI 原生教学系统的工作流设计.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/个人音视频处理与渲染 全面学习手册.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/图像渲染与引擎优化全维度学习指南.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/基于零拷贝架构与硬件视频流的跨平台渲染引擎：testKTX 性能重构与 GPU_Native-Runtime 演进路线图.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/工业级音视频架构、实时图形渲染管线与 GPU 原生运行时演进研究报告.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/工业级音视频架构与实时图形渲染工程手册.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/知识库重构总览-首页-索引-验真队列.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/音视频图形渲染学习知识库-结构化版.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/音视频处理与图形渲染底层核心技术研究与实践知识库.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "archive/音视频开发核心知识库｜全模块盲区补全手册.md",
+      "policy": "offline-read-only"
+    },
+    {
+      "path": "courses/video-rendering-journey/README.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/labs/README.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L01-为什么视频不是-RGB.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L02-时间戳与同步.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L03-色彩与显示范围.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L04-从文件到码流.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L05-硬解与ownership.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L06-纹理桥与零拷贝.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L07-GPU为什么快.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L08-一帧怎么画出来.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L09-移动端瓶颈与TBDR.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L10-显式API与同步.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L11-RenderGraph与资源生命周期.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L12-系统合成与显示.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L13-坐标变换与MVP.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L14-光照材质与图像算法.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L15-性能评测与项目复盘.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L16-面试表达与查漏补缺.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L17-程序化几何从轮廓到网格.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L18-PBR光照与材质参数.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/video-rendering-journey/lessons/L19-HDR视频渲染.md",
+      "policy": "public"
+    },
+    {
+      "path": "docs/USER-GUIDE.md",
+      "policy": "public"
+    },
+    {
+      "path": "evidence/README.md",
+      "policy": "public"
+    },
+    {
+      "path": "knowledge-model/README.md",
+      "policy": "public"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "policy": "excluded-internal",
+      "reason": "内部工程日志（发布政策禁止）"
+    },
+    {
+      "path": "DECISIONS.md",
+      "policy": "excluded-internal",
+      "reason": "内部决策记录（发布政策禁止）"
+    },
+    {
+      "path": "WORKFLOW_STATE.md",
+      "policy": "excluded-internal",
+      "reason": "内部工作流状态（发布政策禁止）"
+    },
+    {
+      "path": "courses/video-rendering-journey/curriculum.md",
+      "policy": "excluded-internal",
+      "reason": "G2 审核对象（课程蓝图），课程内容以 course.json + lessons 为准"
+    },
+    {
+      "path": "courses/video-rendering-journey/review-report.md",
+      "policy": "excluded-internal",
+      "reason": "内部质量审核报告（G2/G3 材料）"
+    },
+    {
+      "path": "courses/video-rendering-journey/教材质量诊断.md",
+      "policy": "excluded-internal",
+      "reason": "内部质量诊断（P6.1 交付物）"
+    },
+    {
+      "path": "courses/video-rendering-journey/课程覆盖矩阵.md",
+      "policy": "excluded-internal",
+      "reason": "内部覆盖矩阵快照（P6.2 交付物）"
+    },
+    {
+      "path": "evidence/claim-ledger.json",
+      "policy": "excluded-internal",
+      "reason": "含未审核 open claims 与内部验证状态（发布政策禁止）；精选证据走 source-registry.json"
+    },
+    {
+      "path": "knowledge-model/taxonomy.json",
+      "policy": "excluded-internal",
+      "reason": "生成物（glossary+concepts 派生），未经教学审核的中间模型"
+    },
+    {
+      "path": "evidence/source-registry.json",
+      "policy": "curated-data"
+    },
+    {
+      "path": "knowledge-model/concepts.json",
+      "policy": "curated-data"
+    },
+    {
+      "path": "courses/video-rendering-journey/course.json",
+      "policy": "site-data",
+      "note": "pilot 课程契约（courses[] payload）"
+    },
+    {
+      "path": "tools/course.json",
+      "policy": "site-data",
+      "note": "站点课程结构（主课程）"
+    },
+    {
+      "path": "tools/glossary.json",
+      "policy": "site-data",
+      "note": "站点术语层"
+    },
+    {
+      "path": "tools/graph.json",
+      "policy": "site-data",
+      "note": "站点依赖图"
+    },
+    {
+      "path": "tools/labs.json",
+      "policy": "site-data",
+      "note": "站点实验定义"
+    },
+    {
+      "path": "courses/embodied-loop-journey/course.json",
+      "policy": "site-data",
+      "note": "embodied-loop-journey 课程契约（independent，courses[] payload）"
+    },
+    {
+      "path": "courses/embodied-loop-journey/lessons/E01-闭环判据与错误落点.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/embodied-loop-journey/lessons/E02-六环闭环与时间预算.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/embodied-loop-journey/lessons/E03-时空对齐与标定.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/embodied-loop-journey/lessons/E04-运动学与雅可比奇异.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/embodied-loop-journey/lessons/E05-模仿学习复合误差与Sim2Real.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/embodied-loop-journey/lessons/E06-开源生态与实践路径.md",
+      "policy": "public"
+    },
+    {
+      "path": "courses/embodied-loop-journey/README.md",
+      "policy": "public"
+    }
   ]
 }

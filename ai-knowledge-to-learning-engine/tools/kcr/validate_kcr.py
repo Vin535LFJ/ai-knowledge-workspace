@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """KCR schema 程序化校验器（P8 片二，stdlib-only，D05 原则）。
 
-覆盖 tools/kcr/schema/ 四个契约：impact-report / change-proposal / review-decision / run-state（P9）。
+覆盖 tools/kcr/schema/ 五个契约：impact-report / change-proposal / review-decision / run-state（P9）/ approval-record（TASK 4 审批证据链）。
 实现的 JSON Schema 关键字子集 = 各 schema 实际用到的全部关键字：
     type（含类型数组）/ required / properties / items / enum / pattern / minItems
 元信息关键字（$schema/title/description）忽略；**遇到未支持关键字直接抛错**——
@@ -11,14 +11,17 @@ schema 未来演进时强制校验器同步升级，不静默漏检。
 - change-proposal：action ∈ {modify, deprecate, reverify} 时 target.id 必填；
   --stage2 时 human_decision 必须为 null（AI 不预填，G1 性质）。
 - run-state（P9 设计稿 §4 不变量）：human_gate passed 必须有人工 approver+approved_at；
-  进入 PUBLISH/FEEDBACK 必须 gate passed；kcr_substate APPROVED 及以后必须有
-  kcr_approved 人工过渡记录；status=done 只能出现在 FEEDBACK。
+   进入 PUBLISH/FEEDBACK 必须 gate passed；kcr_substate APPROVED 及以后必须有
+   kcr_approved 人工过渡记录；status=done 只能出现在 FEEDBACK。
+- approval-record（TASK 4）：approver 与 approved_at 非空；artifacts 至少 1 项且路径不含 ..；
+   record_id 必须是 <run_id>/<gate>-NN。
 
 用法（本机用 py -3）：
     py -3 tools/kcr/validate_kcr.py reviews/kcr/impact-v14-replay.json
     py -3 tools/kcr/validate_kcr.py proposal.json --schema change-proposal --stage2
     py -3 tools/kcr/validate_kcr.py .agent/runs/RUN-x.json --schema run-state
-不指定 --schema 时按文件名推断（run-state* / impact* / *proposal* / *decision*）。
+    py -3 tools/kcr/validate_kcr.py reviews/approvals/<run-id>/G3-01.json --schema approval-record
+不指定 --schema 时按文件名推断（run-state* / impact* / *proposal* / *decision* / *approval*）。
 退出码：0 全部通过；1 存在校验错误；2 用法/文件错误。
 """
 from __future__ import annotations
@@ -30,7 +33,7 @@ import sys
 from pathlib import Path
 
 SCHEMA_DIR = Path(__file__).resolve().parent / "schema"
-SCHEMA_NAMES = ("impact-report", "change-proposal", "review-decision", "run-state")
+SCHEMA_NAMES = ("impact-report", "change-proposal", "review-decision", "run-state", "approval-record")
 
 _META_KEYWORDS = {"$schema", "title", "description"}
 _SUPPORTED_KEYWORDS = _META_KEYWORDS | {"type", "required", "properties", "items", "enum", "pattern", "minItems"}
@@ -120,6 +123,19 @@ def semantic_errors(doc: dict, name: str, *, stage2: bool = False) -> list[str]:
                 errors.append("$.kcr_substate: APPROVED 及以后必须有 kcr_approved 过渡记录（含人工操作者）")
         if doc.get("status") == "done" and doc.get("phase") != "FEEDBACK":
             errors.append("$.status: done 只能出现在 FEEDBACK 阶段（阶段跳转检查）")
+    if name == "approval-record":
+        if not (doc.get("approver") or "").strip():
+            errors.append("$.approver: 审批人必填且非空（AI 不得代批）")
+        if not (doc.get("approved_at") or "").strip():
+            errors.append("$.approved_at: 批准时间必填")
+        if not doc.get("artifacts"):
+            errors.append("$.artifacts: 至少 1 项（批准必须对应到具体文件版本）")
+        for i, a in enumerate(doc.get("artifacts") or []):
+            if ".." in str(a.get("path", "")).replace("\\", "/").split("/"):
+                errors.append(f"$.artifacts[{i}].path: 不得包含 ..（{a.get('path')!r}）")
+        rid, gid = doc.get("run_id"), doc.get("gate_id")
+        if rid and gid and not str(doc.get("record_id", "")).startswith(f"{rid}/{gid}-"):
+            errors.append(f"$.record_id: 必须是 <run_id>/<gate>-NN（实际 {doc.get('record_id')!r}）")
     return errors
 
 
@@ -133,6 +149,8 @@ def infer_schema(filename: str) -> str | None:
         return "change-proposal"
     if "decision" in low:
         return "review-decision"
+    if "approval" in low:
+        return "approval-record"
     return None
 
 

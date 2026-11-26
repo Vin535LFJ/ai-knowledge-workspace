@@ -4,7 +4,7 @@ type: migration-guide
 status: active
 owner: governance-kit
 created: 2026-11-19
-updated: 2026-11-19
+updated: 2026-11-25
 ---
 
 # 迁移指南：把治理工具包接入任意项目
@@ -24,7 +24,7 @@ py -3 <kit>/cli/governance.py init --project <your-project>
 ```
 
 产出（幂等，不覆盖已有文件）：
-- 项目根 `AGENTS.md` 指针
+- 项目根 `AGENTS.md` 指针（已存在时只在末尾追加带标记的指针段，原内容不变）
 - `.governance/config.json`
 - 四个注册表骨架
 
@@ -38,7 +38,7 @@ py -3 <kit>/cli/governance.py validate  --project <your-project>
 `inventory` 扫描所有 Markdown，提取 frontmatter，按 `doc_id` upsert 到文档注册表。
 `validate` 检查 `doc_id/type/status/owner/created/updated` 必填字段与引用完整性；失败返回非零退出码。
 
-> 若现有文档缺 frontmatter，请先补上这 6 个字段。`owner` 不能为空——无 owner 是典型问题。
+> 若现有文档缺 frontmatter，请先补上这 6 个字段。`owner` 不能为空——无 owner 是典型问题。`type` 请取 13 类标准类型（见 [`specification.md`](specification.md) §十三），否则 `doctor` 会报错。
 
 ### 第 3 步：日常使用
 
@@ -57,7 +57,7 @@ py -3 <kit>/cli/governance.py audit        --project <your-project>
 ```markdown
 ---
 doc_id: design-doc
-type: formal-tech-doc
+type: Spec
 level: L1
 status: active
 owner: alice

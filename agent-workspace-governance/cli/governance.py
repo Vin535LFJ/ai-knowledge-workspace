@@ -49,7 +49,14 @@ FRONTIER_READY_STATUSES = {"completed", "approved"}
 
 TODAY = datetime.date.today().isoformat()
 
-AGENTS_POINTER_TEMPLATE = """---
+# 治理入口指针段的稳定标记：init 以「标记是否存在」判断幂等，
+# 标记之间的内容归工具包所有，标记之外的内容归用户所有、init 永不改动。
+POINTER_BEGIN = "<!-- governance-pointer:start -->"
+POINTER_END = "<!-- governance-pointer:end -->"
+
+# 指针文件 frontmatter（仅在新建 AGENTS.md 时写入；追加到已有文件时不写，
+# 以免在用户正文中间出现第二个 frontmatter 块）
+AGENTS_POINTER_FRONTMATTER = """---
 doc_id: AGENTS
 type: adapter-entry
 status: active
@@ -57,21 +64,30 @@ owner: {owner}
 created: {date}
 updated: {date}
 ---
+"""
 
-# AGENTS.md
+# 指针正文。{kit} 为工具包根目录路径（相对项目根，跨盘符时为绝对路径），
+# 由 _kit_pointer_path 在运行时解析，不再硬编码目录名。
+AGENTS_POINTER_BODY = """{begin}
+
+{heading}
 
 本项目采用 **Agent Workspace Governance** 治理工具包。
 
-> 本文件是指针入口，不含规则正文（由 `governance.py init` 生成，可安全重复执行）。
+> 本段是指针入口，不含规则正文（由 `governance.py init` 写入，可安全重复执行）。
 
-- 权威规则：`agent-workspace-governance/constitution/`
-- 通用入口说明：`agent-workspace-governance/AGENTS.md`
-- 治理 CLI：`agent-workspace-governance/cli/governance.py`
+- 权威规则：`{kit}/constitution/`
+- 通用入口说明：`{kit}/AGENTS.md`
+- 治理 CLI：`{kit}/cli/governance.py`
 - 状态目录：`.governance/`
 
 进入项目的 Agent 请先读取上述权威规则，并在 Agent 注册表登记身份与能力；
 未验证的能力标记 `unverified`。正式文档单一权威来源，人工决策不可被 AI 替代。
+{end}
 """
+
+# 指针段追加到已有文件时的标题（文件里通常已有自己的 H1，故降为 H2）
+AGENTS_POINTER_APPENDED_HEADING = "## Agent 治理入口（Agent Workspace Governance）"
 
 
 # ---------------------------------------------------------------------------
@@ -257,12 +273,96 @@ def scan_markdown_docs(project_path: str):
     return results
 
 
+def _kit_pointer_path(project_path: str) -> str:
+    """返回写入 AGENTS.md 指针的工具包根路径（统一用 '/'）。
+
+    优先给出相对项目根目录的路径（工具包与项目一起搬迁仍然有效）；
+    仅当两者不在同一盘符/无公共根（Windows 跨盘 relpath 抛 ValueError）时
+    退回工具包自身的绝对路径。路径分隔符统一为 '/'，保证跨平台文本一致。
+    """
+    try:
+        rel = os.path.relpath(KIT_ROOT, project_path)
+    except ValueError:
+        # Windows 跨盘符：无法表示相对路径
+        return KIT_ROOT.replace(os.sep, "/")
+    if os.path.isabs(rel):
+        return KIT_ROOT.replace(os.sep, "/")
+    return rel.replace(os.sep, "/")
+
+
+def _render_pointer_body(project_path: str, appended: bool = False) -> str:
+    """渲染指针段（含起止标记）。appended=True 时标题降为 H2，适配已有文件。"""
+    body = AGENTS_POINTER_BODY.format(
+        begin=POINTER_BEGIN,
+        end=POINTER_END,
+        kit=_kit_pointer_path(project_path),
+        heading=AGENTS_POINTER_APPENDED_HEADING if appended else "# AGENTS.md",
+    )
+    return body
+
+
+def ensure_agents_pointer(project_path: str) -> str:
+    """保证项目根 AGENTS.md 含治理入口指针段，返回处理状态。
+
+    状态取值：
+      - "created"  ：AGENTS.md 不存在或为空文件，写入完整指针入口（含 frontmatter）
+      - "appended" ：已有内容，在文件末尾追加带稳定标记的指针段，原有字节不动
+      - "present"  ：已含标记，不做任何修改（幂等）
+      - "skipped"  ：已有文件不是 UTF-8 文本，无法安全追加，保持原样并交由调用方提示
+
+    设计约束：不覆盖用户文件、不重复追加（按 POINTER_BEGIN 判定）、
+    只以追加模式写入，用户原有内容逐字节不变。
+    """
+    project_path = os.path.abspath(project_path)
+    agents_path = os.path.join(project_path, AGENTS_FILE)
+    body = _render_pointer_body(project_path, appended=False)
+
+    if not os.path.exists(agents_path):
+        full = AGENTS_POINTER_FRONTMATTER.format(owner="human", date=_now()) + body
+        _write_text(agents_path, full)
+        return "created"
+
+    # 以字节方式读取：判定编码与换行符，但不改写任何已有字节
+    with open(agents_path, "rb") as fh:
+        raw = fh.read()
+
+    if POINTER_BEGIN.encode("utf-8") in raw:
+        return "present"
+
+    if not raw.strip():
+        # 空文件等价于「不存在」，直接写入完整入口
+        full = AGENTS_POINTER_FRONTMATTER.format(owner="human", date=_now()) + body
+        _write_text(agents_path, full)
+        return "created"
+
+    try:
+        raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return "skipped"
+
+    # 沿用原文件的换行风格（CRLF / LF），仅在文件末尾追加
+    newline = "\r\n" if b"\r\n" in raw else "\n"
+    appended_body = _render_pointer_body(project_path, appended=True).replace("\n", newline)
+    chunk = newline + appended_body
+    if not raw.endswith(b"\n"):
+        # 原文件末尾没有换行：先补一个换行，保证指针段从新行开始
+        chunk = newline + chunk
+    with open(agents_path, "ab") as fh:
+        fh.write(chunk.encode("utf-8"))
+    return "appended"
+
+
 # ---------------------------------------------------------------------------
 # 1. init
 # ---------------------------------------------------------------------------
 
-def init_project(project_path: str) -> list:
-    """初始化治理配置（幂等）。返回本次新建的文件路径列表。"""
+def init_project(project_path: str, report: dict | None = None) -> list:
+    """初始化治理配置（幂等）。返回本次新建的文件路径列表。
+
+    可选 report 字典（由调用方传入）回填本次处理详情：
+      report["agents"] = "created" | "appended" | "present" | "skipped"
+    便于 CLI 区分「新建了 AGENTS.md」与「在已有 AGENTS.md 末尾追加了指针段」。
+    """
     project_path = os.path.abspath(project_path)
     state = os.path.join(project_path, STATE_DIR)
     os.makedirs(state, exist_ok=True)
@@ -311,11 +411,11 @@ def init_project(project_path: str) -> list:
             _write_json(path, initial)
             created.append(path)
 
-    agents_path = os.path.join(project_path, AGENTS_FILE)
-    if not os.path.exists(agents_path):
-        content = AGENTS_POINTER_TEMPLATE.format(owner="human", date=_now())
-        _write_text(agents_path, content)
-        created.append(agents_path)
+    agents_status = ensure_agents_pointer(project_path)
+    if report is not None:
+        report["agents"] = agents_status
+    if agents_status == "created":
+        created.append(os.path.join(project_path, AGENTS_FILE))
 
     return created
 
@@ -1048,13 +1148,26 @@ def main(argv=None) -> int:
         return 0
 
     if args.command == "init":
-        created = init_project(project)
+        report = {}
+        created = init_project(project, report)
+        agents_path = os.path.join(os.path.abspath(project), AGENTS_FILE)
+        agents_status = report["agents"]
         if created:
             print("初始化完成，新建文件：")
             for path in created:
                 print("  - " + path)
-        else:
+        elif agents_status != "appended":
             print("已初始化，无需变更（幂等）。")
+        if agents_status == "appended":
+            # 不静默：明确告知在已有文件末尾追加了指针，原有内容未改动
+            print("已初始化；{} 已存在，已在末尾追加治理入口指针（原有内容未改动）。".format(
+                agents_path))
+        elif agents_status == "present":
+            print("AGENTS.md 已含治理入口指针（标记 {}），未改动。".format(POINTER_BEGIN))
+        elif agents_status == "skipped":
+            # 不静默：明确告知入口未建立，需人工处理
+            print("警告：{} 不是 UTF-8 文本，未追加治理入口指针（文件保持原样）。"
+                  "请手工添加指针或先将该文件转为 UTF-8 后重新执行 init。".format(agents_path))
 
     elif args.command in ("inventory", "index"):
         # index 是 inventory 的别名，行为完全一致（保留 inventory 名向后兼容）

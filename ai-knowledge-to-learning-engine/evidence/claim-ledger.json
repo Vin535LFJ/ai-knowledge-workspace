@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-11-21",
+  "updated": "2026-11-25",
   "note": "种子断言从 00-导航与索引/验真队列与术语表.md 与 概念引入说明.md 派生，状态继承原 ✅/⚠️/❗ 标记。AI 生成内容不得自动标为 verified。",
   "claims": [
     {
@@ -2274,11 +2274,13 @@
       "source_documents": [
         "08-具身智能/01-闭环判据与错误落点.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E01"
+      ]
     },
     {
       "id": "V69",
-      "claim": "闭环六环（感知/理解/决策/规划/执行/反馈）不是流水线而是自我修正循环，任一环延迟或失真沿回路放大；反馈须三张来源（视觉复检/力与触觉/状态与结果标签）相互印证且同一时间基准，10ms 周期里 40ms 反馈迟 4 个周期",
+      "claim": "闭环六环（感知/理解/决策/规划/执行/反馈）不是流水线而是自我修正循环，任一环延迟都会沿回路累加（失真是否被放大取决于回路增益，不能一概而论）；反馈须三张来源（视觉复检/力与触觉/状态与结果标签）相互印证且同一时间基准，10ms 周期里 40ms 反馈迟 4 个周期",
       "claim_type": "engineering_fact",
       "evidence": [
         {
@@ -2300,7 +2302,9 @@
       "source_documents": [
         "08-具身智能/02-六环闭环与时间预算.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E02"
+      ]
     },
     {
       "id": "V70",
@@ -2334,7 +2338,9 @@
       "source_documents": [
         "08-具身智能/02-六环闭环与时间预算.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E02"
+      ]
     },
     {
       "id": "V71",
@@ -2367,7 +2373,9 @@
       "source_documents": [
         "08-具身智能/03-时空对齐与标定.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E03"
+      ]
     },
     {
       "id": "V72",
@@ -2389,15 +2397,19 @@
         "status": "open",
         "confidence": "low"
       },
-      "conditions": [],
+      "conditions": [
+        "结论前提：被贴靠通道等间隔、无丢帧，且操作方向是贴到主节拍"
+      ],
       "source_documents": [
         "08-具身智能/03-时空对齐与标定.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E03"
+      ]
     },
     {
       "id": "V73",
-      "claim": "采样率须高于信号最高频率分量两倍（Nyquist 极限下限），否则混叠产生假信号：12Hz 振动用 10Hz 采样读成 |12−10|=2Hz 假频率；分辨 12Hz 需 ≥24Hz 采样",
+      "claim": "采样率须高于信号最高频率分量两倍（Nyquist 极限下限），否则混叠产生假信号：12Hz 振动用 10Hz 采样读成 |12−10|=2Hz 假频率；分辨 12Hz 需 >24Hz 采样（严格高于两倍）",
       "claim_type": "engineering_fact",
       "evidence": [
         {
@@ -2416,12 +2428,15 @@
         "confidence": "low"
       },
       "conditions": [
-        "textbook 术语表 L1036 混叠释义条件写反（与正文及其自身算例矛盾），已登记源勘误队列；Engine 按正确采样定理撰写"
+        "textbook 术语表 L1036 混叠释义条件写反（与正文及其自身算例矛盾），已登记源勘误队列；Engine 按正确采样定理撰写",
+        "源 textbook L431 写“≥24 Hz”，与同句“高于两倍”不一致；Engine 按严格大于撰写，课源已加注记"
       ],
       "source_documents": [
         "08-具身智能/03-时空对齐与标定.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E03"
+      ]
     },
     {
       "id": "V74",
@@ -2452,7 +2467,9 @@
       "source_documents": [
         "08-具身智能/03-时空对齐与标定.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E03"
+      ]
     },
     {
       "id": "V75",
@@ -2475,7 +2492,9 @@
       "source_documents": [
         "08-具身智能/04-运动学与雅可比奇异.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E04"
+      ]
     },
     {
       "id": "V76",
@@ -2493,12 +2512,15 @@
         "confidence": "low"
       },
       "conditions": [
-        "Engine 独立复算全过（含代回还原目标）"
+        "Engine 独立复算全过（含代回还原目标）",
+        "Robot_Learn kb:5.16.2 把两组解的肘上/肘下标签写反；Engine 按通行定义重算后标注（勘误见 G1 队列 #13）"
       ],
       "source_documents": [
         "08-具身智能/04-运动学与雅可比奇异.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E04"
+      ]
     },
     {
       "id": "V77",
@@ -2521,7 +2543,9 @@
       "source_documents": [
         "08-具身智能/04-运动学与雅可比奇异.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E04"
+      ]
     },
     {
       "id": "V78",
@@ -2555,7 +2579,9 @@
       "source_documents": [
         "08-具身智能/05-模仿学习复合误差与Sim2Real.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E05"
+      ]
     },
     {
       "id": "V79",
@@ -2588,7 +2614,9 @@
       "source_documents": [
         "08-具身智能/05-模仿学习复合误差与Sim2Real.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E05"
+      ]
     },
     {
       "id": "V80",
@@ -2616,7 +2644,9 @@
       "source_documents": [
         "08-具身智能/05-模仿学习复合误差与Sim2Real.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E05"
+      ]
     },
     {
       "id": "V81",
@@ -2644,7 +2674,9 @@
       "source_documents": [
         "08-具身智能/05-模仿学习复合误差与Sim2Real.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E05"
+      ]
     },
     {
       "id": "V82",
@@ -2672,11 +2704,13 @@
       "source_documents": [
         "08-具身智能/06-开源生态与实践路径.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E06"
+      ]
     },
     {
       "id": "V83",
-      "claim": "仿真可复现性分层：CPU MuJoCo 官方声明逐位可复现（三警告：保存全部积分状态/接触事件混沌放大/仅同版本同架构）；GPU MJWarp 默认非确定（官方 FAQ 逐字 'No'，GPU 原子操作非确定性），wp.set_device('cpu') 切回确定性；MJWarp float32 vs MuJoCo float64 数值敏感；PR #1422 不保证完整 stepping 确定性",
+      "claim": "仿真可复现性分层：CPU MuJoCo 逐位可复现（MuJoCo 官方文档 Reproducibility 节，2026-11-25 逐字）（三警告：保存全部积分状态/接触事件混沌放大/仅同版本同架构）；GPU MJWarp 默认非确定（官方 FAQ 逐字 'No'，GPU 原子操作非确定性），wp.set_device('cpu') 切回确定性；MJWarp float32 vs MuJoCo float64 数值敏感；PR #1422 不保证完整 stepping 确定性",
       "claim_type": "engineering_fact",
       "evidence": [
         {
@@ -2693,6 +2727,11 @@
           "source_id": "SRC-RL-PRINCIPLES",
           "locator": "ch3 L193–195（可复现性分层）",
           "evidence_type": "repo_doc"
+        },
+        {
+          "source_id": "SRC-EXT-MUJOCO-REPRODUCIBILITY",
+          "locator": "Reproducibility 节（piReproducibility）：\"MuJoCo's simulation pipeline is entirely deterministic and reproducible\" + 三条注意事项（2026-11-25 逐字）",
+          "evidence_type": "official_doc"
         }
       ],
       "verification": {
@@ -2700,12 +2739,15 @@
         "confidence": "low"
       },
       "conditions": [
-        "CPU 确定性限同版本同架构；源 fact:72/73 未列入册末来源清单（源登记缺口，勘误队列 #3），Engine 以官方 FAQ 直核为准"
+        "CPU 确定性限同版本同架构；源 fact:72/73 未列入册末来源清单（源登记缺口，勘误队列 #3），CPU 一行以官方文档 Reproducibility 节直核为准，GPU 一行以 MJWarp 官方 FAQ 直核为准",
+        "官方原文取文日期：CPU 一行 2026-11-25（doc/computation/index.rst，main 分支），GPU 一行 2026-11-24（doc/mjwarp/index.rst）；官方声明随版本变化，引用须带取文日期与\"同版本、同架构\"条件；状态升级待人工裁决（G1）"
       ],
       "source_documents": [
         "08-具身智能/06-开源生态与实践路径.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E06"
+      ]
     },
     {
       "id": "V84",
@@ -2728,7 +2770,129 @@
       "source_documents": [
         "08-具身智能/05-模仿学习复合误差与Sim2Real.md"
       ],
-      "used_by_lessons": []
+      "used_by_lessons": [
+        "E05"
+      ]
+    },
+    {
+      "id": "V85",
+      "claim": "BEVFormer 在 nuScenes test 集取得 56.9% NDS，比此前最佳 DETR3D 高 9.0 个点（47.9%），与 LiDAR 基线相当；该数字是 2022-03 论文口径，只说明 BEV 感知表示的能力边界，不构成感知已解决的结论——BEV/Occupancy 产出仍只是感知中间态",
+      "claim_type": "engineering_fact",
+      "evidence": [
+        {
+          "source_id": "SRC-EXT-BEVFORMER",
+          "locator": "arXiv 摘要（2022-03-31）：56.9% NDS on nuScenes test, 9.0 points higher than previous best；引言 DETR3D 47.9%",
+          "evidence_type": "official_abstract"
+        },
+        {
+          "source_id": "SRC-RL-TEXTBOOK",
+          "locator": "§3 L254–258（BEV/Occupancy 只是感知中间态）",
+          "evidence_type": "repo_doc"
+        }
+      ],
+      "verification": {
+        "status": "open",
+        "confidence": "low"
+      },
+      "conditions": [
+        "数字为论文口径快照（2022-03），引用须带数据集/划分/日期；升级待 G1"
+      ],
+      "source_documents": [
+        "08-具身智能/02-六环闭环与时间预算.md"
+      ],
+      "used_by_lessons": [
+        "E02"
+      ]
+    },
+    {
+      "id": "V86",
+      "claim": "具身学习十六周路线的验收标准：第 0 周代码能从干净环境按 README 重跑，第 4 周有可重复的成功率而不只展示一段成功视频，第 15–16 周第三方能按报告复现主要结果；第一个交付物是可复现而不是模型。教学解释：不能复现的成功无法证明是能力而不是运气，之后带试验次数的成功率报告才可信",
+      "claim_type": "engineering_fact",
+      "evidence": [
+        {
+          "source_id": "SRC-RL-OPENLAB",
+          "locator": "L350–367（逐周验收表：第 0/4/15–16 周）/L333",
+          "evidence_type": "repo_doc"
+        },
+        {
+          "source_id": "SRC-RL-TEXTBOOK",
+          "locator": "L877/L910（每周投入与阶段验收）/L916–917（试验次数与初始条件分布）",
+          "evidence_type": "repo_doc"
+        }
+      ],
+      "verification": {
+        "status": "open",
+        "confidence": "low"
+      },
+      "conditions": [
+        "逐周验收表为源文要点；「不能复现的成功无法证明是能力而不是运气」是与第 4 周验收标准一致的教学解释，非源文原句",
+        "openlab 主体素材为研究整理稿（未经独立核实声明）；升级待 G1"
+      ],
+      "source_documents": [
+        "08-具身智能/06-开源生态与实践路径.md"
+      ],
+      "used_by_lessons": [
+        "E06"
+      ]
+    },
+    {
+      "id": "V87",
+      "claim": "具身学习实践的九条常见坑：只看演示视频、把语言理解当行动能力、把仿真成功当真实成功、忽略动作空间、数据泄漏、一次引入太多组件、忽略推理延迟、混淆开放与可商用、盲目升级依赖；动作接口铁律：关节位置、关节速度、末端位姿、夹爪开合、动作词元互不兼容，换接口后权重未必能用",
+      "claim_type": "engineering_fact",
+      "evidence": [
+        {
+          "source_id": "SRC-RL-TEXTBOOK",
+          "locator": "L919（九条坑）",
+          "evidence_type": "repo_doc"
+        },
+        {
+          "source_id": "SRC-RL-OPENLAB",
+          "locator": "L459–467（九条坑逐字要点）/L209（动作接口铁律）",
+          "evidence_type": "repo_doc"
+        }
+      ],
+      "verification": {
+        "status": "open",
+        "confidence": "low"
+      },
+      "conditions": [
+        "源库的工程经验清单，单源，未经外部独立来源核验",
+        "九条坑的分组（尺子可查 / 做法 / 数据与合规）及与前几课的对应是 Engine 的教学组织，不是源文原句"
+      ],
+      "source_documents": [
+        "08-具身智能/06-开源生态与实践路径.md"
+      ],
+      "used_by_lessons": [
+        "E06"
+      ]
+    },
+    {
+      "id": "V88",
+      "claim": "容差必须写成数字（源底本自设示例值，未经实测）：三维框 0.20×0.15×0.10 m 每个面向外放宽 10 mm（每条边长加 20 mm）后体积 0.003→0.22×0.17×0.12=0.004488 m³，增加 49.6%，框内约 33.2% 为背景点；长 0.20 m 的物体 Yaw 差 10° 时端点偏 0.20×sin10°=34.7 mm；10 N 力阈值配 5 N 量化粒度最坏半格 2.5 N=阈值的 25%，要压到 5% 须粒度 1 N",
+      "claim_type": "engineering_fact",
+      "evidence": [
+        {
+          "source_id": "SRC-RL-TEXTBOOK",
+          "locator": "§6.3 L526–529（三笔账）/§6 L487（小结）",
+          "evidence_type": "repo_doc"
+        }
+      ],
+      "verification": {
+        "status": "open",
+        "confidence": "low"
+      },
+      "conditions": [
+        "容差为源底本自设的示例值，未经实测（存疑）；机制结论'容差必须写成数字'不依赖具体数值",
+        "33.2% 隐含点在框内均匀分布的假设，源文与课文均未写明",
+        "源文'每边放宽 10 毫米'的'边'字在面与边长之间有歧义（算式按每个面 10 mm），已登记源勘误队列 #14",
+        "单源；同节'对齐检查表八项'为工程惯例，无第二来源；升级待人工裁决（G1）"
+      ],
+      "source_documents": [
+        "08-具身智能/03-时空对齐与标定.md"
+      ],
+      "used_by_lessons": [
+        "E03"
+      ]
     }
   ]
 }

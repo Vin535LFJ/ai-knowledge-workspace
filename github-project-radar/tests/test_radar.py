@@ -18,7 +18,7 @@ if PROJECT_ROOT not in sys.path:
     sys.path.insert(0, PROJECT_ROOT)
 
 from radar import load_config
-from radar.export import EXPORT_FIELDS, build_research_task, export_research_tasks
+from radar.export import EXPORT_FIELDS, build_research_task, export_research_tasks, validate_intake_task
 from radar.growth import compute_growth
 from radar.models import Candidate, Repository, Snapshot
 from radar.reports import REPORT_FILES, generate_json_report, generate_report, generate_summary_report
@@ -35,7 +35,12 @@ from radar.sources.base import SourceClient
 from radar.sources.ossinsight import OSSInsightSourceClient
 from radar.sources.rest import RestSourceClient
 from radar.sources.trending import TrendingSourceClient
-from radar.storage import Storage
+from radar.storage import (
+    APPROVED_REVIEW_STATUS,
+    CANDIDATE_HUMAN_COLUMNS,
+    CANDIDATE_MACHINE_COLUMNS,
+    Storage,
+)
 
 
 def make_snapshots(repo_id, stars_by_day, start=None):
@@ -265,7 +270,10 @@ class ExportTests(unittest.TestCase):
 
     def test_export_field_completeness(self):
         out = os.path.join(self.tmp.name, "tasks.json")
-        export_research_tasks(self.storage, out, review_status="Research", only_approved=True)
+        # --approved 现在是一次人工批准动作：必须提供批准人，并把完整批准状态写入数据库
+        export_research_tasks(
+            self.storage, out, review_status="Research", only_approved=True, approver="alice"
+        )
         with open(out, encoding="utf-8") as fh:
             data = json.load(fh)
         self.assertEqual(data["task_count"], 1)
@@ -273,6 +281,7 @@ class ExportTests(unittest.TestCase):
         for field in EXPORT_FIELDS:
             self.assertIn(field, task, f"缺少字段 {field}")
         self.assertEqual(task["review_status"], "approved_for_research")
+        self.assertTrue(task["human_selected_for_research"])
         self.assertEqual(task["url"], "https://github.com/org/proj")
         self.assertEqual(task["research_objective"], "研究其记忆机制")
 
@@ -607,6 +616,368 @@ class ResearchPathTests(unittest.TestCase):
         with open(result["path"], encoding="utf-8") as fh:
             text = fh.read()
         self.assertIn('doc_id: "research-owner__repo"', text)
+
+
+# =====================================================================
+# P0 回归：analyze 不得覆盖人工审核状态；--approved 必须写入完整人工批准状态
+# =====================================================================
+
+
+def _run_cli(argv):
+    """在测试中调用 CLI main()，返回 SystemExit 的退出码（正常结束返回 None）。"""
+    from cli.radar import main
+
+    try:
+        main(argv)
+    except SystemExit as exc:
+        return exc.code
+    return None
+
+
+def _candidate_columns(storage):
+    """读取 candidates 表的实际列名（以数据库 schema 为准）。"""
+    import sqlite3
+
+    conn = sqlite3.connect(storage.db_path)
+    try:
+        return [r[1] for r in conn.execute("PRAGMA table_info(candidates)").fetchall()]
+    finally:
+        conn.close()
+
+
+class AnalyzePreservesHumanStateTests(unittest.TestCase):
+    """P0-A：重复 analyze 只更新机器字段，人工字段与审核状态必须保留。"""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.db = os.path.join(self.tmp.name, "radar.db")
+        self.storage = Storage(self.db)
+        self.storage.init_db()
+        self.storage.upsert_repository(
+            Repository(repository_id=1, full_name="org/agent-forge",
+                       description="A novel multi-agent framework", topics=["agent", "framework"])
+        )
+        self.storage.insert_snapshot(Snapshot(1, "2026-11-10T00:00:00+00:00", 100))
+        self.db_args = ["--db", self.db]
+
+    def _analyze_twice(self):
+        for _ in range(2):
+            code = _run_cli(self.db_args + ["analyze"])
+            self.assertIsNone(code)
+
+    def _only_candidate(self):
+        rows = self.storage.list_candidates()
+        self.assertEqual(len(rows), 1)
+        return rows[0]
+
+    def _assert_no_approval_fields(self, row):
+        self.assertIsNone(row["approver"])
+        self.assertIsNone(row["approved_at"])
+        self.assertIsNone(row["approval_reason"])
+
+    def test_machine_and_human_columns_partition_matches_schema(self):
+        # 两个集合互斥，并覆盖候选表除唯一键/创建时间外的全部列（以实际 schema 为准）
+        self.assertFalse(CANDIDATE_MACHINE_COLUMNS & CANDIDATE_HUMAN_COLUMNS)
+        key_columns = {"id", "repository_id", "topic", "created_at"}
+        self.assertEqual(
+            set(_candidate_columns(self.storage)),
+            key_columns | CANDIDATE_MACHINE_COLUMNS | CANDIDATE_HUMAN_COLUMNS,
+        )
+        for name in ["review_status", "human_selected_for_research", "approver", "approved_at", "approval_reason"]:
+            self.assertIn(name, CANDIDATE_HUMAN_COLUMNS)
+
+    def test_new_candidate_defaults_to_discovered(self):
+        _run_cli(self.db_args + ["analyze"])
+        row = self._only_candidate()
+        self.assertEqual(row["review_status"], "Discovered")
+        self.assertFalse(row["human_selected_for_research"])
+        self._assert_no_approval_fields(row)
+
+    def test_discovered_stays_discovered_and_human_fields_unchanged(self):
+        self._analyze_twice()
+        row = self._only_candidate()
+        self.assertEqual(row["review_status"], "Discovered")
+        self.assertFalse(row["human_selected_for_research"])
+        self.assertEqual(row["research_objective"], "")
+        self._assert_no_approval_fields(row)
+
+    def test_triaged_and_watch_statuses_preserved(self):
+        # 状态机中没有名为 Candidate 的状态；最接近的中间态为 Triaged / Watch，逐一验证
+        sm = ReviewStateMachine(self.storage)
+        _run_cli(self.db_args + ["analyze"])
+        cid = self._only_candidate()["id"]
+        sm.transition(cid, "Discovered", "Triaged", "alice", "分诊")
+        self._analyze_twice()
+        self.assertEqual(self._only_candidate()["review_status"], "Triaged")
+        sm.transition(cid, "Triaged", "Watch", "alice", "观察")
+        self._analyze_twice()
+        row = self._only_candidate()
+        self.assertEqual(row["review_status"], "Watch")
+        self.assertEqual([e["to"] for e in row["evaluation"]["review_log"]], ["Triaged", "Watch"])
+
+    def test_research_status_preserved_with_objective_and_review_log(self):
+        sm = ReviewStateMachine(self.storage)
+        _run_cli(self.db_args + ["analyze"])
+        cid = self._only_candidate()["id"]
+        sm.transition(cid, "Discovered", "Triaged", "alice", "分诊")
+        sm.transition(cid, "Triaged", "Research", "alice", "值得研究", research_objective="研究其记忆机制")
+        log_before = self._only_candidate()["evaluation"]["review_log"]
+        self._analyze_twice()
+        row = self._only_candidate()
+        self.assertEqual(row["review_status"], "Research")
+        self.assertEqual(row["research_objective"], "研究其记忆机制")
+        self.assertEqual(row["evaluation"]["review_log"], log_before)
+        self.assertEqual(row["evaluation"]["review_status"], "Research")
+
+    def test_canonical_research_status_preserved(self):
+        _run_cli(self.db_args + ["analyze"])
+        cid = self._only_candidate()["id"]
+        self.storage.update_candidate_review(cid, "deep_dive", "bob", "canonical 状态")
+        self._analyze_twice()
+        self.assertEqual(self._only_candidate()["review_status"], "deep_dive")
+
+    def test_adopt_status_preserved(self):
+        sm = ReviewStateMachine(self.storage)
+        _run_cli(self.db_args + ["analyze"])
+        cid = self._only_candidate()["id"]
+        for cur, target in [("Discovered", "Triaged"), ("Triaged", "Research"), ("Research", "Adopt")]:
+            sm.transition(cid, cur, target, "alice", f"to {target}")
+        self._analyze_twice()
+        row = self._only_candidate()
+        self.assertEqual(row["review_status"], "Adopt")
+        self.assertEqual(len(row["evaluation"]["review_log"]), 3)
+
+    def test_human_selected_true_and_approval_fields_preserved(self):
+        _run_cli(self.db_args + ["analyze"])
+        cid = self._only_candidate()["id"]
+        self.storage.approve_candidate(cid, approver="alice", approved_at="2026-11-20T00:00:00+00:00",
+                                       approval_reason="人工批准")
+        self._analyze_twice()
+        row = self._only_candidate()
+        self.assertTrue(row["human_selected_for_research"])
+        self.assertEqual(row["review_status"], APPROVED_REVIEW_STATUS)
+        self.assertEqual(row["approver"], "alice")
+        self.assertEqual(row["approved_at"], "2026-11-20T00:00:00+00:00")
+        self.assertEqual(row["approval_reason"], "人工批准")
+        self.assertEqual(len(row["evaluation"]["review_log"]), 1)
+
+    def test_direct_upsert_cannot_overwrite_human_columns(self):
+        # 即使调用方传入「全默认」的候选对象，已有人工字段也不被覆盖
+        self.storage.upsert_candidate(
+            Candidate(repository_id=1, topic="ai-agent", review_status="Research",
+                      human_selected_for_research=True, research_objective="人工目标",
+                      created_at="2026-11-01T00:00:00+00:00")
+        )
+        self.storage.upsert_candidate(
+            Candidate(repository_id=1, topic="ai-agent", review_status="Discovered",
+                      human_selected_for_research=False, research_objective="",
+                      evaluation={"total": 1, "dimensions": {}})
+        )
+        row = self._only_candidate()
+        self.assertEqual(row["review_status"], "Research")
+        self.assertTrue(row["human_selected_for_research"])
+        self.assertEqual(row["research_objective"], "人工目标")
+        self.assertEqual(row["created_at"], "2026-11-01T00:00:00+00:00")
+        self.assertEqual(row["evaluation"]["total"], 1)
+
+    def test_collected_metrics_updated_while_status_preserved(self):
+        # 三个快照（跨度 >30 天）保证 7d/30d 窗口都有历史，增长数字可被真实计算
+        self.storage.insert_snapshot(Snapshot(1, "2026-10-15T00:00:00+00:00", 50))
+        self.storage.insert_snapshot(Snapshot(1, "2026-11-10T00:00:00+00:00", 100))
+        _run_cli(self.db_args + ["analyze"])
+        before = self._only_candidate()
+        self.assertEqual(before["discovery_reason"]["snapshot_count"], 2)
+        cid = before["id"]
+        ReviewStateMachine(self.storage).transition(cid, "Discovered", "Triaged", "alice", "分诊")
+        # 新采集到一条星标暴涨的快照后再次 analyze
+        self.storage.insert_snapshot(Snapshot(1, "2026-11-19T00:00:00+00:00", 5000))
+        _run_cli(self.db_args + ["analyze"])
+        after = self._only_candidate()
+        self.assertEqual(after["discovery_reason"]["snapshot_count"], 3)
+        self.assertEqual(self.storage.get_latest_snapshot(1).stargazers_count, 5000)
+        gm = after["evaluation"]["dimensions"]["growth_momentum"]["basis"]
+        self.assertEqual(gm["star_growth_7d"], 4900)
+        # 历史充足：评分依据不再是「历史不足」的中性标记
+        self.assertNotIn("insufficient_history", gm)
+        self.assertGreater(after["evaluation"]["dimensions"]["growth_momentum"]["score"], 0)
+        self.assertNotEqual(after["evaluation"]["total"], before["evaluation"]["total"])
+        self.assertEqual(after["review_status"], "Triaged")
+
+    def test_legacy_db_without_approval_columns_upgraded_without_data_loss(self):
+        import sqlite3
+
+        legacy_db = os.path.join(self.tmp.name, "legacy.db")
+        conn = sqlite3.connect(legacy_db)
+        conn.executescript(
+            """
+            CREATE TABLE repositories (repository_id INTEGER PRIMARY KEY, full_name TEXT NOT NULL,
+                description TEXT, language TEXT, topics TEXT, license TEXT, created_at TEXT,
+                homepage TEXT, default_branch TEXT, archived INTEGER DEFAULT 0,
+                first_seen_at TEXT NOT NULL);
+            CREATE TABLE candidates (id INTEGER PRIMARY KEY AUTOINCREMENT, repository_id INTEGER NOT NULL,
+                topic TEXT NOT NULL, discovery_reason TEXT, evaluation TEXT,
+                review_status TEXT NOT NULL DEFAULT 'Discovered', research_objective TEXT,
+                created_at TEXT NOT NULL, human_selected_for_research INTEGER DEFAULT 0,
+                UNIQUE(repository_id, topic));
+            INSERT INTO repositories VALUES (1, 'org/old', 'd', NULL, '[]', NULL, NULL, NULL, 'main', 0, '2026-01-01T00:00:00+00:00');
+            INSERT INTO candidates (repository_id, topic, review_status, research_objective, created_at, human_selected_for_research)
+                VALUES (1, 'ai-agent', 'Research', '旧目标', '2026-01-01T00:00:00+00:00', 1);
+            """
+        )
+        conn.commit()
+        conn.close()
+        legacy = Storage(legacy_db)
+        legacy.init_db()  # 旧库补列，必须保留既有人工状态
+        legacy.upsert_candidate(Candidate(repository_id=1, topic="ai-agent", evaluation={"total": 5}))
+        rows = legacy.list_candidates()
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["review_status"], "Research")
+        self.assertEqual(rows[0]["research_objective"], "旧目标")
+        self.assertTrue(rows[0]["human_selected_for_research"])
+        self.assertIn("approver", _candidate_columns(legacy))
+
+
+class HumanApprovalTests(unittest.TestCase):
+    """P0-B：--approved 必须把完整人工批准状态同步写入数据库，并与导出/Intake 判定一致。"""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.db = os.path.join(self.tmp.name, "radar.db")
+        self.storage = Storage(self.db)
+        self.storage.init_db()
+        self.storage.upsert_repository(
+            Repository(repository_id=1, full_name="org/approved", source_url="https://api.github.com/repositories/1")
+        )
+        self.storage.upsert_repository(Repository(repository_id=2, full_name="org/pending"))
+        self.storage.upsert_repository(Repository(repository_id=3, full_name="org/untouched"))
+        for repo_id, status, objective in [(1, "Research", "看编排"), (2, "Discovered", ""), (3, "Watch", "")]:
+            self.storage.upsert_candidate(
+                Candidate(repository_id=repo_id, topic="ai-agent", evaluation={"total": 80, "dimensions": {}},
+                          review_status=status, research_objective=objective,
+                          created_at="2026-11-19T00:00:00+00:00")
+            )
+        self.out = os.path.join(self.tmp.name, "intake.json")
+
+    def _row(self, repo_id):
+        return [r for r in self.storage.list_candidates() if r["repository_id"] == repo_id][0]
+
+    def _export(self, path=None, **kwargs):
+        path = path or self.out
+        result = export_research_tasks(self.storage, path, **kwargs)
+        with open(path, encoding="utf-8") as fh:
+            return result, json.load(fh)
+
+    def test_approval_writes_consistent_state_to_db(self):
+        _, data = self._export(review_status="Research", only_approved=True, approver="alice", reason="值得研究")
+        row = self._row(1)
+        self.assertEqual(row["review_status"], "approved_for_research")
+        self.assertTrue(row["human_selected_for_research"])
+        self.assertEqual(row["approver"], "alice")
+        self.assertEqual(row["approval_reason"], "值得研究")
+        self.assertEqual(datetime.fromisoformat(row["approved_at"]).utcoffset(), timedelta(0))
+        # 审计日志记录批准人、时间、前后状态
+        entry = row["evaluation"]["review_log"][-1]
+        self.assertEqual((entry["reviewer"], entry["from"], entry["to"]), ("alice", "Research", "approved_for_research"))
+        # 导出记录与数据库一致，并通过 intake 校验
+        self.assertEqual(data["task_count"], 1)
+        task = data["tasks"][0]
+        self.assertEqual(task["candidate_id"], row["id"])
+        self.assertEqual(task["review_status"], "approved_for_research")
+        self.assertTrue(task["human_selected_for_research"])
+        self.assertEqual(task["source_url"], "https://api.github.com/repositories/1")
+        validate_intake_task(task)
+
+    def test_repeat_approval_is_noop_keeping_first_approver(self):
+        # 重复批准语义：no-op —— 保留首次 approver / approved_at / approval_reason，不重复写审计日志
+        self._export(review_status="Research", only_approved=True, approver="alice", reason="首次理由")
+        first = self._row(1)
+        second, data = self._export(approver="bob", reason="第二次理由", review_status="Research", only_approved=True)
+        row = self._row(1)
+        self.assertEqual(second["count"], 1)
+        self.assertEqual(data["task_count"], 1)
+        self.assertEqual(row["approver"], "alice")
+        self.assertEqual(row["approved_at"], first["approved_at"])
+        self.assertEqual(row["approval_reason"], "首次理由")
+        self.assertEqual(len(row["evaluation"]["review_log"]), 1)
+        self.assertFalse(self.storage.approve_candidate(first["id"], approver="carol"))
+        self.assertEqual(self._row(1)["approver"], "alice")
+
+    def test_unapproved_not_in_approved_export_and_db_untouched(self):
+        self._export(review_status="Research", only_approved=True, approver="alice")
+        with open(self.out, encoding="utf-8") as fh:
+            exported_ids = [t["candidate_id"] for t in json.load(fh)["tasks"]]
+        self.assertEqual(exported_ids, [self._row(1)["id"]])
+        for repo_id in (2, 3):
+            row = self._row(repo_id)
+            self.assertNotIn(row["id"], exported_ids)
+            self.assertNotEqual(row["review_status"], "approved_for_research")
+            self.assertFalse(row["human_selected_for_research"])
+            self.assertIsNone(row["approver"])
+        # 再次以已批准候选为范围导出时，已批准项仍包含在内，未批准项依旧不出现
+        second, data = self._export(path=os.path.join(self.tmp.name, "again.json"),
+                                    review_status="Research", only_approved=True, approver="alice")
+        self.assertEqual([t["candidate_id"] for t in data["tasks"]], [self._row(1)["id"]])
+        self.assertEqual(second["count"], 1)
+
+    def test_plain_export_does_not_claim_approval(self):
+        # 不带 --approved 的导出：数据库状态不变，导出状态如实为 Research
+        _, data = self._export(review_status="Research")
+        self.assertEqual(data["tasks"][0]["review_status"], "Research")
+        self.assertFalse(data["tasks"][0]["human_selected_for_research"])
+        self.assertEqual(self._row(1)["review_status"], "Research")
+        self.assertIsNone(self._row(1)["approver"])
+
+    def test_empty_reason_is_stored_as_null(self):
+        self._export(review_status="Research", only_approved=True, approver="alice", reason="   ")
+        row = self._row(1)
+        self.assertEqual(row["review_status"], "approved_for_research")
+        self.assertTrue(row["human_selected_for_research"])
+        self.assertIsNone(row["approval_reason"])
+        self.assertEqual(row["evaluation"]["review_log"][-1]["decision"], "人工批准进入研究")
+
+    def test_approver_required(self):
+        with self.assertRaises(ValueError):
+            self._export(review_status="Research", only_approved=True)
+        with self.assertRaises(ValueError):
+            self._export(review_status="Research", only_approved=True, approver="   ")
+        with self.assertRaises(ValueError):
+            self.storage.approve_candidate(self._row(1)["id"], approver="")
+        self.assertEqual(self._row(1)["review_status"], "Research")
+
+    def test_intake_rejects_approved_without_human_selection(self):
+        _, data = self._export(review_status="Research", only_approved=True, approver="alice")
+        task = dict(data["tasks"][0])
+        validate_intake_task(task)
+        bad = dict(task, human_selected_for_research=False)
+        with self.assertRaises(ValueError):
+            validate_intake_task(bad)
+        bad_types = dict(task, candidate_id="1")
+        with self.assertRaises(ValueError):
+            validate_intake_task(bad_types)
+
+    def test_cli_requires_non_empty_approver(self):
+        out = os.path.join(self.tmp.name, "cli.json")
+        base = ["--db", self.db, "export", "--output", out]
+        self.assertEqual(_run_cli(base + ["--approved"]), 2)
+        self.assertEqual(_run_cli(base + ["--approved", "--approver", "  "]), 2)
+        self.assertFalse(os.path.exists(out))
+        self.assertEqual(self._row(1)["review_status"], "Research")
+
+    def test_cli_approval_writes_db_and_exports(self):
+        out = os.path.join(self.tmp.name, "cli.json")
+        code = _run_cli(["--db", self.db, "export", "--output", out, "--approved",
+                         "--approver", "alice", "--reason", "CLI 批准"])
+        self.assertIsNone(code)
+        row = self._row(1)
+        self.assertEqual(row["review_status"], "approved_for_research")
+        self.assertTrue(row["human_selected_for_research"])
+        self.assertEqual((row["approver"], row["approval_reason"]), ("alice", "CLI 批准"))
+        with open(out, encoding="utf-8") as fh:
+            tasks = json.load(fh)["tasks"]
+        self.assertEqual(len(tasks), 1)
+        self.assertTrue(tasks[0]["human_selected_for_research"])
 
 
 if __name__ == "__main__":

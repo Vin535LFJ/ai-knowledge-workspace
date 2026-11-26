@@ -17,6 +17,10 @@
 4. 单写者：同一 write_path 同时刻只能被一个未完成 run 持有（声明即持有，
    pending/running/paused/failed 均算；done 自动释放，或显式 release-path）。
 5. 可追溯：artifact 记录 path+sha256；每次状态变更追加 transitions（时间/操作者/理由）。
+6. 批准对应到文件版本（TASK 4）：进入 PUBLISH/FEEDBACK 除 gate passed 外，还必须通过
+   tools/approval_chain.py 的发布前复核——人工批准时冻结的产物哈希须与当前文件一致，
+   且批准后不得新增范围内的产物；否则阻止发布，要求重新审核。历史批准没有哈希绑定
+   记录的报 legacy/unverifiable，不补造。
 
 写盘纪律（沿用 kcr_impact.py）：每次保存前经 tools/kcr/validate_kcr.py 全量校验
 （schema + semantic），失败不写文件；临时文件 + os.replace 原子替换。
@@ -302,7 +306,22 @@ def add_artifact(runs_dir: Path, run_id: str, path: str, *, phase: str | None = 
     return state
 
 
-def advance(runs_dir: Path, run_id: str, *, reason: str = "", operator: str | None = None) -> dict:
+def _check_approval_chain(state: dict, approvals_dir: Path | None) -> None:
+    """TASK 4：批准必须对应到具体文件版本（延迟导入避免循环依赖）。"""
+    sys.path.insert(0, str(ROOT / "tools"))
+    from approval_chain import DEFAULT_APPROVALS_DIR, verify_state
+    problems = verify_state(state, approvals_dir=approvals_dir or DEFAULT_APPROVALS_DIR)
+    if problems:
+        raise RunStateError("审批证据链未通过（未批准不发布；文件变化后须重新审核）：\n  - "
+                            + "\n  - ".join(problems)
+                            + "\n  人工执行：py -3 tools/approval_chain.py record --run-id "
+                            + state["run_id"] + " --gate "
+                            + (state["human_gate"]["gate"] if state.get("human_gate") else "G3")
+                            + " --approver <人名> --scope <范围>")
+
+
+def advance(runs_dir: Path, run_id: str, *, reason: str = "", operator: str | None = None,
+            approvals_dir: Path | None = None) -> dict:
     state = _mutate(runs_dir, run_id)
     if state["status"] != "running":
         raise RunStateError(f"advance 仅接受 running，当前 {state['status']}（paused→resume，failed→retry）")
@@ -326,6 +345,8 @@ def advance(runs_dir: Path, run_id: str, *, reason: str = "", operator: str | No
             raise RunStateError(f"人工门不可绕过：进入 {nxt} 需要 gate passed"
                                 f"（当前 {g['gate'] + '/' + g['status'] if g else '无 gate'}；"
                                 "仅人工可执行 gate --pass --approver <人名>）")
+    if nxt in ("PUBLISH", "FEEDBACK"):
+        _check_approval_chain(state, approvals_dir)
     _record(state, cur)["status"] = "done"
     _record(state, cur)["completed_at"] = _now()
     rec = _record(state, nxt)
@@ -337,7 +358,8 @@ def advance(runs_dir: Path, run_id: str, *, reason: str = "", operator: str | No
     return state
 
 
-def skip(runs_dir: Path, run_id: str, to_phase: str, *, approver: str, reason: str) -> dict:
+def skip(runs_dir: Path, run_id: str, to_phase: str, *, approver: str, reason: str,
+         approvals_dir: Path | None = None) -> dict:
     if not approver:
         raise RunStateError("人工跳过必须提供 --approver（AI 不得自行跳阶段）")
     if not reason:
@@ -352,6 +374,7 @@ def skip(runs_dir: Path, run_id: str, to_phase: str, *, approver: str, reason: s
         g = state["human_gate"]
         if not g or g["status"] != "passed":
             raise RunStateError("人工门不可绕过：跳过至 PUBLISH/FEEDBACK 仍需 gate passed")
+        _check_approval_chain(state, approvals_dir)
     for p in PHASES[cur_i:to_i]:
         rec = _record(state, p)
         rec["status"] = "skipped"
@@ -464,6 +487,8 @@ def summary(state: dict) -> dict:
 def main() -> int:
     parser = argparse.ArgumentParser(description="P9 轻量工作流状态机（stdlib-only）")
     parser.add_argument("--runs-dir", default=str(DEFAULT_RUNS_DIR), help="运行态目录（默认 .agent/runs）")
+    parser.add_argument("--approvals-dir", default=None,
+                        help="审批记录目录（默认 reviews/approvals；见 tools/approval_chain.py）")
     sub = parser.add_subparsers(dest="cmd", required=True)
 
     p = sub.add_parser("new", help="创建 run（重复 run_id 拒绝）")
@@ -532,6 +557,7 @@ def main() -> int:
 
     args = parser.parse_args()
     runs_dir = Path(args.runs_dir)
+    approvals_dir = Path(args.approvals_dir) if args.approvals_dir else None
     try:
         if args.cmd == "new":
             state = new_run(runs_dir, args.run_id, args.owner, title=args.title,
@@ -551,9 +577,10 @@ def main() -> int:
             state = add_artifact(runs_dir, args.run_id, args.path, phase=args.phase,
                                  kind=args.kind, note=args.note)
         elif args.cmd == "advance":
-            state = advance(runs_dir, args.run_id, reason=args.reason)
+            state = advance(runs_dir, args.run_id, reason=args.reason, approvals_dir=approvals_dir)
         elif args.cmd == "skip":
-            state = skip(runs_dir, args.run_id, args.to, approver=args.approver, reason=args.reason)
+            state = skip(runs_dir, args.run_id, args.to, approver=args.approver, reason=args.reason,
+                         approvals_dir=approvals_dir)
         elif args.cmd == "gate":
             if args.pass_:
                 state = pass_gate(runs_dir, args.run_id, approver=args.approver or "")

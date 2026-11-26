@@ -4,7 +4,7 @@ type: "readme"
 status: "active"
 owner: "github-project-radar"
 created: "2026-11-19"
-updated: "2026-11-19"
+updated: "2026-11-26"
 ---
 
 # GitHub Project Radar
@@ -18,8 +18,10 @@ updated: "2026-11-19"
 
 ## 当前状态（2026-11-23 独立审计）
 
-- 可用：八项能力代码齐备，38 个离线测试通过；已完成一次真实匿名采集（121 仓 / 200 快照 / 1 次运行）。
-- 关键限制：快照时间跨度仅 20 秒 → 增长 121/121 为空；`analyze` 会覆盖人工复核状态；`--approved` 不置 `human_selected_for_research`；无日常快照 CLI、无调度、无 HTTP 缓存。
+- 可用：八项能力代码齐备，58 个离线测试通过；已完成一次真实匿名采集（121 仓 / 200 快照 / 1 次运行）。
+- 关键限制：快照时间跨度仅 20 秒 → 增长 121/121 为空；无日常快照 CLI、无调度、无 HTTP 缓存。
+- 数据正确性修复（2026-11-25）：`analyze` 只更新机器字段，不再覆盖人工审核状态；`export --approved` 必须带 `--approver`，并把完整批准状态写入数据库后再导出。
+- 2026-11-26：4 笔提交作者统一重写为 `Vin535LFJ <169535939+Vin535LFJ@users.noreply.github.com>`，公司邮箱从提交历史移除；tree 哈希前后一致（内容零改动）；无 remote，不涉及推送。
 - 成熟度：**PARTIAL**。详见 `../ai-knowledge-program/AUDIT-REPORT.md`。使用前先读 USER-GUIDE §20。
 
 ## 名称映射（重要）
@@ -78,8 +80,8 @@ py -3 cli/radar.py report --format json
 # 7) 人工复核状态转换
 py -3 cli/radar.py review <候选id> --current Discovered --target Triaged --reviewer <姓名> --decision "说明"
 
-# 8) 导出研究任务 JSON（纯输出）
-py -3 cli/radar.py export --output research-tasks.json --status Research --approved
+# 8) 导出研究任务 JSON（纯输出）；--approved 为人工批准，必须提供 --approver，批准状态会写入本系统数据库
+py -3 cli/radar.py export --output research-tasks.json --status Research --approved --approver "<姓名>" [--reason "理由"]
 
 # 9) 只读 SQL 查询
 py -3 cli/radar.py query "SELECT COUNT(*) AS n FROM snapshots"

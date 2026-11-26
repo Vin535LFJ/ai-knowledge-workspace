@@ -25,11 +25,13 @@ updated: "2026-11-19"
 ## 导出命令
 
 ```bash
-py -3 cli/radar.py export --output research-tasks.json --status Research --approved
+py -3 cli/radar.py export --output research-tasks.json --status Research --approved --approver "<姓名>" [--reason "理由"]
 ```
 
-`--approved` 会把每条任务的 `review_status` 设为 `approved_for_research`，表示已经人工批准进入研究。
-是否「可导入 Engine」以导出 JSON 中的 `human_selected_for_research` 为准：**只有该字段为 true 的任务才是可导入的研究任务**；引擎必须据此过滤，不得仅凭 `review_status` 导入。
+`--approved` 是一次**人工批准动作**：必须提供非空 `--approver`（否则报错退出非 0），并先把完整批准状态写入 Radar 数据库
+（`review_status=approved_for_research`、`human_selected_for_research=true`、`approver`、`approved_at`、`approval_reason`），
+再只导出数据库中已批准的候选；重复批准为 no-op，保留首次批准人与时间。导出中的 `review_status` 直接取自数据库，导出层不再改写状态。
+是否「可导入 Engine」以导出 JSON 中的 `human_selected_for_research` 为准：**只有该字段为 true 的任务才是可导入的研究任务**；引擎必须据此过滤，不得仅凭 `review_status` 导入。导出前 `validate_intake_task` 会拒绝 `review_status=approved_for_research` 但 `human_selected_for_research` 不为 true 的记录。
 
 ## 研究任务 JSON 结构
 

@@ -53,7 +53,7 @@ github-project-radar/
 │   └── sources/rest.py        ← 真实 GitHub REST 客户端
 ├── config/topics.json         ← 搜索主题
 ├── config/scoring.json        ← 权重与理由模板
-├── tests/test_radar.py        ← 38 个测试
+├── tests/test_radar.py        ← 58 个测试
 ├── reports/                   ← 周报产物（入库）
 ├── docs/                      ← data-model / engine-interface / operating-guide
 └── radar*.db                  ← 本地数据库（gitignored）
@@ -143,7 +143,7 @@ py -3 cli/radar.py analyze
 - 历史不足 → `insufficient_history=true`，不外推。
 - `anchor` 默认取最后一个快照时间（不是当前时间）。
 - **不会校正采样间隔**：若最近快照是 25 天前，7d 增量实际是 25 天差值。
-- **警告**：`analyze` 会重写候选的 `review_status` 与 `human_selected_for_research`（见 §20 D1）。
+- `analyze` 对已存在的候选只更新机器字段（评分、发现依据、溯源）；`review_status`、`human_selected_for_research`、`research_objective`、批准信息与 `review_log` 一律保留（原 D1 已于 2026-11-25 修复）。
 
 ## 12. 如何筛选候选项目
 
@@ -186,12 +186,14 @@ py -3 cli/radar.py report --week 2026-W47 --format dir
 
 ```powershell
 py -3 cli/radar.py export --output reports/research-intake.json --status Research
+# 人工批准（必须提供批准人；批准状态写入数据库，只导出已批准候选）
+py -3 cli/radar.py export --output reports/research-intake.json --status Research --approved --approver "你的名字" --reason "值得研究"
 ```
 
 导出字段（15 项）：
 `candidate_id, repository, url, topic, discovery_reason, star_metrics, evaluation, review_status, research_objective, created_at, human_selected_for_research, source_url, observed_at, retrieved_at, data_quality`
 
-**重要**：`--approved` 只把 `review_status` 改成 `approved_for_research`，**不会**把 `human_selected_for_research` 置 true。按仓库自己的 `docs/engine-interface.md`，只有该字段为 true 才能导入。当前样本该字段为 `false`（§20 D3）。
+**人工批准语义**：`--approved` 必须带非空 `--approver`（否则退出码 2），会先把 `review_status=approved_for_research`、`human_selected_for_research=true`、`approver`、`approved_at`、`approval_reason` 写入数据库，再只导出已批准的候选；重复批准为 no-op，保留首次批准人/时间。不带 `--approved` 的导出如实反映数据库状态（未经批准的 `human_selected_for_research` 仍为 `false`，不可导入）。（原 D3 已于 2026-11-25 修复）
 
 ## 16. 如何定时运行
 
@@ -234,16 +236,16 @@ Copy-Item radar-2026-11-23.db "D:\backup\radar-2026-11-23.db"
 | `no such table` | 没跑 `init-db` | 先 `init-db` |
 | 增长全是 `insufficient_history` | 快照时间跨度太短 | 需要多天快照；当前没有日常快照 CLI |
 | `research` 命令不存在 | 文档写了但 CLI 未实现 | 用 `review` + `export` |
-| 导出 `human_selected_for_research=false` | `--approved` 不置该字段 | 见 §20 D3；修代码前只能人工改 JSON |
+| 导出 `human_selected_for_research=false` | 该候选未经 `--approved --approver` 批准 | 用 `export --approved --approver "姓名"` 批准后再导出 |
 | 周报「崛起」不像崛起 | 增长全 0，按插入顺序 | 忽略该板块，或先积累历史 |
-| 重跑 `analyze` 后人工状态没了 | D1 覆盖 | 先备份 DB；修代码前不要重跑 |
+| `export --approved` 退出码 2 | 未提供 `--approver` 或为空白 | 补 `--approver "姓名"`（人工批准必须留痕） |
 | `candidates` 为空 | 没 `analyze` 或库不对 | 检查 `--db` 路径 |
 
 ## 20. 当前功能限制（审计实测）
 
-1. **D1 人工状态被覆盖**：`analyze` 的 upsert 会重置 `review_status` / `human_selected_for_research`。
+1. **D1 人工状态被覆盖**：已修复（2026-11-25）。`analyze` 的 upsert 只更新机器字段，人工字段与 `review_log` 保留。
 2. **D2 配额感知失效**：`search_repositories` 丢弃 `_rate_limit_remaining`。
-3. **D3 人工门可绕过**：`--approved` 不置 `human_selected_for_research`；导出样本为 false。
+3. **D3 人工门可绕过**：已修复（2026-11-25）。`--approved` 必须带 `--approver`，并写入完整批准状态；导出层不再改写状态。历史样本 `reports/research-intake-hdr-demo.json` 是修复前产物，仍为 `false`。
 4. **D4 审计不全**：`collection_runs.query_params` 只记 `query_count`，不记查询语句与错误清单。
 5. **D5 溯源全空**：`source_url/observed_at/retrieved_at/data_quality` 200/200 NULL，无法区分 live/demo。
 6. **D6 周报语义失真**：增长全 0 时「崛起项目」仍排名。
@@ -254,9 +256,9 @@ Copy-Item radar-2026-11-23.db "D:\backup\radar-2026-11-23.db"
 11. **数据现实**：121 仓 / 200 快照，但时间跨度只有 20 秒（4 个时间点），增长 121/121 为空。
 12. **误报**：关键词主题归并会把 `bootstrap`、`tensorflow`、`react-native`、`tauri` 归到 `ai-agent` 类。
 
-**可用性结论**：适合「一次性发现 + 打分 + 人工挑候选」；**不适合**「持续趋势追踪」或「自动供 Engine」。修完 D1/D2/D3 后再评估日常化。
+**可用性结论**：适合「一次性发现 + 打分 + 人工挑候选」；**不适合**「持续趋势追踪」或「自动供 Engine」。修完 D1/D2/D3 后再评估日常化（D1/D3 已于 2026-11-25 修复，剩 D2）。
 
 ---
 
 **最后验证**：2026-11-23，Radar `b7442da`；`38 tests OK`；真实库 121 仓/200 快照/1 次采集。
-**最近更新**：2026-11-23。
+**最近更新**：2026-11-25（修复 D1/D3，58 tests OK；真实库 121 仓 / 200 快照 / 121 候选未改动）。

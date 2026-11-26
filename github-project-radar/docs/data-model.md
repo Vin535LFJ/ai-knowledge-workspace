@@ -75,8 +75,13 @@ updated: "2026-11-19"
 | observed_at | TEXT | 溯源：观测时间（可选） |
 | retrieved_at | TEXT | 溯源：数据取得时间（可选） |
 | data_quality | TEXT | 溯源：数据质量标记（可选） |
+| approver | TEXT | 人工批准人（仅 `export --approved` 写入；未批准为 NULL） |
+| approved_at | TEXT | 人工批准时间，ISO-8601（仅首次批准写入） |
+| approval_reason | TEXT | 人工批准理由（可为 NULL） |
 
 **唯一约束**：`(repository_id, topic)`。
+**字段归属（强约束）**：`review_status`、`human_selected_for_research`、`research_objective`、`approver`、`approved_at`、`approval_reason` 为**人工字段**，以及 `evaluation` JSON 内的 `review_log` / `review_status` / `research_objective`；自动采集与 `analyze` 对已存在的候选只更新机器字段（`discovery_reason`、`evaluation` 的评分部分、溯源字段），绝不覆盖人工字段。新插入的候选默认 `review_status=Discovered`。字段集合定义见 `radar/storage.py` 的 `CANDIDATE_MACHINE_COLUMNS` / `CANDIDATE_HUMAN_COLUMNS`。
+**人工批准**：`review_status=approved_for_research` 且 `human_selected_for_research=1`；重复批准为 no-op，保留首次 approver / approved_at / approval_reason。
 **生命周期**：canonical 状态为 `discovered → triaged → watchlist → deep_dive → adopted / rejected / archived`；旧状态 `Watch≡watchlist`、`Research≡deep_dive`、`Adopt≡adopted`、`Ignore≡rejected`。`radar.review.normalize_status()` 双向兼容；`record_transition()` 生成含时间/操作人/理由的变更记录，追加到 `evaluation.review_log`。状态变更只记录审计，不触发任何自动副作用。
 
 ## 增长与评分口径

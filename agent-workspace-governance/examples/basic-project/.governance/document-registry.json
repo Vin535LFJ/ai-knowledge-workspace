@@ -3,12 +3,12 @@
     {
       "document_id": "basic-project-readme",
       "path": "README.md",
-      "type": "project-readme",
+      "type": "Architecture",
       "level": null,
       "status": "active",
       "owner": "human",
       "created_at": "2026-11-19",
-      "updated_at": "2026-11-19",
+      "updated_at": "2026-11-25",
       "source_of_truth": null,
       "generated": false,
       "related_task": null,
@@ -22,12 +22,12 @@
     {
       "document_id": "basic-project-design",
       "path": "docs/design.md",
-      "type": "formal-tech-doc",
+      "type": "Spec",
       "level": "L1",
       "status": "active",
       "owner": "human",
       "created_at": "2026-11-19",
-      "updated_at": "2026-11-19",
+      "updated_at": "2026-11-25",
       "source_of_truth": "docs/design.md",
       "generated": false,
       "related_task": null,
@@ -39,5 +39,5 @@
       "title": ""
     }
   ],
-  "updated_at": "2026-11-19"
+  "updated_at": "2026-11-25"
 }

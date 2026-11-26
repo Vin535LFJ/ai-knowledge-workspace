@@ -4,7 +4,7 @@ type: program-charter
 status: active
 owner: human
 created: 2026-11-19
-updated: 2026-11-20
+updated: 2026-11-25
 ---
 
 # AI Knowledge Program · 目标与边界（章程）
@@ -28,7 +28,7 @@ updated: 2026-11-20
 |---|---|---|---|
 | 第 1 层 · 统筹管理 | AI Knowledge Program（本文件夹） | 目标、优先级、路线图、项目状态、范围控制 |  active，保持薄 |
 | 第 2 层 · 核心产品 | AI Knowledge-to-Learning Engine（`ai-knowledge-to-learning-engine/`） | 知识生产全链路：资料→研究→知识→教材→实践→网站 | **唯一主动开发线** |
-| 第 3 层 · 未来可复用能力 | Agent Workspace Governance / GitHub Project Radar | 经真实需求验证后才值得抽取的独立能力 | 已解冻并真实验证（2026-11-21，D20）；按需维护，无持续真实需求不追加投入（见 PARKING-LOT） |
+| 第 3 层 · 未来可复用能力 | Agent Workspace Governance / GitHub Project Radar | 经真实需求验证后才值得抽取的独立能力 | 已解冻并真实验证（2026-11-21，D20）；**维护期**：仅允许明确范围内的缺陷修复与必要可靠性验证，不扩展功能。2026-11-24 独立审计判定两者 PARTIAL（Governance「9/9」为文档自证；Radar「200 快照」口径夸大），整改见 AUDIT-REPORT.md §C/§E；无持续真实需求不追加投入（见 PARKING-LOT） |
 
 `matt-pocock-skills-zh-cn/`（旧名 mattpocock-skills-zh-CN-custom）是**独立的 Skills 来源仓库**，不属于以上任何一层的产品建设：不并入 Governance，不重建第二套 Skills 仓库。
 
@@ -49,8 +49,8 @@ C:\Users\Giant\Desktop\GITCODE\AI-Knowledge\
 ├── ai-knowledge-program\               ← 统筹层（本仓库，仅本地 git；目标大小写名 AI-Knowledge-Program，可选改）
 ├── ai-knowledge-to-learning-engine\    ← Engine（唯一活跃线；本地与 GitHub 均已改名 = Vin535LFJ/ai-knowledge-to-learning-engine）
 ├── matt-pocock-skills-zh-cn\           ← Skills 来源库（本地与 GitHub 均已改名 = Vin535LFJ/matt-pocock-skills-zh-cn）
-├── agent-workspace-governance\         ← 冻结 MVP（本地 git，无远程；不新增投入）
-└── github-project-radar\               ← 冻结 MVP（本地 git，无远程；不新增投入）
+├── agent-workspace-governance\         ← 维护期（本地 git，无远程；仅允许明确范围内的缺陷修复与必要可靠性验证，不扩展功能）
+└── github-project-radar\               ← 维护期（本地 git，无远程；仅允许明确范围内的缺陷修复与必要可靠性验证，不扩展功能）
 ```
 
 - 2026-11-19：Render_Notes 自 `GITCODE\Render_Notes` 迁入（PD-002 收尾）；同日经用户批准**本地目录改名**为 `ai-knowledge-to-learning-engine` 与 `matt-pocock-skills-zh-cn`（Move-Item 成功，git 完好：Engine HEAD=`e848d28`、Skills HEAD=`e1936f2`；改名后门禁复跑 validate 11/0/0、37 claims 误标 0）。
@@ -77,7 +77,7 @@ C:\Users\Giant\Desktop\GITCODE\AI-Knowledge\
 | `PARKING-LOT.md` | 所有暂时不做的想法、需求和未来项目 + 准入规则 |
 | `PROGRAM-MANAGER.md` | Program Manager Agent 工作规则（五项职责 + 范围控制硬规则） |
 | `decisions/` | 程序级决策记录（PD-001…PD-003）与 PD-Q 裁决存档 |
-| `plans/` | 程序级 working plan（当前：命名统一审计与迁移方案，completed 已执行完成） |
+| `plans/` | 程序级 working plan 与执行报告（命名迁移方案已完成；进度复核 2026-11-20；embodied kickoff 2026-11-23；阶段执行报告 2026-11-25） |
 | `handoffs/` | 跨项目交接指针索引（正文留在产生它的项目内） |
 | `references/` | 用户提供的引导文档原件（只读） |
 | `archive/` | 被取代的旧统筹文件（只移动不删，保留历史） |
@@ -132,8 +132,8 @@ C:\Users\Giant\Desktop\GITCODE\AI-Knowledge\
 
 ## 9. 项目状态词汇（全 Program 统一）
 
-`Active`（主动开发，**任何时刻至多一个**，当前 = Engine）/ `Planned`（已排期未启动）/ `Deferred`（冻结/暂缓，成果保留）/ `Blocked`（等待外部条件或人工裁决）/ `Completed`（完成并验收）。
-当前：Engine = Active（内部阻塞于 G1/G2 人工裁决）；Skills 库 = Completed（稳定供应，维护态）；Governance / Radar = Deferred；LXD 试点 = Deferred。
+`Active`（主动开发，**任何时刻至多一个**，当前 = Engine）/ `Planned`（已排期未启动）/ `Maintenance`（维护期：仅允许明确范围内的缺陷修复与必要可靠性验证，不扩展功能）/ `Deferred`（冻结/暂缓，成果保留）/ `Blocked`（等待外部条件或人工裁决）/ `Completed`（完成并验收）。
+当前：Engine = Active（主线 = embodied-loop-journey 首批 6 课，run 处 EVIDENCE）；Skills 库 = Completed（稳定供应，维护态）；Governance / Radar = Maintenance（2026-11-21 解冻验证后由 Deferred 转入；独立审计 PARTIAL，维护期先修缺陷）；LXD = Engine 内部工作流（Skill 已 active，不独立成仓）。
 
 ## 10. 决策依据
 

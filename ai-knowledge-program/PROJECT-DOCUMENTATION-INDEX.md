@@ -4,13 +4,13 @@ type: doc-index
 status: active
 owner: qwenwork
 created: 2026-11-23
-updated: 2026-11-23
+updated: 2026-11-25
 ---
 
 # 全项目文档导航（PROJECT-DOCUMENTATION-INDEX）
 
 > 从一个文件进入全部项目的使用文档。所有链接均为相对本文件（`ai-knowledge-program/`）的路径，已于 2026-11-23 逐条检查存在性。
-> 想看「项目现在到底怎么样」，先读 [`AUDIT-REPORT.md`](AUDIT-REPORT.md) 与 [`POST-AUDIT-SUMMARY.md`](POST-AUDIT-SUMMARY.md)。
+> 想看「项目现在到底怎么样」，先读 [`AUDIT-REPORT.md`](AUDIT-REPORT.md) 与 [`POST-AUDIT-SUMMARY.md`](POST-AUDIT-SUMMARY.md)；最近一轮执行结论（2026-11-25）见 [`plans/2026-11-25-stage-execution-report.md`](plans/2026-11-25-stage-execution-report.md)；人工验收阶段的验证结论见 [`plans/2026-11-25-stabilization-verification.md`](plans/2026-11-25-stabilization-verification.md)。
 
 ## 1. 总览
 
@@ -18,9 +18,9 @@ updated: 2026-11-23
 |---|---|---|---|---|---|
 | AI Knowledge Program | [USER-GUIDE.md](USER-GUIDE.md) | §4 启动 PM / §6 查状态 | [PROGRAM.md](PROGRAM.md) · [PROGRAM-MANAGER.md](PROGRAM-MANAGER.md) · [ROADMAP.md](ROADMAP.md) | 无自动化（文档层） | 审计 **PASS WITH LIMITATIONS** |
 | AI Knowledge-to-Learning Engine | [docs/USER-GUIDE.md](../ai-knowledge-to-learning-engine/docs/USER-GUIDE.md) | §2 Quick Start | [AGENTS.md](../ai-knowledge-to-learning-engine/AGENTS.md) · [DECISIONS.md](../ai-knowledge-to-learning-engine/DECISIONS.md) · [WORKFLOW_STATE.md](../ai-knowledge-to-learning-engine/WORKFLOW_STATE.md) | 指南 §2.5 + §6 | 审计 **PASS WITH LIMITATIONS**；P10 done |
-| Matt Pocock Skills 中文发行版 | [docs/USER-GUIDE.md](../matt-pocock-skills-zh-cn/docs/USER-GUIDE.md) | §6 安装 / §7 验证发现 | [SYNC.md](../matt-pocock-skills-zh-cn/SYNC.md) · [BACKPORTS.md](../matt-pocock-skills-zh-cn/BACKPORTS.md) · [AGENT-COMPATIBILITY.md](../matt-pocock-skills-zh-cn/AGENT-COMPATIBILITY.md) | 指南 §11（check-translation / audit-english） | 审计 **PASS WITH LIMITATIONS**；37 技能维护态 |
+| Matt Pocock Skills 中文发行版 | [docs/USER-GUIDE.md](../matt-pocock-skills-zh-cn/docs/USER-GUIDE.md) | §6 安装 / §7 验证发现 | [SYNC.md](../matt-pocock-skills-zh-cn/SYNC.md) · [BACKPORTS.md](../matt-pocock-skills-zh-cn/BACKPORTS.md) · [AGENT-COMPATIBILITY.md](../matt-pocock-skills-zh-cn/AGENT-COMPATIBILITY.md) | 指南 §11（check-translation / audit-english） | 审计 **PASS WITH LIMITATIONS**；37 技能维护态；QwenWork 实机验证 **PARTIAL** |
 | Learning Experience Design | [USAGE.md](../ai-knowledge-to-learning-engine/.agent/skills/learning-experience-design/USAGE.md) | §7 标准流程 | [SKILL.md](../ai-knowledge-to-learning-engine/.agent/skills/learning-experience-design/SKILL.md) · `references/` | 指南 §10/§12（Floor + build/validate） | 审计 **PASS WITH LIMITATIONS**；1 个真实试点 |
-| Agent Workspace Governance | [docs/USER-GUIDE.md](../agent-workspace-governance/docs/USER-GUIDE.md) | §4 init / §15 迁移 | [README](../agent-workspace-governance/README.md) · [specification](../agent-workspace-governance/docs/specification.md) · [architecture](../agent-workspace-governance/docs/architecture.md) | 指南 §13（28 tests） | 审计 **PARTIAL** |
+| Agent Workspace Governance | [docs/USER-GUIDE.md](../agent-workspace-governance/docs/USER-GUIDE.md) | §4 init / §15 迁移 | [README](../agent-workspace-governance/README.md) · [specification](../agent-workspace-governance/docs/specification.md) · [architecture](../agent-workspace-governance/docs/architecture.md) | 指南 §13（41 tests） | 审计 **PARTIAL** |
 | GitHub Project Radar | [docs/USER-GUIDE.md](../github-project-radar/docs/USER-GUIDE.md) | §7 首次运行 | [data-model](../github-project-radar/docs/data-model.md) · [engine-interface](../github-project-radar/docs/engine-interface.md) · [operating-guide](../github-project-radar/docs/operating-guide.md) | 指南 §7 + §19 | 审计 **PARTIAL** |
 
 ## 2. 审计与验收
@@ -29,6 +29,9 @@ updated: 2026-11-23
 |---|---|
 | [AUDIT-REPORT.md](AUDIT-REPORT.md) | 六阶段独立审计：结论、证据、偏差、P0–P3 建议 |
 | [POST-AUDIT-SUMMARY.md](POST-AUDIT-SUMMARY.md) | 审计后收口：已生成文档、验证结果、未解决问题、下一步 |
+| [plans/2026-11-25-stage-execution-report.md](plans/2026-11-25-stage-execution-report.md) | 发布边界收口 + 六项后续任务逐项判定、提交、待裁决与遗留 |
+| [plans/2026-11-25-stabilization-verification.md](plans/2026-11-25-stabilization-verification.md) | 人工验收与稳定化（2026-11-25）：验收包与专项复核结论、Radar 真实库副本验证、Governance Engine 副本接入、LXD 七实验回归、Skills 新证据、Git 同步审查 |
+| [../ai-knowledge-to-learning-engine/reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md](../ai-knowledge-to-learning-engine/reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md) | 六课人工验收包（Engine）：G1 V68–V87 裁决表、G2 六课评分表、专项复核、待批修复、审批登记顺序（裁决栏留空） |
 | [final-acceptance-2026-11-21.md](final-acceptance-2026-11-21.md) | 六阶段总验收（历史记录；其中 Radar→Engine 第 4 项已被本次审计更正） |
 | [NOW.md](NOW.md) | 当前主目标与最近快照 |
 | [ROADMAP.md](ROADMAP.md) | NOW / NEXT / LATER / COMPLETED |

@@ -4,7 +4,7 @@ type: root-readme
 status: active
 owner: governance-kit
 created: 2026-11-19
-updated: 2026-11-19
+updated: 2026-11-26
 ---
 
 # Agent Workspace Governance
@@ -19,13 +19,15 @@ updated: 2026-11-19
 
 - **[docs/USER-GUIDE.md](docs/USER-GUIDE.md)** — 使用指南：初始化、文档/任务/交接/ADR、迁移到已有项目、回滚、已知缺陷。
 - [docs/specification.md](docs/specification.md) — 规范；[docs/architecture.md](docs/architecture.md) — 架构；[docs/migration-guide.md](docs/migration-guide.md) — 迁移。
-- `examples/basic-project/` — 最小示例（**注意**：其 type 不在 13 类枚举内，当前 `doctor` 会报 2 个错）。
+- `examples/basic-project/` — 最小示例（`doctor` 退出码 0，可直接当模板）。
 - `examples/render-notes/README.md` — Engine 适配记录与九条对照表。
 
-## 当前状态（2026-11-23 独立审计）
+## 当前状态（2026-11-23 独立审计；2026-11-25 更新）
 
-- 可用：`init / inventory / validate / doctor / audit / adr / handoff`，28 个测试通过，Engine 183 篇文档登记可复现。
-- 未闭环：Task/审批/Agent 注册在真实项目中为空；`9/9` 是文档自证（示例项目 `doctor` 不通过）；Engine 无治理入口指针。
+- 可用：`init / inventory / validate / doctor / audit / adr / handoff`，41 个测试通过，Engine 183 篇文档登记可复现。
+- 2026-11-25 修复两项 P0：示例 `basic-project` 的 `doctor` 退出码 0；`init` 可接入已有 `AGENTS.md`（末尾追加指针段，幂等、原内容不变）。
+- 2026-11-26：5 笔提交作者统一重写为 `Vin535LFJ <169535939+Vin535LFJ@users.noreply.github.com>`，公司邮箱从提交历史移除；tree 哈希前后一致（内容零改动）；无 remote，不涉及推送。
+- 未闭环：Task/审批/Agent 注册在真实项目中为空；`9/9` 是文档自证；Engine 真实目录尚未执行 `init`（仅在副本上验证）。
 - 成熟度：**PARTIAL**。详见 `../ai-knowledge-program/AUDIT-REPORT.md`。
 
 ---
@@ -91,9 +93,11 @@ py -3 path/to/agent-workspace-governance/cli/governance.py init --project path/t
 ```
 
 `init` 会（幂等地）：
-- 生成 `AGENTS.md` 指针入口；
+- 建立 `AGENTS.md` 治理入口指针：文件不存在时生成；**已存在时只在末尾追加带稳定标记的指针段，原有内容逐字节不变，重复执行不再追加**；
 - 生成 `.governance/config.json`；
 - 生成 `.governance/` 下的注册表骨架（document / task / agent / adr）。
+
+`--project` 相对当前目录解析；指针中的工具包路径相对项目根目录计算（不写死盘符），支持含空格/中文的路径。
 
 ### 2. 登记文档 → 校验 → 查看状态
 

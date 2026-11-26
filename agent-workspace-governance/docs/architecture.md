@@ -4,7 +4,7 @@ type: architecture-doc
 status: active
 owner: governance-kit
 created: 2026-11-19
-updated: 2026-11-19
+updated: 2026-11-25
 ---
 
 # 架构说明
@@ -66,7 +66,7 @@ audit ──> 冗余/孤儿/冲突/过期引用/未登记
 ## 五、关键设计决策
 
 1. **纯标准库**：不引入 PyYAML/jsonschema 等依赖，frontmatter 解析器只覆盖治理所需子集。
-2. **幂等 init**：重复执行不覆盖用户已有配置，只补缺失文件。
+2. **幂等 init**：重复执行不覆盖用户已有配置，只补缺失文件；已有 `AGENTS.md` 只在末尾追加带稳定标记（`governance-pointer:start/end`）的指针段，标记已存在则不再改动，用户原有内容逐字节不变。
 3. **文件所有权是约定**：不实现真实锁；并行冲突靠约定 + 可选 hooks/CI 辅助。
 4. **能力显式标注**：`runtime_verification_status` 默认 `unverified`，避免「配置存在即假设可用」。
 5. **状态与正文分离**：JSON 只做索引与查询，Markdown 承载人类可读正文。

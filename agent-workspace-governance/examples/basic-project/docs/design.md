@@ -1,11 +1,11 @@
 ---
 doc_id: basic-project-design
-type: formal-tech-doc
+type: Spec
 level: L1
 status: active
 owner: human
 created: 2026-11-19
-updated: 2026-11-19
+updated: 2026-11-25
 source_of_truth: docs/design.md
 ---
 
@@ -28,4 +28,4 @@ source_of_truth: docs/design.md
 
 ## 治理说明
 
-这是一份普通的 L1 正式技术文档，单一权威来源为自身。它不产生 ADR（因为不是架构层面的不可逆决策）。
+这是一份普通的 L1 正式技术文档（类型 `Spec`：约定数据模型与命令行为），单一权威来源为自身。它不产生 ADR（因为不是架构层面的不可逆决策）。

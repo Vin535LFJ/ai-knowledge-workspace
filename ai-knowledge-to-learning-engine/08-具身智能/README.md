@@ -16,7 +16,7 @@ updated: 2026-11-24
 
 - 源库：`C:\Users\Giant\Desktop\GITCODE\Robot_Learn`（**只读，零改动**）。主源：textbook-embodied.md（10 章）/ embodied-principles.md（6 章）/ ch05 5.15、5.16 verified 块 / embodied-openlab.md。
 - 提取纪律：公式 Unicode→LaTeX 显示块规范化；**全部关键算例经 Engine 独立复算（py -3，70/70 通过）**，不信任源库"node 复算通过"自称；教学假设参数一律保留"（教学假设，存疑）"标注。
-- 源库问题**登记不擅改**（Robot_Learn 只读）：见 `reviews/embodied-batch1/research-report-embodied.md` §源勘误队列（含"300 毫米"单位笔误、混叠释义条件写反、qⁿ 界方向三处口径冲突等 12 项）。本目录文档按正确表述撰写并显式注记差异。
+- 源库问题**登记不擅改**（Robot_Learn 只读）：见 `reviews/embodied-batch1/research-report-embodied.md` §源勘误队列（含"300 毫米"单位笔误、混叠释义条件写反、qⁿ 界方向三处口径冲突等 12 项）。本目录文档按正确表述撰写并显式注记差异。独立审读另登记三项（2026-11-25，见 `reviews/embodied-batch1/G1-verification-queue.md` §3 第 13–15 项）：kb:5.16.2 肘上/肘下标签写反、textbook L526 容差"每边放宽"的"边"字有歧义、textbook L431 采样率"≥24 Hz"与"高于两倍"不一致。
 - 章节映射更正：textbook **§7 = Sim2Real、§8 = VLA 与世界模型**（模仿学习复合误差在 §8.5）——intake 清单的"§7/§8"主题映射不变，节号以源文件实际为准。
 
 ## 文档清单（课–源映射）

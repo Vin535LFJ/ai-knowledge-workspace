@@ -26,7 +26,7 @@
         { "const": "Session Note", "title": "Session Note 会话记录" }
       ]
     },
-    "level": { "type": "string", "enum": ["L1", "L2", "L3"], "description": "文档分级。" },
+    "level": { "type": ["string", "null"], "enum": ["L1", "L2", "L3", null], "description": "文档分级。非必填：文档未声明 level 时，inventory 登记为 null（与 source_of_truth 等可选字段的约定一致）。" },
     "status": { "type": "string", "minLength": 1 },
     "owner": { "type": "string", "minLength": 1, "description": "责任人，不得为空。" },
     "created_at": { "type": "string" },

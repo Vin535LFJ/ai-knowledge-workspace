@@ -16,13 +16,17 @@ Checks (FAIL blocks the build, WARN is informational):
   10. pilot courses: lesson frontmatter, source anchors, quizzes, claim back-refs
   11. coverage: orphan assertions, quiz/checkpoint/claim alignment, feedback refs
   12. document-registry: .agent/indexes/document-registry.json matches disk frontmatter
-      (read-only; FAIL means rebuild via `py -3 tools/build_document_registry.py`)
+       (read-only; FAIL means rebuild via `py -3 tools/build_document_registry.py`)
+  13. publish boundary v2: tools/publish-allowlist.json (enforce, default=deny) is the single
+       source of truth — registry/disk audit, bundle docs == registry-allowed set, internal
+       files never in the bundle, online (VitePress) tree only contains online-allowed docs
 
 Exit code is non-zero when any FAIL is present.
 """
 
 from __future__ import annotations
 
+import hashlib
 import json
 import posixpath
 import re
@@ -31,6 +35,7 @@ import unicodedata
 from pathlib import Path
 
 import build_document_registry as doc_registry
+import publish_boundary as publish_boundary
 
 ROOT = Path(__file__).resolve().parent.parent
 GLOSSARY_PATH = ROOT / "tools" / "glossary.json"
@@ -38,6 +43,7 @@ COURSE_PATH = ROOT / "tools" / "course.json"
 LABS_PATH = ROOT / "tools" / "labs.json"
 GRAPH_PATH = ROOT / "tools" / "graph.json"
 CONTENT_PATH = ROOT / "web" / "content.js"
+VITEPRESS_DOCS = ROOT / "site-vitepress" / "docs"
 
 # Lab types that web/assets/app.js knows how to render.
 KNOWN_LAB_TYPES = {"mvp", "lathe", "pbr", "yuv", "timeline", "pipeline", "dag"}
@@ -64,20 +70,45 @@ def relpath(path: Path) -> str:
     return path.relative_to(ROOT).as_posix()
 
 
+# ---------------------------------------------------------------------------
+# 0. publish registry (single source of truth; shared with build_site.py)
+# ---------------------------------------------------------------------------
+def load_publish_registry() -> dict | None:
+    """fail closed：注册表缺失/损坏/不合规 → FAIL，后续依赖它的检查全部跳过（不回退旧口径）。"""
+    try:
+        return publish_boundary.load_registry()
+    except publish_boundary.RegistryError as exc:
+        fail(f"[publish] registry fail-closed: {exc}")
+        return None
+
+
+def scan_publish_assets() -> list[str]:
+    try:
+        return publish_boundary.scan_assets(ROOT)
+    except publish_boundary.RegistryError as exc:
+        fail(f"[publish] asset scan aborted: {exc}")
+        return []
+
+
+PUBLISH_REGISTRY = load_publish_registry()
+PUBLISH_ASSETS = scan_publish_assets() if PUBLISH_REGISTRY is not None else []
+
+
 def markdown_files() -> list[Path]:
+    """链接/锚点校验用的源文档集。
+
+    2026-11-24：不再独立维护排除表——候选集来自 publish_boundary.scan_assets()（与
+    build_site 同一口径）。archive（offline-read-only）是只读历史材料，不参与现行链接
+    校验（保持既有行为）；excluded-internal 的内部文档仍做链接完整性检查（那是源质量
+    检查，与是否发布无关）。注册表不可用时返回空集，由第 13 节 FAIL。
+    """
+    if PUBLISH_REGISTRY is None:
+        return []
     return sorted(
-        p
-        for p in ROOT.rglob("*.md")
-        if ".git" not in p.parts
-        and "web" not in p.parts
-        and "site-vitepress" not in p.parts
-        and "node_modules" not in p.parts
-        and ".workbuddy-ai" not in p.parts
-        and ".agent" not in p.parts  # D14：智能体文档仓库不进知识 bundle
-        and ".gemini" not in p.parts and ".cursor" not in p.parts and ".github" not in p.parts  # D15：客户端适配目录
-        and p.name not in {"CLAUDE.md", "AGENTS.md"}  # D15：根适配入口是指针
-        and "archive" not in p.parts
-        and "reviews" not in p.parts  # 2026-11-19：治理/审核材料不进知识 bundle（与发布边界一致）
+        ROOT / rel
+        for rel in PUBLISH_ASSETS
+        if rel.endswith(".md")
+        and publish_boundary.policy_for(rel, PUBLISH_REGISTRY) != "offline-read-only"
     )
 
 
@@ -265,7 +296,23 @@ else:
 EVIDENCE_DIR = ROOT / "evidence"
 LEDGER_PATH = EVIDENCE_DIR / "claim-ledger.json"
 SOURCE_PATH = EVIDENCE_DIR / "source-registry.json"
-lesson_ids = {l.get("id") for l in (course or {}).get("lessons", [])}
+
+
+def all_lesson_ids() -> set:
+    """主课程 + courses/*/course.json 的全部课时 id。
+
+    2026-11-25：independent 课程（多课程扩展）拥有自有 id 命名空间，断言的 used_by_lessons
+    可以指向它们；只认主课程会让独立课程无法挂接任何断言。
+    """
+    ids = {l.get("id") for l in (course or {}).get("lessons", [])}
+    for cj in sorted((ROOT / "courses").glob("*/course.json")):
+        pc = load_json(cj)
+        if pc:
+            ids |= {l.get("id") for l in pc.get("lessons", [])}
+    return ids
+
+
+lesson_ids = all_lesson_ids()
 claim_ids: set[str] = set()
 
 if LEDGER_PATH.exists() and SOURCE_PATH.exists():
@@ -427,6 +474,15 @@ if COURSES_DIR.exists():
             else:
                 fm = parse_frontmatter(lesson_file.read_text(encoding="utf-8"))
                 for field in REQUIRED_FRONTMATTER:
+                    if field == "prerequisites":
+                        # 2026-11-25：独立课程的开篇课合法地没有前置课。prerequisites 以
+                        # course.json 的声明为准，要求 frontmatter 与之逐项一致
+                        #（比"一律非空"更严：其余各课两边必须对得上，声明为空才允许为空）。
+                        declared = sorted(str(p) for p in (l.get("prerequisites") or []))
+                        got = sorted(str(p) for p in (fm.get("prerequisites") or []))
+                        if got != declared:
+                            fail(f"[pilot] {cname}/{lid}: frontmatter prerequisites {got} != course.json {declared}")
+                        continue
                     if field not in fm or fm[field] in ("", [], None):
                         fail(f"[pilot] {cname}/{lid}: frontmatter missing {field}")
                 if fm.get("id") != lid:
@@ -604,6 +660,139 @@ if DOC_REGISTRY_PATH.exists():
             ok()
 else:
     fail("[registry] .agent/indexes/document-registry.json missing — run py -3 tools/build_document_registry.py")
+
+# ---------------------------------------------------------------------------
+# 13. publish boundary v2 (2026-11-24, 用户批准)：注册表 = 唯一判定来源
+# ---------------------------------------------------------------------------
+# 与 build_site.py 共用 publish_boundary（同一注册表、同一 API），不再有第二套排除逻辑。
+#   a. 注册表 ↔ 磁盘：未登记资产（默认拒绝）/ 失效登记 / archive 不一一对应 → FAIL
+#   b. bundle docs == 注册表允许进入 offline 的文档集（多一篇 = 泄露，少一篇 = bundle 过期）
+#   c. 内部文件永不进 bundle；每篇 publishPolicy 与注册表一致
+#   d. publishManifest 可追溯：路径集、target、registryVersion、每篇源文件 SHA256
+#   e. 嵌入的站点数据（glossary/course/labs/graph）必须是已登记 site-data
+#   f. 在线镜像（site-vitepress/docs，若已生成）只含 online 允许的文档，且无 archive/
+if PUBLISH_REGISTRY is not None:
+    publish_base = len(fails)
+    R = PUBLISH_REGISTRY
+
+    # a. registry <-> disk
+    audit = publish_boundary.audit_registry(R, ROOT)
+    for msg in audit["errors"]:
+        fail(f"[publish] {msg}")
+    for rel in audit["unregistered"]:
+        fail(f"[publish] unregistered asset (default=deny): {rel} — 在 tools/publish-allowlist.json 逐个登记，或移出资产空间")
+
+    expected_docs = {
+        rel: publish_boundary.policy_for(rel, R)
+        for rel in PUBLISH_ASSETS
+        if rel.endswith(".md") and publish_boundary.is_publishable(rel, target="offline", registry=R)
+    }
+
+    # b/c/d. bundle vs registry
+    bundle: dict | None = None
+    if CONTENT_PATH.exists():
+        text = CONTENT_PATH.read_text(encoding="utf-8", errors="replace")
+        head = "window.RENDER_NOTES = "
+        if text.startswith(head):
+            try:
+                bundle = json.loads(text[len(head):].rstrip().rstrip(";"))
+            except ValueError as exc:
+                fail(f"[publish] web/content.js payload unparsable: {exc}")
+    if bundle is None:
+        fail("[publish] bundle unavailable — run py -3 tools/build_site.py")
+    else:
+        bundle_docs = {str(d.get("id")): d.get("publishPolicy") for d in bundle.get("docs", [])}
+        for rel in sorted(set(bundle_docs) - set(expected_docs)):
+            fail(f"[publish] bundle contains asset not allowed offline: {rel}")
+        for rel in sorted(set(expected_docs) - set(bundle_docs)):
+            fail(f"[publish] allowed doc missing from bundle (stale bundle): {rel} — run py -3 tools/build_site.py")
+        for rel in sorted(set(bundle_docs) & set(expected_docs)):
+            if bundle_docs[rel] != expected_docs[rel]:
+                fail(f"[publish] {rel}: bundle policy {bundle_docs[rel]!r} != registry {expected_docs[rel]!r}")
+        for rel, policy in R["_by_path"].items():
+            if policy == "excluded-internal" and rel in bundle_docs:
+                fail(f"[publish] excluded-internal asset leaked into bundle: {rel}")
+        manifest = bundle.get("publishManifest")
+        if not isinstance(manifest, dict):
+            fail("[publish] bundle missing publishManifest (not traceable) — run py -3 tools/build_site.py")
+        else:
+            if manifest.get("target") != "offline":
+                fail(f"[publish] manifest target {manifest.get('target')!r} != 'offline'")
+            if manifest.get("registryVersion") != R.get("version"):
+                fail(f"[publish] manifest registryVersion {manifest.get('registryVersion')!r} != registry {R.get('version')!r}")
+            mf_docs = {str(m.get("path")): m.get("sha256") for m in manifest.get("docs", []) if isinstance(m, dict)}
+            if set(mf_docs) != set(bundle_docs):
+                fail(f"[publish] manifest paths != bundle docs (manifest-only={sorted(set(mf_docs) - set(bundle_docs))[:3]}, bundle-only={sorted(set(bundle_docs) - set(mf_docs))[:3]})")
+            for rel in sorted(set(mf_docs) & set(bundle_docs)):
+                src = ROOT / rel
+                if not src.is_file():
+                    fail(f"[publish] manifest source missing on disk: {rel}")
+                elif hashlib.sha256(src.read_bytes()).hexdigest() != mf_docs[rel]:
+                    fail(f"[publish] {rel}: source changed after build (sha256 mismatch) — run py -3 tools/build_site.py")
+
+        # e. embedded site data must be registered site-data
+        for key, rel in (("glossary", "tools/glossary.json"), ("course", "tools/course.json"), ("labs", "tools/labs.json"), ("graph", "tools/graph.json")):
+            if key in bundle and publish_boundary.policy_for(rel, R) != "site-data":
+                fail(f"[publish] embedded payload '{key}' comes from unregistered site-data: {rel}")
+        courses_list = bundle.get("courses", [])
+        if not courses_list or courses_list[0] != bundle.get("course"):
+            fail("[publish] payload.courses[0] must be the main course (payload.course)")
+        for c in courses_list[1:]:  # 其余为 courses/<id>/course.json（pilot / independent）
+            cid = str(c.get("id", ""))
+            rel = f"courses/{cid}/course.json"
+            if not cid or publish_boundary.policy_for(rel, R) != "site-data":
+                fail(f"[publish] embedded courses[] entry not registered site-data: {rel}")
+        if "course" in bundle and publish_boundary.policy_for("tools/course.json", R) != "site-data":
+            fail("[publish] embedded payload 'course' comes from unregistered site-data: tools/course.json")
+
+        # e2. 精选数据（curated-data，2026-11-25）：嵌入集合必须恰等于注册表登记、哈希可追溯；
+        #     文档级证据引用只能指向精选来源注册表（claim-ledger 等内部数据永远不在其中）。
+        curated_registered = {rel for rel, asset in R["_by_path"].items() if asset["policy"] == "curated-data"}
+        embedded = bundle.get("curated")
+        if not isinstance(embedded, dict):
+            fail("[publish] bundle missing payload.curated (精选证据/知识模型未呈现) — run py -3 tools/build_site.py")
+        else:
+            for rel in sorted(set(embedded) - curated_registered):
+                fail(f"[publish] payload.curated contains asset not registered as curated-data: {rel}")
+            for rel in sorted(curated_registered - set(embedded)):
+                fail(f"[publish] curated-data asset missing from payload.curated: {rel}")
+            mf_curated = (
+                {str(m.get("path")): m.get("sha256") for m in (manifest.get("curated") or []) if isinstance(m, dict)}
+                if isinstance(manifest, dict) else {}
+            )
+            for rel in sorted(curated_registered & set(embedded)):
+                src = ROOT / rel
+                if not src.is_file():
+                    fail(f"[publish] curated-data source missing on disk: {rel}")
+                elif hashlib.sha256(src.read_bytes()).hexdigest() != mf_curated.get(rel):
+                    fail(f"[publish] curated-data {rel}: sha256 mismatch (stale bundle) — run py -3 tools/build_site.py")
+            source_ids = {
+                str(s.get("id"))
+                for s in (embedded.get("evidence/source-registry.json") or {}).get("sources", []) if isinstance(s, dict)
+            }
+            for d in bundle.get("docs", []):
+                for item in d.get("evidence") or []:
+                    if not isinstance(item, dict) or str(item.get("id")) not in source_ids:
+                        fail(f"[publish] {d.get('id')}: evidence cites a source outside the curated registry: {item}")
+
+    # f. online mirror (VitePress) — archive forbidden online, only public docs
+    if VITEPRESS_DOCS.exists():
+        vp_files = sorted(p for p in VITEPRESS_DOCS.rglob("*.md") if p.name != "index.md")
+        if (VITEPRESS_DOCS / "archive").exists():
+            fail("[publish] online tree contains archive/ (D10.4: archive online=forbidden)")
+        vp_bad = []
+        for p in vp_files:
+            rel = p.relative_to(VITEPRESS_DOCS).as_posix()
+            if not publish_boundary.is_publishable(rel, target="online", registry=R):
+                vp_bad.append(rel)
+        for rel in vp_bad[:10]:
+            fail(f"[publish] online tree contains non-online asset: {rel}")
+        if len(vp_bad) > 10:
+            fail(f"[publish] online tree: {len(vp_bad) - 10} more non-online assets")
+        if vp_files and not vp_bad:
+            ok()
+    if len(fails) == publish_base:
+        ok()
 
 # ---------------------------------------------------------------------------
 # summary

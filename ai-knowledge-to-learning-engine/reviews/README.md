@@ -18,7 +18,7 @@ updated: 2026-11-24
 |---|---|---|
 | `decision-kit/` | 七项人工裁决材料（B4/B10/B11/B12/B15/V13/V14） | ✅ 全闭合（D17–D19，2026-11-19）；B12 stash 处置待重议 |
 | `p10/` | P10 HDR 批次端到端验收全套（intake/研究/G1 队列/KCR 提案/人工门指引/发布与反馈记录） | ✅ run done（D20，2026-11-21） |
-| `embodied-batch1/` | embodied-loop-journey 首批（当前主线） | 🔄 RESEARCH 进行中 |
+| `embodied-batch1/` | embodied-loop-journey 首批六课（当前主线）：intake / 研究报告 / G1 队列 / 学习设计说明 / 独立审读记录 / 修复后复审 / G2 诊断建议分 | 🔄 六课写完并经独立审读与复评（建议分全部 ≥85）；停在 REVIEW，等人工 G1 / G2 / G3 |
 | `kcr/` | KCR 工具说明与影响分析样本（含对齐前历史冒烟工件，保留不改写） | 活跃工具文档 |
 | `G2-L02…L19-deepening.md` | 逐篇教材人工评分材料（18 份） | L19 已评 91 分；L02–L18 共 17 篇待用户评分 |
 | `P8-KCR-kickoff.md` / `P9-orchestrator-design.md` | P8/P9 启动检查点与设计稿 | ✅ 已执行完，转历史参考 |

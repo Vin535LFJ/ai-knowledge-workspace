@@ -4,6 +4,8 @@
 import io
 import json
 import os
+import re
+import shutil
 import sys
 import tempfile
 import unittest
@@ -535,6 +537,239 @@ class ExampleProjectTests(unittest.TestCase):
                 io.open(os.path.join(tmp, rel), "w", encoding="utf-8").write("# t\n")
             rels = [rel for _abs, rel, _t in g.scan_markdown_docs(tmp)]
         self.assertEqual(rels, ["docs/keep.md"])
+
+    # --- P0-A：示例必须自洽（2026-11-25） ---
+    def test_basic_project_doctor_exit_zero(self):
+        rc, out = self._run_cli("doctor", "--project", self._example_root())
+        self.assertEqual(rc, 0, out)
+        self.assertIn("诊断通过", out)
+
+    def test_basic_project_types_in_enum_and_match_frontmatter(self):
+        """注册表 type 必须在 13 类枚举内，且与文档 frontmatter 的 type 一致。"""
+        root = self._example_root()
+        with io.open(os.path.join(root, g.STATE_DIR, g.REGISTRY_DOC),
+                     encoding="utf-8") as fh:
+            registry = json.load(fh)
+        fm_types = {
+            rel: g.parse_frontmatter(text).get("type")
+            for _abs, rel, text in g.scan_markdown_docs(root)
+        }
+        for entry in registry["documents"]:
+            self.assertIn(entry["type"], g.DOCUMENT_TYPES, entry["path"])
+            self.assertEqual(entry["type"], fm_types[entry["path"]], entry["path"])
+
+    def test_basic_project_registry_reproduced_by_inventory(self):
+        """示例注册表不是手写漂移的：对示例副本重跑 inventory，条目应完全一致。"""
+        with tempfile.TemporaryDirectory() as tmp:
+            copy_root = os.path.join(tmp, "basic-project")
+            shutil.copytree(self._example_root(), copy_root)
+            g.inventory_docs(copy_root)
+            regenerated = g._read_json(os.path.join(copy_root, g.STATE_DIR, g.REGISTRY_DOC))
+        with io.open(os.path.join(self._example_root(), g.STATE_DIR, g.REGISTRY_DOC),
+                     encoding="utf-8") as fh:
+            checked_in = json.load(fh)
+        self.assertEqual(regenerated["documents"], checked_in["documents"])
+
+    def test_document_schema_accepts_optional_null_fields(self):
+        """schema 与 CLI 产物一致：未声明的可选字段（如 level）登记为 null，schema 必须接受。"""
+        schema_path = os.path.join(KIT_ROOT, "schemas", "document.schema.json")
+        with io.open(schema_path, encoding="utf-8") as fh:
+            schema = json.load(fh)
+        props = schema["properties"]
+        for field in ("level", "source_of_truth", "related_task", "related_adr",
+                      "replaces", "superseded_by"):
+            self.assertIn("null", props[field]["type"], field + " 应允许 null")
+        self.assertNotIn("level", schema["required"])
+
+    def _run_cli(self, *args):
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            rc = g.main(list(args))
+        return rc, buf.getvalue()
+
+
+class InitExistingAgentsTests(unittest.TestCase):
+    """P0-B：已有 AGENTS.md 的项目接入 init（2026-11-25）。
+
+    覆盖：空白项目、已有自定义内容、重复执行幂等、原内容逐字节不变、
+    带空格/中文的路径、非 UTF-8 文件不破坏。
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        self.project = self._tmp.name
+
+    def tearDown(self):
+        self._tmp.cleanup()
+
+    USER_CONTENT = (
+        "---\n"
+        "doc_id: MY-AGENTS\n"
+        "type: adapter\n"
+        "status: active\n"
+        "owner: alice\n"
+        "---\n"
+        "\n"
+        "# 我的项目规则\n"
+        "\n"
+        "这是用户自己写的内容，init 不得改动。\n"
+        "- 先读 `.agent/README.md`\n"
+    )
+
+    def _agents_path(self, project=None):
+        return os.path.join(project or self.project, g.AGENTS_FILE)
+
+    def _read_bytes(self, project=None):
+        with open(self._agents_path(project), "rb") as fh:
+            return fh.read()
+
+    def _run_cli(self, *args):
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            rc = g.main(list(args))
+        return rc, buf.getvalue()
+
+    def _state_snapshot(self, project=None):
+        """读取 .governance 下全部文件的字节快照，用于幂等对比。"""
+        state = os.path.join(project or self.project, g.STATE_DIR)
+        snapshot = {}
+        for name in sorted(os.listdir(state)):
+            with open(os.path.join(state, name), "rb") as fh:
+                snapshot[name] = fh.read()
+        return snapshot
+
+    def _pointer_kit_path(self, text):
+        """从指针段中取出治理 CLI 路径（`{kit}/cli/governance.py` 的 {kit} 部分）。"""
+        match = re.search(r"治理 CLI：`([^`]+)/cli/governance\.py`", text)
+        self.assertIsNotNone(match, "指针段缺少治理 CLI 路径")
+        return match.group(1)
+
+    # 1. 空白项目 init → 有治理入口
+    def test_blank_project_gets_pointer_entry(self):
+        rc, out = self._run_cli("init", "--project", self.project)
+        self.assertEqual(rc, 0, out)
+        self.assertIn("新建文件", out)
+        text = self._read_bytes().decode("utf-8")
+        self.assertIn(g.POINTER_BEGIN, text)
+        self.assertIn(g.POINTER_END, text)
+        self.assertTrue(text.startswith("---\n"), "新建的入口应带 frontmatter")
+        self.assertEqual(text.count(g.POINTER_BEGIN), 1)
+        # 指针路径相对项目根解析后必须指向真实存在的工具包目录
+        kit = self._pointer_kit_path(text)
+        resolved = os.path.normpath(os.path.join(self.project, kit))
+        self.assertEqual(os.path.normpath(KIT_ROOT), resolved)
+        for rel in ("constitution/AGENT_RULES.md", "AGENTS.md", "cli/governance.py"):
+            self.assertTrue(os.path.isfile(os.path.join(resolved, *rel.split("/"))), rel)
+        self.assertFalse(os.path.isabs(kit) or re.match(r"^[A-Za-z]:", kit),
+                         "同盘符下指针应为相对路径，不应写死盘符：" + kit)
+
+    # 2. 已有 AGENTS.md（CRLF、无结尾换行、中文自定义内容）→ 原内容逐字节不变 + 指针
+    def test_existing_agents_file_kept_byte_identical_and_pointer_appended(self):
+        original = self.USER_CONTENT.replace("\n", "\r\n").rstrip("\r\n").encode("utf-8")
+        with open(self._agents_path(), "wb") as fh:
+            fh.write(original)
+
+        rc, out = self._run_cli("init", "--project", self.project)
+        self.assertEqual(rc, 0, out)
+        self.assertIn("追加治理入口指针", out)
+
+        after = self._read_bytes()
+        self.assertTrue(after.startswith(original), "用户原有内容必须逐字节不变")
+        appended = after[len(original):]
+        self.assertIn(g.POINTER_BEGIN.encode("utf-8"), appended)
+        self.assertIn(g.POINTER_END.encode("utf-8"), appended)
+        self.assertEqual(after.count(g.POINTER_BEGIN.encode("utf-8")), 1, "不得重复追加")
+        self.assertNotIn(b"created:", appended, "追加段不得再写 frontmatter")
+        # 沿用原文件的换行风格，且指针段从新行开始
+        self.assertTrue(appended.startswith(b"\r\n\r\n"))
+        self.assertNotIn(b"\n", appended.replace(b"\r\n", b""))
+        self.assertEqual(g.parse_frontmatter(original.decode("utf-8"))["doc_id"], "MY-AGENTS")
+
+    # 3. 重复 init → 幂等（AGENTS.md 与 .governance 内容均不变）
+    def test_repeated_init_is_idempotent(self):
+        with open(self._agents_path(), "wb") as fh:
+            fh.write(self.USER_CONTENT.encode("utf-8"))
+        self._run_cli("init", "--project", self.project)
+        agents_first = self._read_bytes()
+        state_first = self._state_snapshot()
+        created_count = len(state_first)
+        self.assertEqual(created_count, 5, "应生成 5 个治理 JSON")
+
+        rc, out = self._run_cli("init", "--project", self.project)
+        self.assertEqual(rc, 0, out)
+        self.assertIn("已含治理入口指针", out)
+        self.assertEqual(self._read_bytes(), agents_first, "第二次 init 不得改动 AGENTS.md")
+        self.assertEqual(self._state_snapshot(), state_first, "第二次 init 不得改动 .governance")
+        self.assertEqual(g.init_project(self.project), [], "第三次 init 不新建任何文件")
+
+    # 3b. 空白项目重复 init 同样幂等
+    def test_repeated_init_blank_project_idempotent(self):
+        self._run_cli("init", "--project", self.project)
+        agents_first = self._read_bytes()
+        state_first = self._state_snapshot()
+        self._run_cli("init", "--project", self.project)
+        self.assertEqual(self._read_bytes(), agents_first)
+        self.assertEqual(self._state_snapshot(), state_first)
+
+    # 4. 跨平台路径：带空格/中文的项目目录跑 init + doctor
+    def test_init_and_doctor_in_path_with_spaces_and_chinese(self):
+        project = os.path.join(self._tmp.name, "治理 示例 project", "我的 项目")
+        os.makedirs(project)
+        rc_init, out_init = self._run_cli("init", "--project", project)
+        self.assertEqual(rc_init, 0, out_init)
+        rc_doc, out_doc = self._run_cli("doctor", "--project", project)
+        self.assertEqual(rc_doc, 0, out_doc)
+        text = self._read_bytes(project).decode("utf-8")
+        kit = self._pointer_kit_path(text)
+        self.assertEqual(
+            os.path.normpath(KIT_ROOT),
+            os.path.normpath(os.path.join(project, kit)))
+        config = g._read_json(os.path.join(project, g.STATE_DIR, g.CONFIG_FILE))
+        self.assertEqual(config["project_id"], "我的 项目")
+
+    # 5. 空的 AGENTS.md → 写入完整入口；再次 init 不重复
+    def test_empty_agents_file_gets_full_entry_once(self):
+        with open(self._agents_path(), "wb") as fh:
+            fh.write(b"  \r\n")
+        status = g.ensure_agents_pointer(self.project)
+        self.assertEqual(status, "created")
+        first = self._read_bytes()
+        self.assertTrue(first.startswith(b"---\n"))
+        self.assertEqual(g.ensure_agents_pointer(self.project), "present")
+        self.assertEqual(self._read_bytes(), first)
+
+    # 6. 非 UTF-8 的 AGENTS.md → 不修改、不静默（CLI 有明确警告）
+    def test_non_utf8_agents_file_untouched_with_warning(self):
+        original = "# 我的规则\n不得改动。\n".encode("gbk")
+        with open(self._agents_path(), "wb") as fh:
+            fh.write(original)
+        self.assertEqual(g.ensure_agents_pointer(self.project), "skipped")
+        rc, out = self._run_cli("init", "--project", self.project)
+        self.assertEqual(rc, 0)
+        self.assertIn("警告", out)
+        self.assertIn("不是 UTF-8", out)
+        self.assertEqual(self._read_bytes(), original)
+
+    # 7. 项目就是工具包自身 / 位于工具包内部：相对路径为 "." 或 "../.."（只渲染，不写文件）
+    def test_pointer_relative_when_project_inside_kit(self):
+        self.assertEqual(g._kit_pointer_path(KIT_ROOT), ".")
+        inside = os.path.join(KIT_ROOT, "examples", "basic-project")
+        self.assertEqual(g._kit_pointer_path(inside), "../..")
+        text = g._render_pointer_body(KIT_ROOT, appended=True)
+        self.assertIn("`./constitution/`", text)
+        self.assertIn("`./cli/governance.py`", text)
+
+    # 8. 跨盘符：relpath 抛 ValueError 时退回绝对路径，不得崩溃
+    @unittest.skipUnless(os.name == "nt", "跨盘符 relpath 仅 Windows 会抛 ValueError")
+    def test_pointer_falls_back_to_absolute_on_cross_drive(self):
+        saved = g.KIT_ROOT
+        try:
+            g.KIT_ROOT = r"Z:\no-such-drive\agent-workspace-governance"
+            with tempfile.TemporaryDirectory() as tmp:
+                text = g._render_pointer_body(tmp)
+            self.assertIn("Z:/no-such-drive/agent-workspace-governance/cli/governance.py", text)
+        finally:
+            g.KIT_ROOT = saved
 
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ type: handoff-index
 status: active
 owner: qwenwork
 created: 2026-11-19
-updated: 2026-11-21
+updated: 2026-11-26
 ---
 
 # 交接归档索引
@@ -12,8 +12,11 @@ updated: 2026-11-21
 规则：交接正文留在**产生它的项目内**（单一事实源），本目录只登记指针 + 摘要，避免复制漂移。**例外：跨项目总交接正文在本目录**（Program 级）。
 模板：Render_Notes `.agent/templates/agent-handoff.md`；项目03 `templates/handoff.md`。
 
+> **2026-11-26 提交作者重写注记**：五个项目仓全部提交的作者已由公司邮箱统一重写为 `Vin535LFJ <169535939+Vin535LFJ@users.noreply.github.com>`（tree 哈希前后一致，内容零改动；Engine / Skills / 快照仓已 `--force-with-lease` 强推）。**本文档及全部历史交接 / 计划 / 审计材料中的旧提交 SHA 均指重写前历史**；现行指针以各仓 `NOW.md` / `WORKFLOW_STATE.md` 与 git 实测为准。
+
 | 日期 | 任务 | Owner | 交接正文位置 | 摘要 |
 |---|---|---|---|---|
+| 2026-11-25 | **人工验收与稳定化阶段（交接）** | qwenwork → 用户 / 下一会话 | 验收正文：Engine `../ai-knowledge-to-learning-engine/reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md`；验证结论：`../plans/2026-11-25-stabilization-verification.md` | run REVIEW / paused 等四件人工门（G1 / G2 / 登记审批 + G3 / KCR），AI 不得推进；验收包含 G1 21 条断言分类建议、G2 六课依据与评分表；方案甲 11 项修复已于 22:35 执行并经独立复核（Engine `recheck-planA-fixes.md`）；专项复核曾发现两处小修各修对一半、V83 CPU 行有官方原文新证据、E03 §4.5 无断言覆盖；Radar / Governance / LXD / Git 验证结论；PD-Q9 至 Q17 待决；本轮产物未提交未推送 |
 | 2026-11-19 | **跨项目总交接（移交下一个 AI）** | qwenwork → 接手 AI | **`2026-11-19-program-handoff.md`（自包含）** | GitHub 改名已核实；T1 迁移收尾（remote/引用/OmniWorld）→ T2 P7.2 L02 → P8/P9/P10；纪律红线 + 待人工事项 + 未提交清单 + 证据附录 |
 | 2026-11-20 | 前一窗口进度独立复核 + P8 片一 | qwenwork（复核窗口） | **`../plans/2026-11-20-progress-review.md`** | T1+P7.2 十篇+P8 启动全部属实；4 处记录笔误已更正（552 cards/2800 KB/24 来源/Program 1 未提交）；content.js 重建；kcr_impact↔schema 对齐 + selftest 5/5；待拍板：L02 DTS≤PTS 文案修正、commit/push 授权、G2 评分 |
 | 2026-11-19 | CHG-0001 四项目并进 | WorkBuddy(qwenwork)+子代理 | `Render_Notes/.agent/changes/CHG-0001-four-project-expansion/handoff.md` | P7 修复 + P2 Skill + P3/P4 MVP；未提交；续跑=G1/G2+试点确认 |

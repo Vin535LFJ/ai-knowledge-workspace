@@ -941,6 +941,9 @@ kbd {
 .term-chip strong { font-size: 13px; }
 .term-chip span { color: var(--text-muted); font-size: 11.5px; line-height: 1.5; }
 .term-chip small { color: var(--text-subtle); font-size: 10.5px; }
+.ev-panel .term-panel-grid { grid-template-columns: minmax(0, 1fr); }
+.ev-group { grid-column: 1 / -1; margin: 10px 0 0; font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.ev-group span { margin-left: 8px; font-weight: 400; color: var(--text-subtle); }
 
 .glossary-hero {
   margin-bottom: 26px;
@@ -1136,7 +1139,7 @@ kbd {
 
 .lab-view { min-width: 0; }
 .lab-canvas { display: block; width: 100%; height: auto; border: 1px solid var(--border); border-radius: 9px; cursor: crosshair; }
-.lab-canvas-legend { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 9px; color: var(--text-subtle); font-size: 11px; }
+.lab-canvas-legend { display: flex; flex-wrap: wrap; gap: 8px 14px; margin-top: 9px; color: var(--text-muted); font-size: 11px; }
 .lab-canvas-legend span { display: inline-flex; align-items: center; gap: 5px; }
 .lab-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
 .lab-dot.axis-x { background: #e5534b; }
@@ -1155,7 +1158,7 @@ kbd {
 }
 .lab-stage-index { color: var(--accent); font-size: 10.5px; font-weight: 700; }
 .lab-stage strong { font-size: 13px; }
-.lab-stage small { color: var(--text-subtle); font-size: 11px; line-height: 1.5; }
+.lab-stage small { color: var(--text-muted); font-size: 11px; line-height: 1.5; }
 .lab-stage code {
   margin-top: 7px;
   overflow-x: auto;
@@ -1181,12 +1184,34 @@ kbd {
   line-height: 1.5;
   white-space: pre;
 }
-.lab-matrix small { display: block; margin-top: 6px; color: var(--text-subtle); font-size: 11px; }
+.lab-matrix small { display: block; margin-top: 6px; color: var(--text-muted); font-size: 11px; }
 
 .lab-task-list { list-style: none; padding: 0; }
-.lab-task-list li { display: flex; align-items: flex-start; gap: 9px; margin: 7px 0; color: var(--text-muted); font-size: 13px; }
+.lab-task-list li { margin: 7px 0; color: var(--text-muted); font-size: 13px; }
+.lab-task-list li > label { display: flex; align-items: flex-start; gap: 9px; cursor: pointer; }
 .lab-task-list input { margin-top: 4px; accent-color: var(--accent); }
+/* 已完成任务的划线弱化是有意的（表达"已做完"），保留浅色 */
 .lab-task-list input:checked + span { color: var(--text-subtle); text-decoration: line-through; }
+
+.lab-goal { margin: 14px 0 0; padding: 10px 14px 10px 16px; border-left: 3px solid var(--accent); background: var(--bg-elevated); }
+.lab-goal-lead { margin: 0; font-size: 13px; font-weight: 600; }
+.lab-goal ul { margin: 6px 0 0; padding-left: 20px; }
+.lab-goal li { margin: 5px 0; font-size: 14px; line-height: 1.6; }
+.lab-observe {
+  display: block;
+  width: 100%;
+  min-height: 96px;
+  padding: 9px 11px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-elevated);
+  color: var(--text);
+  font: inherit;
+  font-size: 13.5px;
+  line-height: 1.6;
+  resize: vertical;
+}
+.lab-observe:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .lab-selftest { display: flex; flex-direction: column; gap: 9px; }
 .lab-selftest-item { border: 1px solid var(--border); border-radius: 8px; background: var(--bg-elevated); }
@@ -1209,7 +1234,7 @@ kbd {
 .lab-note .icon { margin-top: 3px; color: var(--accent); }
 .lab-note p { margin: 0 0 8px; }
 .lab-note p:last-child { margin-bottom: 0; }
-.lab-note-text { display: flex; gap: 8px; margin: 16px 0 0; color: var(--text-subtle); font-size: 12px; }
+.lab-note-text { display: flex; gap: 8px; margin: 16px 0 0; color: var(--text-muted); font-size: 12px; }
 .lab-note-text .icon { margin-top: 4px; color: var(--accent); }
 
 .lab-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
@@ -1227,7 +1252,7 @@ kbd {
 .lab-card-kicker { color: var(--accent); font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; }
 .lab-card strong { font-size: 14.5px; }
 .lab-card p { margin: 0; color: var(--text-muted); font-size: 12.5px; line-height: 1.6; }
-.lab-card-foot { margin-top: auto; padding-top: 6px; color: var(--text-subtle); font-size: 11px; }
+.lab-card-foot { margin-top: auto; padding-top: 6px; color: var(--text-muted); font-size: 11px; }
 .lesson-lab {
   display: inline-block;
   padding: 9px 15px;

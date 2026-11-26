@@ -34,7 +34,7 @@ updated: 2026-11-19
 1. 读 `PROGRAM.md`（目标、边界、正式命名、状态词汇）。
 2. 读 `NOW.md`（当前唯一主项目、主任务、阻塞）。
 3. 读 `ROADMAP.md`（阶段进出条件，确认当前阶段）。
-4. 检查当前主项目真实状态（Engine = `Render_Notes/.agent/README.md` → WORKFLOW_STATE / NEXT_PHASE_PLAN）。
+4. 检查当前主项目真实状态（Engine = `ai-knowledge-to-learning-engine/.agent/README.md` → WORKFLOW_STATE / DECISIONS；NEXT_PHASE_PLAN 已归档至 `archive/process-history/`，仅作历史参考）。
 5. `git status` + 最近提交实测，保护用户未提交的工作。
 6. 阅读相关 DECISIONS 与 reviews（人工关卡状态）。
 7. 判断当前阶段是否仍然有效（漂移先登记报告，不静默修复）。
@@ -93,5 +93,5 @@ AI 自动检查通过 ≠ 人工审核通过；G1/G2/G3 评分与裁决栏 AI �
 
 - Engine：`.workbuddy-ai/memory/**`、`archive/**`、`web/vendor/**`、`web/index.html`、stash（B12 裁决前）、claim 状态（G1 裁决前）、`.agent/**` 结构（变更走 DECISIONS + KCR）。
 - Skills 库：不承载治理代码，上游同步纪律不变。
-- 冻结项目（Governance/Radar）：不新增功能、不建远程、不采集；只允许登记真实痛点。
+- 维护期项目（Governance/Radar）：仅允许明确范围内的缺陷修复与必要可靠性验证（数据安全/人工审核/历史快照口径），不扩展功能、不建远程、不采集；真实痛点继续登记。（历史：2026-11-19–21 曾为冻结期，PD-003；2026-11-21 解冻执行阶段 3/4。）
 - Program：`references/` 只读；`archive/` 只移入不改写。

@@ -128,6 +128,8 @@ def cmd_analyze(args):
         growth = compute_growth(snaps)
         group, hits = _resolve_topic(repo, topics)
         ev = evaluate(repo.to_dict(), topics, growth, group, weights=weights)
+        # 新候选默认 Discovered；已存在的候选只更新机器字段，
+        # review_status / human_selected_for_research 等人工字段由 storage.upsert_candidate 保留。
         cand = Candidate(
             repository_id=repo.repository_id,
             topic=group,
@@ -137,7 +139,6 @@ def cmd_analyze(args):
                 "snapshot_count": len(snaps),
             },
             evaluation=ev,
-            review_status="Discovered",
             created_at=utc_now_iso(),
         )
         storage.upsert_candidate(cand)
@@ -180,12 +181,25 @@ def cmd_report(args):
 
 def cmd_export(args):
     storage = Storage(args.db)
-    result = export_research_tasks(
-        storage,
-        args.output,
-        review_status=args.status,
-        only_approved=args.approved,
-    )
+    if args.approved:
+        # 旧库补齐 approver / approved_at / approval_reason 列（幂等 ALTER，不改动既有数据）
+        storage.init_db()
+        approver = (getattr(args, "approver", None) or "").strip()
+        if not approver:
+            print("[export] 错误: --approved 必须同时提供非空的 --approver（人工批准人）。", file=sys.stderr)
+            sys.exit(2)
+    try:
+        result = export_research_tasks(
+            storage,
+            args.output,
+            review_status=args.status,
+            only_approved=args.approved,
+            approver=getattr(args, "approver", None),
+            reason=getattr(args, "reason", None),
+        )
+    except ValueError as exc:
+        print(f"[export] 错误: {exc}", file=sys.stderr)
+        sys.exit(2)
     print(f"[export] 已导出 {result['count']} 条研究任务到 {args.output}")
     print("  说明：本模块仅输出文件，不会写入 Render_Notes 或任何外部项目。")
 
@@ -259,7 +273,12 @@ def build_parser():
     p = sub.add_parser("export", help="导出研究任务 JSON（纯输出）")
     p.add_argument("--output", required=True, help="输出文件路径")
     p.add_argument("--status", default="Research", help="要导出的复核状态（默认 Research）")
-    p.add_argument("--approved", action="store_true", help="将 review_status 标记为 approved_for_research")
+    p.add_argument("--approved", action="store_true",
+                   help="人工批准：在数据库写入完整批准状态（review_status=approved_for_research、"
+                        "human_selected_for_research=true、approver/approved_at/approval_reason），"
+                        "并只导出已批准任务；必须同时提供非空 --approver")
+    p.add_argument("--approver", default=None, help="人工批准人（--approved 时必填，不能为空）")
+    p.add_argument("--reason", default=None, help="批准理由（可选；为空时 approval_reason 留空）")
     p.set_defaults(func=cmd_export)
 
     p = sub.add_parser("query", help="执行只读 SQL 查询并打印结果")

@@ -9,8 +9,13 @@ Outputs (all generated, git-ignored):
     site-vitepress/docs/index.md            generated home page
     site-vitepress/.vitepress/sidebar.generated.json
 
-Same source of truth as tools/build_site.py (stdlib only). Curated
-exclusions per DECISIONS.md D10.4: archive/** and the two proposal docs.
+Same source of truth as tools/build_site.py (stdlib only).
+
+2026-11-24 强制发布边界 v2：文档集由 tools/publish-allowlist.json 决定（target="online"，
+仅 public）。archive/ 的 online=forbidden（D10.4：离线站保留只读归档，不自动扩大为在线
+发布）；excluded-internal（DECISIONS/CHANGELOG/WORKFLOW_STATE/课程根审核材料等）永不进入。
+注册表缺失/损坏/与磁盘不一致 → 构建失败，不留下半成品站点树。
+在线发布本身仍受 D02 人工授权约束；本脚本只生成镜像内容树。
 """
 
 from __future__ import annotations
@@ -18,6 +23,7 @@ from __future__ import annotations
 import json
 import re
 import shutil
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -25,15 +31,7 @@ SRC = ROOT
 DOCS = ROOT / "site-vitepress" / "docs"
 SIDEBAR_PATH = ROOT / "site-vitepress" / ".vitepress" / "sidebar.generated.mjs"
 
-EXCLUDED_FILES = {
-    # 2026-11-24 文档治理：Master Prompt / Render_Notes 工作流设计两份已移入
-    # archive/process-history/，由 EXCLUDED_TOP_DIRS 的 archive 排除覆盖。
-    "CLAUDE.md",
-    "AGENTS.md",
-}
-# 2026-11-19：新增 reviews —— 治理/审核材料不进知识 bundle（与 publish_boundary 口径一致）。
-# archive 仍排除（D10.4 VitePress 策略，本轮不变）。
-EXCLUDED_TOP_DIRS = {"archive", "site-vitepress", "web", "node_modules", ".git", ".workbuddy-ai", ".agent", ".gemini", ".cursor", ".github", "tools", "evidence", "knowledge-model", "reviews"}
+PUBLISH_TARGET = "online"
 
 TOP_ORDER = [
     "00-导航与索引",
@@ -44,7 +42,9 @@ TOP_ORDER = [
     "05-项目实战",
     "06-面试知识库",
     "07-3D渲染与算法实现",
+    "08-具身智能",
     "courses",
+    "docs",
 ]
 
 SECTION_LABELS = {
@@ -56,7 +56,9 @@ SECTION_LABELS = {
     "05-项目实战": "05 · 项目实战",
     "06-面试知识库": "06 · 面试知识库",
     "07-3D渲染与算法实现": "07 · 3D 渲染与算法实现",
+    "08-具身智能": "08 · 具身智能",
     "courses": "教学课程（pilot）",
+    "docs": "使用指南",
 }
 
 
@@ -66,15 +68,20 @@ def clean_label(stem: str) -> str:
 
 
 def collect_markdown() -> list[Path]:
+    """在线镜像文档集 = 注册表允许进入 online 的 .md（默认拒绝；未登记资产 = 失败）。"""
+    import publish_boundary as pb
+
+    registry = pb.load_registry()  # fail closed
+    audit = pb.audit_registry(registry, ROOT)
+    if not audit["ok"]:
+        lines = [f"  - {m}" for m in audit["errors"]]
+        lines += [f"  - unregistered asset (default=deny): {p}" for p in audit["unregistered"]]
+        raise pb.RegistryError("publish registry / disk mismatch:\n" + "\n".join(lines))
     files = []
-    for path in sorted(SRC.rglob("*.md")):
-        rel = path.relative_to(SRC)
-        if rel.parts[0] in EXCLUDED_TOP_DIRS:
-            continue
-        if path.name in EXCLUDED_FILES:
-            continue
-        files.append(path)
-    return files
+    for rel in pb.scan_assets(ROOT):
+        if rel.endswith(".md") and pb.is_publishable(rel, target=PUBLISH_TARGET, registry=registry):
+            files.append(ROOT / rel)
+    return sorted(files)
 
 
 def group_label(top: str) -> str:
@@ -140,11 +147,12 @@ features:
 
 
 def main() -> None:
+    # 先在内存中确定文档集；注册表/审计失败时不动现有站点树（不留下半成品）。
+    files = collect_markdown()
     if DOCS.exists():
         shutil.rmtree(DOCS)
     DOCS.mkdir(parents=True)
 
-    files = collect_markdown()
     for path in files:
         rel = path.relative_to(SRC)
         dest = DOCS / rel
@@ -167,4 +175,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as exc:  # noqa: BLE001 — 注册表/IO 失败 = 构建失败，非零退出
+        print(f"VITEPRESS BUILD FAILED: {exc}", file=sys.stderr)
+        sys.exit(2)

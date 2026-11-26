@@ -76,10 +76,45 @@ CREATE TABLE IF NOT EXISTS candidates (
     observed_at        TEXT,
     retrieved_at       TEXT,
     data_quality       TEXT,
+    approver           TEXT,        -- 人工批准人（仅人工批准路径写入）
+    approved_at        TEXT,        -- 人工批准时间（ISO-8601）
+    approval_reason    TEXT,        -- 人工批准理由（可为空）
     UNIQUE(repository_id, topic),
     FOREIGN KEY(repository_id) REFERENCES repositories(repository_id)
 );
 """
+
+# =====================================================================
+# 候选表字段归属（数据正确性强约束）
+# ---------------------------------------------------------------------
+# 机器字段：自动采集 / analyze 产生的数据。新插入的候选全部写入；
+#           对已存在的行，冲突更新时【只】允许更新这些列。
+# 人工字段：只能由人工复核（update_candidate_review）与人工批准（approve_candidate）写入，
+#           自动分析 / 采集对已存在的行绝不触碰，原值一律保留。
+# 其余列（repository_id / topic 为唯一键，created_at 为创建时间）只在插入时确定，不更新。
+# =====================================================================
+CANDIDATE_MACHINE_COLUMNS = frozenset({
+    "discovery_reason",
+    "evaluation",
+    "source_url",
+    "observed_at",
+    "retrieved_at",
+    "data_quality",
+})
+CANDIDATE_HUMAN_COLUMNS = frozenset({
+    "review_status",
+    "human_selected_for_research",
+    "research_objective",
+    "approver",
+    "approved_at",
+    "approval_reason",
+})
+# evaluation 是 JSON 列：机器重算的评分可更新，但其中由人工写入的审计键必须保留。
+CANDIDATE_EVALUATION_HUMAN_KEYS = ("review_log", "review_status", "research_objective")
+
+# 新插入候选的默认状态；人工批准写入的状态值（Research Intake 契约）
+DEFAULT_REVIEW_STATUS = "Discovered"
+APPROVED_REVIEW_STATUS = "approved_for_research"
 
 
 class Storage:
@@ -115,6 +150,8 @@ class Storage:
                     "human_selected_for_research": "INTEGER DEFAULT 0",
                     "source_url": "TEXT", "observed_at": "TEXT",
                     "retrieved_at": "TEXT", "data_quality": "TEXT",
+                    "approver": "TEXT", "approved_at": "TEXT",
+                    "approval_reason": "TEXT",
                 },
             })
             conn.commit()
@@ -326,44 +363,146 @@ class Storage:
 
     # ---------- candidates ----------
 
+    @staticmethod
+    def _merge_evaluation(new_evaluation: Dict[str, Any], existing_json: Optional[str]) -> Dict[str, Any]:
+        """机器重算的评分覆盖旧值，但 evaluation 内的人工审计键（review_log 等）原样保留。"""
+        try:
+            existing = json.loads(existing_json or "{}")
+        except (TypeError, ValueError):
+            existing = {}
+        if not isinstance(existing, dict):
+            existing = {}
+        merged: Dict[str, Any] = dict(new_evaluation or {})
+        for key in CANDIDATE_EVALUATION_HUMAN_KEYS:
+            if key in existing:
+                merged[key] = existing[key]
+        return merged
+
     def upsert_candidate(self, cand: Candidate) -> None:
+        """写入候选（自动分析 / 采集路径）。
+
+        - 新插入：全部列按传入值写入（review_status 缺省为 Discovered）。
+        - 已存在的行（repository_id, topic 冲突）：只更新 CANDIDATE_MACHINE_COLUMNS，
+          CANDIDATE_HUMAN_COLUMNS 与 evaluation 内的人工审计键一律保留，不被覆盖。
+        """
+        machine_values = {
+            "discovery_reason": json.dumps(cand.discovery_reason or {}, ensure_ascii=False),
+            "evaluation": json.dumps(cand.evaluation or {}, ensure_ascii=False),
+            "source_url": cand.source_url,
+            "observed_at": cand.observed_at,
+            "retrieved_at": cand.retrieved_at,
+            "data_quality": cand.data_quality,
+        }
         with self._connect() as conn:
             try:
+                # 显式加写锁：下面的「读旧值 → 插入/更新」必须在同一事务内完成
+                conn.execute("BEGIN IMMEDIATE")
+                existing = conn.execute(
+                    "SELECT evaluation FROM candidates WHERE repository_id = ? AND topic = ?",
+                    (cand.repository_id, cand.topic),
+                ).fetchone()
+                if existing is None:
+                    conn.execute(
+                        """
+                        INSERT INTO candidates
+                            (repository_id, topic, discovery_reason, evaluation,
+                             review_status, research_objective, created_at,
+                             human_selected_for_research, source_url, observed_at,
+                             retrieved_at, data_quality)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        """,
+                        (
+                            cand.repository_id,
+                            cand.topic,
+                            machine_values["discovery_reason"],
+                            machine_values["evaluation"],
+                            cand.review_status or DEFAULT_REVIEW_STATUS,
+                            cand.research_objective or "",
+                            cand.created_at or utc_now_iso(),
+                            1 if cand.human_selected_for_research else 0,
+                            cand.source_url,
+                            cand.observed_at,
+                            cand.retrieved_at,
+                            cand.data_quality,
+                        ),
+                    )
+                else:
+                    # 冲突：只更新机器字段；SET 子句直接由机器字段集合生成，人工字段不可能出现在其中
+                    machine_values["evaluation"] = json.dumps(
+                        self._merge_evaluation(cand.evaluation or {}, existing["evaluation"]),
+                        ensure_ascii=False,
+                    )
+                    assignments = ", ".join(f"{col} = ?" for col in sorted(CANDIDATE_MACHINE_COLUMNS))
+                    conn.execute(
+                        f"UPDATE candidates SET {assignments} WHERE repository_id = ? AND topic = ?",
+                        [machine_values[col] for col in sorted(CANDIDATE_MACHINE_COLUMNS)]
+                        + [cand.repository_id, cand.topic],
+                    )
+                conn.commit()
+            except Exception:
+                conn.rollback()
+                raise
+
+    def approve_candidate(
+        self,
+        candidate_id: int,
+        approver: str,
+        approved_at: Optional[str] = None,
+        approval_reason: Optional[str] = None,
+    ) -> bool:
+        """人工批准进入研究：同步写入完整人工批准状态。
+
+        写入列：review_status=approved_for_research、human_selected_for_research=1、
+        approver、approved_at、approval_reason，并在 evaluation.review_log 追加一条审计记录。
+        重复批准幂等：已是 approved_for_research 的候选直接 no-op，保留首次
+        approver / approved_at / approval_reason，不做任何写入；返回 False。首次批准返回 True。
+        """
+        approver = (approver or "").strip()
+        if not approver:
+            raise ValueError("人工批准必须提供非空 approver（批准人）")
+        reason = (approval_reason or "").strip() or None
+        with self._connect() as conn:
+            try:
+                conn.execute("BEGIN IMMEDIATE")
+                row = conn.execute(
+                    "SELECT review_status, evaluation FROM candidates WHERE id = ?", (candidate_id,)
+                ).fetchone()
+                if row is None:
+                    raise ValueError(f"候选记录不存在: id={candidate_id}")
+                if row["review_status"] == APPROVED_REVIEW_STATUS:
+                    conn.rollback()
+                    return False
+                stamp = approved_at or utc_now_iso()
+                evaluation = json.loads(row["evaluation"] or "{}")
+                if not isinstance(evaluation, dict):
+                    evaluation = {}
+                log = evaluation.setdefault("review_log", [])
+                log.append(
+                    {
+                        "reviewer": approver,
+                        "at": stamp,
+                        "from": row["review_status"],
+                        "to": APPROVED_REVIEW_STATUS,
+                        "decision": reason or "人工批准进入研究",
+                    }
+                )
+                evaluation["review_status"] = APPROVED_REVIEW_STATUS
                 conn.execute(
-                    """
-                    INSERT INTO candidates
-                        (repository_id, topic, discovery_reason, evaluation,
-                         review_status, research_objective, created_at,
-                         human_selected_for_research, source_url, observed_at,
-                         retrieved_at, data_quality)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                    ON CONFLICT(repository_id, topic) DO UPDATE SET
-                        discovery_reason=excluded.discovery_reason,
-                        evaluation=excluded.evaluation,
-                        review_status=excluded.review_status,
-                        research_objective=excluded.research_objective,
-                        human_selected_for_research=excluded.human_selected_for_research,
-                        source_url=excluded.source_url,
-                        observed_at=excluded.observed_at,
-                        retrieved_at=excluded.retrieved_at,
-                        data_quality=excluded.data_quality
-                    """,
+                    """UPDATE candidates
+                       SET review_status = ?, human_selected_for_research = 1,
+                           approver = ?, approved_at = ?, approval_reason = ?, evaluation = ?
+                       WHERE id = ?""",
                     (
-                        cand.repository_id,
-                        cand.topic,
-                        json.dumps(cand.discovery_reason or {}, ensure_ascii=False),
-                        json.dumps(cand.evaluation or {}, ensure_ascii=False),
-                        cand.review_status,
-                        cand.research_objective or "",
-                        cand.created_at or utc_now_iso(),
-                        1 if cand.human_selected_for_research else 0,
-                        cand.source_url,
-                        cand.observed_at,
-                        cand.retrieved_at,
-                        cand.data_quality,
+                        APPROVED_REVIEW_STATUS,
+                        approver,
+                        stamp,
+                        reason,
+                        json.dumps(evaluation, ensure_ascii=False),
+                        candidate_id,
                     ),
                 )
                 conn.commit()
+                return True
             except Exception:
                 conn.rollback()
                 raise

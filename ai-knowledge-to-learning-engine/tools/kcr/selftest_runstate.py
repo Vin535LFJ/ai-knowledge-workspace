@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / "tools"))
 import kcr_impact  # noqa: E402
 import run_state as rs  # noqa: E402
+import approval_chain  # noqa: E402
 from kcr import validate_kcr  # noqa: E402
 
 RUN_SCHEMA = validate_kcr.load_schema("run-state")
@@ -119,6 +120,7 @@ class MachineTests(unittest.TestCase):
         self._td = tempfile.TemporaryDirectory()
         self.runs = Path(self._td.name) / "runs"
         self.files = Path(self._td.name) / "files"
+        self.approvals = Path(self._td.name) / "approvals"  # TASK 4 审批记录目录（临时）
         self.files.mkdir(parents=True)
         self.addCleanup(self._td.cleanup)
 
@@ -147,7 +149,12 @@ class MachineTests(unittest.TestCase):
                 with self.assertRaises(rs.RunStateError):
                     rs.advance(self.runs, rid)  # 人工门未过
                 rs.pass_gate(self.runs, rid, approver="user")
-            rs.advance(self.runs, rid, reason=f"{phase} 完成")
+                with self.assertRaises(rs.RunStateError) as cm:  # TASK 4：gate 过了但没有审批记录
+                    rs.advance(self.runs, rid, approvals_dir=self.approvals)
+                self.assertIn("审批证据链", str(cm.exception))
+                approval_chain.record(self.runs, rid, "G3", "user", scope="全部阶段产物",
+                                      root=self.files, approvals_dir=self.approvals)
+            rs.advance(self.runs, rid, reason=f"{phase} 完成", approvals_dir=self.approvals)
         state = rs.load_run(self.runs, rid)
         self.assertEqual(state["status"], "done")
         self.assertEqual(state["phase"], "FEEDBACK")

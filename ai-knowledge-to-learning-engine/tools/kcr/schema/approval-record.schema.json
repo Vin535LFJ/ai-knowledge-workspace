@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TASK 4 · approval-record（审批证据链记录）",
+  "description": "人工 G1/G2/G3 批准对应到具体文件版本的最小记录。产出方：tools/approval_chain.py record（仅人工执行）。落盘 reviews/approvals/<run_id>/<gate>-NN.json（入库、只增不改；发布边界默认拒绝，不进学习站）。硬规则（semantic_errors）：approver 与 approved_at 必须非空；artifacts 至少 1 项且路径不得含 ..；record_id 必须是 <run_id>/<gate>-NN。发布前由 run_state.advance / skip 调用 approval_chain.verify 重算哈希，任何变化即阻止发布。",
+  "type": "object",
+  "required": ["schema_version", "record_id", "run_id", "gate_id", "approver", "approved_at", "decision", "scope", "approved_at_phase", "artifacts", "note"],
+  "properties": {
+    "schema_version": { "type": "integer", "enum": [1] },
+    "record_id": { "type": "string", "pattern": "^RUN-[A-Za-z0-9._-]+/G[123]-[0-9]{2}$" },
+    "run_id": { "type": "string", "pattern": "^RUN-[A-Za-z0-9._-]+$" },
+    "gate_id": { "type": "string", "enum": ["G1", "G2", "G3"] },
+    "approver": { "type": "string" },
+    "approved_at": { "type": "string" },
+    "decision": { "type": "string", "enum": ["approved", "rejected"] },
+    "scope": { "type": "string" },
+    "approved_at_phase": { "type": "string" },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256", "phase", "kind"],
+        "properties": {
+          "path": { "type": "string" },
+          "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "phase": { "type": "string" },
+          "kind": { "type": "string" }
+        }
+      }
+    },
+    "commit": { "type": ["string", "null"], "pattern": "^[0-9a-f]{7,40}$" },
+    "dirty_files": { "type": ["integer", "null"] },
+    "note": { "type": "string" }
+  }
+}

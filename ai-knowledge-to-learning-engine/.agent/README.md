@@ -64,7 +64,7 @@ generated: false
 | 轻量变更流程 | `changes/README.md` | 借鉴 OpenSpec 思想自研；关闭后移 `changes/archive/` |
 | 文档注册表 | `indexes/document-registry.json`（生成物）+ `document-registry.schema.json` | `tools/build_document_registry.py` 生成，不手改 |
 | research-to-learning 技能文档 | `skills/research-to-learning/` | 2026-11-19 自 `.workbuddy-ai/skills/` 迁入（D14）；`scripts/` 留原处 |
-| learning-experience-design 技能文档 | `skills/learning-experience-design/` | 2026-11-19 新建（CHG-0001 P2）；Engine 内部专属设计 Skill；`preview/PILOT-L13-plan.md` 为待确认试点规格 |
+| learning-experience-design 技能文档 | `skills/learning-experience-design/` | 2026-11-19 新建（CHG-0001 P2）；Engine 内部专属设计 Skill；两个真实案例已落地——试点 01 教材页 L13（2026-11-21）、试点 02 交互实验页 transform-mvp（2026-11-25，`preview/PILOT-LAB-mvp.md`）；推广待用户确认 |
 | zcode 会话计划 | `plans/plan-sess_a45a3e3b-….md` | 2026-11-19 自 `.zcode/plans/` 归档（B14 裁决） |
 | 项目审核材料（G1/G2/G3/KCR） | `reviews/`（**原处保留**） | 项目治理材料，已入 git |
 | 客户端适配入口 | 根 `CLAUDE.md` / `AGENTS.md`、`.cursor/`、`.github/`、`.gemini/`、`.workbuddy-ai` stub | 只跳转不复制（D15） |

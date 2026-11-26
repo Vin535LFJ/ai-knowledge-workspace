@@ -1,0 +1,804 @@
+{
+ "transform-mvp": {
+  "route": "#/lab/transform-mvp",
+  "widths": {
+   "360": {
+    "hscroll": false,
+    "scrollWidth": 345,
+    "viewport": 345,
+    "offenders": [
+     "code.language-glsl@389"
+    ],
+    "canvas": [
+     "275x190"
+    ]
+   },
+   "768": {
+    "hscroll": false,
+    "scrollWidth": 753,
+    "viewport": 753,
+    "offenders": [],
+    "canvas": [
+     "683x470"
+    ]
+   },
+   "1280": {
+    "hscroll": false,
+    "scrollWidth": 1265,
+    "viewport": 1265,
+    "offenders": [],
+    "canvas": [
+     "538x371"
+    ]
+   }
+  },
+  "dom": {
+   "title": "坐标变换与 MVP 实验 · 图形实验室",
+   "h1": 1,
+   "headingJumps": 0,
+   "sections": 9,
+   "hasReset": 1,
+   "canvasWithoutName": 0,
+   "controlsTotal": 14,
+   "controlsUnnamed": [],
+   "taskCheckboxes": 4,
+   "taskCheckboxUnnamed": 0,
+   "selftest": 3,
+   "termChips": 8,
+   "goalText": false,
+   "recordText": true,
+   "keyboardHint": true,
+   "lessonBacklink": 1,
+   "termsRendered": true,
+   "focusables": 26,
+   "taskSliderHasStep": 7
+  },
+  "interaction": {
+   "resetClicked": true,
+   "ranges": 7,
+   "selects": 2,
+   "stageValuesChanged": 6,
+   "stageSample": [
+    "(1, 1, 1, 1)",
+    "( 3.33, 1.00, 0.48, 1.00)",
+    "( 3.33, 1.00, -4.52, 1.00)",
+    "( 4.91, 2.14, 4.33, 4.52)",
+    "( 1.09, 0.47, 0.96, 1.00)",
+    "(667.8, 115.5) px"
+   ],
+   "canvasStillThere": 1,
+   "canvasBytesBefore": 38366,
+   "canvasBytesAfter": 21802,
+   "selftestOpen": true,
+   "errors": [],
+   "panelButtons": 0,
+   "buttonsChangedStage": false,
+   "paramToggles": 0,
+   "togglesChangedStage": false,
+   "togglesRestored": true,
+   "taskPersist": "[true,false,false,false]",
+   "taskLabelCount": 1,
+   "observeBox": true,
+   "observePersist": "测试记录",
+   "hasGoal": true,
+   "goalItems": 3,
+   "observeName": "观察记录"
+  },
+  "contrast": {
+   "light": {
+    "p": 6.39,
+    ".lab-hint": 6.39,
+    "code": 5.32,
+    "small": 6.39,
+    ".term-chip": 15.8,
+    "label span": 6.39,
+    "summary": 15.8,
+    ".lab-stage small": 6.39,
+    "pre": 13.76
+   },
+   "dark": {
+    "p": 8.68,
+    ".lab-hint": 8.68,
+    "code": 7.26,
+    "small": 7.76,
+    ".term-chip": 14.3,
+    "label span": 7.76,
+    "summary": 14.3,
+    ".lab-stage small": 7.76,
+    "pre": 14.61
+   }
+  }
+ },
+ "procedural-lathe": {
+  "route": "#/lab/procedural-lathe",
+  "widths": {
+   "360": {
+    "hscroll": false,
+    "scrollWidth": 345,
+    "viewport": 345,
+    "offenders": [
+     "code.language-javascript.hljs@522",
+     "span.hljs-comment@508",
+     "span.hljs-title.class_@410",
+     "span.hljs-title.function_@438",
+     "span.hljs-number@438",
+     "span.hljs-comment@522"
+    ],
+    "canvas": [
+     "275x190"
+    ]
+   },
+   "768": {
+    "hscroll": false,
+    "scrollWidth": 753,
+    "viewport": 753,
+    "offenders": [],
+    "canvas": [
+     "683x470"
+    ]
+   },
+   "1280": {
+    "hscroll": false,
+    "scrollWidth": 1265,
+    "viewport": 1265,
+    "offenders": [],
+    "canvas": [
+     "538x371"
+    ]
+   }
+  },
+  "dom": {
+   "title": "程序化几何 · 旋转曲面生成 · 图形实验室",
+   "h1": 1,
+   "headingJumps": 0,
+   "sections": 8,
+   "hasReset": 1,
+   "canvasWithoutName": 0,
+   "controlsTotal": 10,
+   "controlsUnnamed": [],
+   "taskCheckboxes": 4,
+   "taskCheckboxUnnamed": 0,
+   "selftest": 3,
+   "termChips": 7,
+   "goalText": false,
+   "recordText": false,
+   "keyboardHint": false,
+   "lessonBacklink": 1,
+   "termsRendered": true,
+   "focusables": 24,
+   "taskSliderHasStep": 5
+  },
+  "interaction": {
+   "resetClicked": true,
+   "ranges": 5,
+   "selects": 1,
+   "stageValuesChanged": 6,
+   "stageSample": [
+    "5 个",
+    "17 点",
+    "48 份",
+    "17 × 48 = 816 顶点",
+    "4608 索引",
+    "1 次 · 1536 三角形"
+   ],
+   "canvasStillThere": 1,
+   "canvasBytesBefore": 76278,
+   "canvasBytesAfter": 66366,
+   "selftestOpen": true,
+   "errors": [],
+   "panelButtons": 0,
+   "buttonsChangedStage": false,
+   "paramToggles": 0,
+   "togglesChangedStage": false,
+   "togglesRestored": true,
+   "taskPersist": "[true,false,false,false]",
+   "taskLabelCount": 1,
+   "observeBox": false,
+   "observePersist": null,
+   "hasGoal": false,
+   "goalItems": 0,
+   "observeName": null
+  },
+  "contrast": {
+   "light": {
+    "p": 6.39,
+    ".lab-hint": 6.39,
+    "code": 5.32,
+    "small": 6.39,
+    ".term-chip": 15.8,
+    "label span": 6.39,
+    "summary": 15.8,
+    ".lab-stage small": 6.39,
+    "pre": 13.76
+   },
+   "dark": {
+    "p": 8.68,
+    ".lab-hint": 8.68,
+    "code": 7.26,
+    "small": 7.76,
+    ".term-chip": 14.3,
+    "label span": 7.76,
+    "summary": 14.3,
+    ".lab-stage small": 7.76,
+    "pre": 14.61
+   }
+  }
+ },
+ "pbr-lighting": {
+  "route": "#/lab/pbr-lighting",
+  "widths": {
+   "360": {
+    "hscroll": false,
+    "scrollWidth": 345,
+    "viewport": 345,
+    "offenders": [
+     "code.language-glsl@438"
+    ],
+    "canvas": [
+     "275x190"
+    ]
+   },
+   "768": {
+    "hscroll": false,
+    "scrollWidth": 753,
+    "viewport": 753,
+    "offenders": [],
+    "canvas": [
+     "683x470"
+    ]
+   },
+   "1280": {
+    "hscroll": false,
+    "scrollWidth": 1265,
+    "viewport": 1265,
+    "offenders": [],
+    "canvas": [
+     "538x371"
+    ]
+   }
+  },
+  "dom": {
+   "title": "PBR 光照与材质参数 · 图形实验室",
+   "h1": 1,
+   "headingJumps": 0,
+   "sections": 8,
+   "hasReset": 1,
+   "canvasWithoutName": 0,
+   "controlsTotal": 10,
+   "controlsUnnamed": [],
+   "taskCheckboxes": 4,
+   "taskCheckboxUnnamed": 0,
+   "selftest": 3,
+   "termChips": 8,
+   "goalText": false,
+   "recordText": false,
+   "keyboardHint": false,
+   "lessonBacklink": 1,
+   "termsRendered": true,
+   "focusables": 24,
+   "taskSliderHasStep": 6
+  },
+  "interaction": {
+   "resetClicked": true,
+   "ranges": 6,
+   "selects": 0,
+   "stageValuesChanged": 6,
+   "stageSample": [
+    "m=0.00",
+    "kd=1.00",
+    "D=0.01",
+    "F=0.13",
+    "G=0.00",
+    "γ 2.2"
+   ],
+   "canvasStillThere": 1,
+   "canvasBytesBefore": 116014,
+   "canvasBytesAfter": 59310,
+   "selftestOpen": true,
+   "errors": [],
+   "panelButtons": 0,
+   "buttonsChangedStage": false,
+   "paramToggles": 0,
+   "togglesChangedStage": false,
+   "togglesRestored": true,
+   "taskPersist": "[true,false,false,false]",
+   "taskLabelCount": 1,
+   "observeBox": false,
+   "observePersist": null,
+   "hasGoal": false,
+   "goalItems": 0,
+   "observeName": null
+  },
+  "contrast": {
+   "light": {
+    "p": 6.39,
+    ".lab-hint": 6.39,
+    "code": 5.32,
+    "small": 6.39,
+    ".term-chip": 15.8,
+    "label span": 6.39,
+    "summary": 15.8,
+    ".lab-stage small": 6.39,
+    "pre": 13.76
+   },
+   "dark": {
+    "p": 8.68,
+    ".lab-hint": 8.68,
+    "code": 7.26,
+    "small": 7.76,
+    ".term-chip": 14.3,
+    "label span": 7.76,
+    "summary": 14.3,
+    ".lab-stage small": 7.76,
+    "pre": 14.61
+   }
+  }
+ },
+ "yuv-to-rgb": {
+  "route": "#/lab/yuv-to-rgb",
+  "widths": {
+   "360": {
+    "hscroll": false,
+    "scrollWidth": 345,
+    "viewport": 345,
+    "offenders": [
+     "semantics@796",
+     "mrow@796",
+     "mo@368",
+     "mi@381",
+     "mo@399",
+     "mn@435"
+    ],
+    "canvas": [
+     "275x190"
+    ]
+   },
+   "768": {
+    "hscroll": false,
+    "scrollWidth": 753,
+    "viewport": 753,
+    "offenders": [
+     "semantics@796",
+     "mrow@796",
+     "mn@789",
+     "mo@796",
+     "span.base@805",
+     "span.mord.mathnormal@780"
+    ],
+    "canvas": [
+     "683x470"
+    ]
+   },
+   "1280": {
+    "hscroll": false,
+    "scrollWidth": 1265,
+    "viewport": 1265,
+    "offenders": [],
+    "canvas": [
+     "538x371"
+    ]
+   }
+  },
+  "dom": {
+   "title": "YUV → RGB 转换与采样格式实验 · 图形实验室",
+   "h1": 1,
+   "headingJumps": 0,
+   "sections": 8,
+   "hasReset": 1,
+   "canvasWithoutName": 0,
+   "controlsTotal": 11,
+   "controlsUnnamed": [],
+   "taskCheckboxes": 4,
+   "taskCheckboxUnnamed": 0,
+   "selftest": 3,
+   "termChips": 4,
+   "goalText": false,
+   "recordText": false,
+   "keyboardHint": false,
+   "lessonBacklink": 1,
+   "termsRendered": true,
+   "focusables": 20,
+   "taskSliderHasStep": 6
+  },
+  "interaction": {
+   "resetClicked": true,
+   "ranges": 6,
+   "selects": 1,
+   "stageValuesChanged": 6,
+   "stageSample": [
+    "4:2:0（NV12 / NV21 类）",
+    "Y0–Y3 逐像素独立 · 4 字节",
+    "4Y + 1U + 1V",
+    "6 B / 16 B",
+    "62.5%",
+    "255, 218, 203"
+   ],
+   "canvasStillThere": 1,
+   "canvasBytesBefore": 36834,
+   "canvasBytesAfter": 36914,
+   "selftestOpen": true,
+   "errors": [],
+   "panelButtons": 0,
+   "buttonsChangedStage": false,
+   "paramToggles": 0,
+   "togglesChangedStage": false,
+   "togglesRestored": true,
+   "taskPersist": "[true,false,false,false]",
+   "taskLabelCount": 1,
+   "observeBox": false,
+   "observePersist": null,
+   "hasGoal": false,
+   "goalItems": 0,
+   "observeName": null
+  },
+  "contrast": {
+   "light": {
+    "p": 6.39,
+    ".lab-hint": 6.39,
+    "code": 5.32,
+    "small": 6.39,
+    ".term-chip": 15.8,
+    "label span": 6.39,
+    "summary": 15.8,
+    ".lab-stage small": 6.39,
+    "pre": 13.76
+   },
+   "dark": {
+    "p": 8.68,
+    ".lab-hint": 8.68,
+    "code": 7.26,
+    "small": 7.76,
+    ".term-chip": 14.3,
+    "label span": 7.76,
+    "summary": 14.3,
+    ".lab-stage small": 7.76,
+    "pre": 14.61
+   }
+  }
+ },
+ "pts-dts-timeline": {
+  "route": "#/lab/pts-dts-timeline",
+  "widths": {
+   "360": {
+    "hscroll": false,
+    "scrollWidth": 345,
+    "viewport": 345,
+    "offenders": [
+     "semantics@505",
+     "mrow@505",
+     "msub@374",
+     "mi@365",
+     "mn@373",
+     "msub@395"
+    ],
+    "canvas": [
+     "275x190"
+    ]
+   },
+   "768": {
+    "hscroll": false,
+    "scrollWidth": 753,
+    "viewport": 753,
+    "offenders": [],
+    "canvas": [
+     "683x470"
+    ]
+   },
+   "1280": {
+    "hscroll": false,
+    "scrollWidth": 1265,
+    "viewport": 1265,
+    "offenders": [],
+    "canvas": [
+     "538x371"
+    ]
+   }
+  },
+  "dom": {
+   "title": "PTS / DTS 与重排序实验 · 图形实验室",
+   "h1": 1,
+   "headingJumps": 0,
+   "sections": 8,
+   "hasReset": 1,
+   "canvasWithoutName": 0,
+   "controlsTotal": 6,
+   "controlsUnnamed": [],
+   "taskCheckboxes": 4,
+   "taskCheckboxUnnamed": 0,
+   "selftest": 3,
+   "termChips": 2,
+   "goalText": false,
+   "recordText": false,
+   "keyboardHint": false,
+   "lessonBacklink": 1,
+   "termsRendered": true,
+   "focusables": 13,
+   "taskSliderHasStep": 1
+  },
+  "interaction": {
+   "resetClicked": true,
+   "ranges": 1,
+   "selects": 1,
+   "stageValuesChanged": 6,
+   "stageSample": [
+    "DTS 6 · B3",
+    "7 帧",
+    "P0 B0 B1 P1 B2 B3（6 帧）",
+    "I0 · PTS 0",
+    "PTS−DTS = -1",
+    "I/P 帧 PTS ≥ DTS · B 帧 PTS < DTS"
+   ],
+   "canvasStillThere": 1,
+   "canvasBytesBefore": 44470,
+   "canvasBytesAfter": 37982,
+   "selftestOpen": true,
+   "errors": [],
+   "panelButtons": 0,
+   "buttonsChangedStage": false,
+   "paramToggles": 0,
+   "togglesChangedStage": false,
+   "togglesRestored": true,
+   "taskPersist": "[true,false,false,false]",
+   "taskLabelCount": 1,
+   "observeBox": false,
+   "observePersist": null,
+   "hasGoal": false,
+   "goalItems": 0,
+   "observeName": null
+  },
+  "contrast": {
+   "light": {
+    "p": 6.39,
+    ".lab-hint": 6.39,
+    "code": 5.32,
+    "small": 6.39,
+    ".term-chip": 15.8,
+    "label span": 6.39,
+    "summary": 15.8,
+    ".lab-stage small": 6.39,
+    "pre": 13.76
+   },
+   "dark": {
+    "p": 8.68,
+    ".lab-hint": 8.68,
+    "code": 7.26,
+    "small": 7.76,
+    ".term-chip": 14.3,
+    "label span": 7.76,
+    "summary": 14.3,
+    ".lab-stage small": 7.76,
+    "pre": 14.61
+   }
+  }
+ },
+ "frame-pipeline": {
+  "route": "#/lab/frame-pipeline",
+  "widths": {
+   "360": {
+    "hscroll": false,
+    "scrollWidth": 345,
+    "viewport": 345,
+    "offenders": [
+     "semantics@647",
+     "mrow@647",
+     "mtext@371",
+     "mo@392",
+     "mtext@472",
+     "mo@493"
+    ],
+    "canvas": [
+     "275x190"
+    ]
+   },
+   "768": {
+    "hscroll": false,
+    "scrollWidth": 753,
+    "viewport": 753,
+    "offenders": [],
+    "canvas": [
+     "683x470"
+    ]
+   },
+   "1280": {
+    "hscroll": false,
+    "scrollWidth": 1265,
+    "viewport": 1265,
+    "offenders": [],
+    "canvas": [
+     "538x371"
+    ]
+   }
+  },
+  "dom": {
+   "title": "解码帧到纹理的所有权迁移实验 · 图形实验室",
+   "h1": 1,
+   "headingJumps": 0,
+   "sections": 8,
+   "hasReset": 1,
+   "canvasWithoutName": 0,
+   "controlsTotal": 7,
+   "controlsUnnamed": [],
+   "taskCheckboxes": 4,
+   "taskCheckboxUnnamed": 0,
+   "selftest": 3,
+   "termChips": 4,
+   "goalText": false,
+   "recordText": false,
+   "keyboardHint": false,
+   "lessonBacklink": 1,
+   "termsRendered": true,
+   "focusables": 16,
+   "taskSliderHasStep": 2
+  },
+  "interaction": {
+   "resetClicked": true,
+   "ranges": 2,
+   "selects": 1,
+   "stageValuesChanged": 6,
+   "stageSample": [
+    "显示合成",
+    "SurfaceFlinger",
+    "0 次",
+    "0",
+    "在途 3 帧",
+    "否（GPU 专属 OES）"
+   ],
+   "canvasStillThere": 1,
+   "canvasBytesBefore": 39026,
+   "canvasBytesAfter": 34210,
+   "selftestOpen": true,
+   "errors": [],
+   "panelButtons": 0,
+   "buttonsChangedStage": false,
+   "paramToggles": 0,
+   "togglesChangedStage": false,
+   "togglesRestored": true,
+   "taskPersist": "[true,false,false,false]",
+   "taskLabelCount": 1,
+   "observeBox": false,
+   "observePersist": null,
+   "hasGoal": false,
+   "goalItems": 0,
+   "observeName": null
+  },
+  "contrast": {
+   "light": {
+    "p": 6.39,
+    ".lab-hint": 6.39,
+    "code": 5.32,
+    "small": 6.39,
+    ".term-chip": 15.8,
+    "label span": 6.39,
+    "summary": 15.8,
+    ".lab-stage small": 6.39,
+    "pre": 13.76
+   },
+   "dark": {
+    "p": 8.68,
+    ".lab-hint": 8.68,
+    "code": 7.26,
+    "small": 7.76,
+    ".term-chip": 14.3,
+    "label span": 7.76,
+    "summary": 14.3,
+    ".lab-stage small": 7.76,
+    "pre": 14.61
+   }
+  }
+ },
+ "rendergraph-dag": {
+  "route": "#/lab/rendergraph-dag",
+  "widths": {
+   "360": {
+    "hscroll": false,
+    "scrollWidth": 345,
+    "viewport": 345,
+    "offenders": [
+     "semantics@495",
+     "mrow@495",
+     "mo@368",
+     "mtext@410",
+     "mo@418",
+     "mtext@487"
+    ],
+    "canvas": [
+     "275x190"
+    ]
+   },
+   "768": {
+    "hscroll": false,
+    "scrollWidth": 753,
+    "viewport": 753,
+    "offenders": [],
+    "canvas": [
+     "683x470"
+    ]
+   },
+   "1280": {
+    "hscroll": false,
+    "scrollWidth": 1265,
+    "viewport": 1265,
+    "offenders": [],
+    "canvas": [
+     "538x371"
+    ]
+   }
+  },
+  "dom": {
+   "title": "RenderGraph：依赖、barrier 与显存复用实验 · 图形实验室",
+   "h1": 1,
+   "headingJumps": 0,
+   "sections": 8,
+   "hasReset": 1,
+   "canvasWithoutName": 0,
+   "controlsTotal": 7,
+   "controlsUnnamed": [],
+   "taskCheckboxes": 4,
+   "taskCheckboxUnnamed": 0,
+   "selftest": 3,
+   "termChips": 5,
+   "goalText": false,
+   "recordText": false,
+   "keyboardHint": false,
+   "lessonBacklink": 1,
+   "termsRendered": true,
+   "focusables": 17,
+   "taskSliderHasStep": 0
+  },
+  "interaction": {
+   "resetClicked": true,
+   "ranges": 0,
+   "selects": 0,
+   "stageValuesChanged": 5,
+   "stageSample": [
+    "GBuffer → Lighting → Bloom → Tonemap",
+    "4 条",
+    "4 个",
+    "28 MB",
+    "20 MB",
+    "—"
+   ],
+   "canvasStillThere": 1,
+   "canvasBytesBefore": 33846,
+   "canvasBytesAfter": 33846,
+   "selftestOpen": true,
+   "errors": [],
+   "panelButtons": 0,
+   "buttonsChangedStage": false,
+   "paramToggles": 3,
+   "togglesChangedStage": true,
+   "togglesRestored": true,
+   "taskPersist": "[true,false,false,false]",
+   "taskLabelCount": 1,
+   "observeBox": false,
+   "observePersist": null,
+   "hasGoal": false,
+   "goalItems": 0,
+   "observeName": null
+  },
+  "contrast": {
+   "light": {
+    "p": 6.39,
+    ".lab-hint": 6.39,
+    "code": 5.32,
+    "small": 6.39,
+    ".term-chip": 15.8,
+    "label span": 6.39,
+    "summary": 15.8,
+    ".lab-stage small": 6.39,
+    "pre": 13.76
+   },
+   "dark": {
+    "p": 8.68,
+    ".lab-hint": 8.68,
+    "code": 7.26,
+    "small": 7.76,
+    ".term-chip": 14.3,
+    "label span": 7.76,
+    "summary": 14.3,
+    ".lab-stage small": 7.76,
+    "pre": 14.61
+   }
+  }
+ }
+}

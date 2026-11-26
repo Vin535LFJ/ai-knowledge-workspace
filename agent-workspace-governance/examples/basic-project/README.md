@@ -1,10 +1,10 @@
 ---
 doc_id: basic-project-readme
-type: project-readme
+type: Architecture
 status: active
 owner: human
 created: 2026-11-19
-updated: 2026-11-19
+updated: 2026-11-25
 ---
 
 # Basic Project（最小普通软件项目示例）
@@ -30,3 +30,5 @@ py -3 <kit>/cli/governance.py status   --project .
 ```
 
 注意：这里没有任何「源材料 → 主张 → 概念 → 课程」的知识结构，也没有 `WORKFLOW_STATE.md`。治理工具包把它们当作普通文档处理即可。
+
+文档类型采用治理工具包的 13 类标准枚举（见工具包 `docs/specification.md` §十三）：本 README 是项目结构与入口的总览，标为 `Architecture`；`docs/design.md` 约定数据模型与命令行为，标为 `Spec`。

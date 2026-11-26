@@ -63,7 +63,7 @@ C:\Users\Giant\Desktop\GITCODE\AI-Knowledge\
 └── github-project-radar\                 ← 本地 git，无 remote
 ```
 
-> **已知偏差**：`PROGRAM.md` 的 §2/§4/§5 与 `PROGRAM-MANAGER.md` §2 仍残留旧目录名 `Render_Notes/` 与「Governance/Radar 冻结」表述（历史段落）。以本指南和实际目录为准；修复项见 `AUDIT-REPORT.md` P0-2。
+> **历史偏差（已于 2026-11-24 一致性修正中修复，审计 P0-2）**：`PROGRAM.md` §2/§9 与 `PROGRAM-MANAGER.md` §2/§8 曾残留旧目录名 `Render_Notes/` 与「Governance/Radar 冻结」表述，现已全部改为现名与「维护期」口径；历史记录段落中的旧名按命名规则保留。活跃指引以本指南 §3 和实际目录为准。
 
 ## 4. 如何启动 Program Manager
 
@@ -220,7 +220,7 @@ A：看 ROADMAP 的退出条件。完成指「该阶段退出条件满足」，�
 A：可以，但它是章程。改目标/边界/非目标要记 PD 决策；改状态应改 NOW。
 
 **Q6：为什么文档里还有 `Render_Notes`？**
-A：历史段落未清理（审计 P0-2）。真实目录是 `ai-knowledge-to-learning-engine`。以本指南 §3 为准。
+A：仅存于历史记录段落（决策/迁移说明，按命名规则保留）。活跃指引中的旧名已于 2026-11-24 一致性修正中清理完毕。真实目录是 `ai-knowledge-to-learning-engine`。以本指南 §3 为准。
 
 **Q7：审计说 Governance/Radar 是 PARTIAL，还能用吗？**
 A：能用，但要按边界用：Governance 当「扫描/诊断工具」，Radar 当「一次性探索 + 周报」，不要当平台。详见各自 USER-GUIDE 的「已知限制」。
@@ -228,4 +228,4 @@ A：能用，但要按边界用：Governance 当「扫描/诊断工具」，Rada
 ---
 
 **最后验证**：2026-11-23，Program `cc098df`、Engine `79c3fe8`、Skills `7326522`、Governance `1b4a880`、Radar `b7442da`。
-**最近更新**：2026-11-23。
+**最近更新**：2026-11-24（审计整改 TASK 1：Program 状态一致性修正——PROGRAM/PROGRAM-MANAGER/ROADMAP/NOW/PENDING_DECISIONS/decisions-README/本指南；Engine `46a04d3` 与 Skills `4604bd6` 已 push，远端 USER-GUIDE 404 消除）。

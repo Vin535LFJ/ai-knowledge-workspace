@@ -25,18 +25,19 @@ updated: 2026-11-20
 INTAKE → RESEARCH → EVIDENCE → ARCHITECT → WRITE → DESIGN → PRACTICE → REVIEW → PUBLISH → FEEDBACK
 ```
 
-- 每阶段完成条件（硬）：本阶段至少登记 1 个 artifact；进入 PUBLISH/FEEDBACK 另需 human_gate passed。
+- 每阶段完成条件（硬）：本阶段至少登记 1 个 artifact；进入 PUBLISH/FEEDBACK 另需 human_gate passed **且通过审批证据链复核**（见 `tools/approval_chain.py`）。
 - 每阶段角色/完成条件/下一步动作内置于 `PHASE_INFO`，`show` 的 resume_point 直接给出下一步。
 - KCR 变更叠加子状态：`PROPOSED → REVIEWING → APPROVED → APPLIED → VERIFIED`（严格顺序，APPROVED 必须人工）。
 - run 状态：`pending | running | paused | done | failed`；done 只能出现在 FEEDBACK。
 
-## 五条不变量（程序强制）
+## 六条不变量（程序强制）
 
 1. **人工门不可绕过**：`gate --pass` 必须 `--approver <人名>` 且非空；无任何自动批准路径；已 passed 不重复批准、不可重置。
 2. **AI 不预填裁决**：工具只记录关卡状态与材料 artifact，不写评分/裁决内容（G2 评分仍走人工材料）。
 3. **未批准不应用**：进入 PUBLISH/FEEDBACK 必须 gate passed；KCR APPROVED 必须人工 approver，APPLIED 只能在 APPROVED 之后。工具本身不写权威 JSON——写回仍走 KCR 流程与任务授权。
 4. **单写者**：同一 write_path 声明即持有（pending/running/paused/failed 均算），第二个 run 声明/新建即拒绝；done 自动释放，或 `release-path` 显式释放。
 5. **可追溯**：artifact 记 path+sha256（同 phase+path+hash 幂等不重复；内容演进记新 hash）；每次变更追加 transitions（时间/操作者/动作/理由）。
+6. **批准对应到文件版本**（TASK 4，2026-11-25）：进入 PUBLISH/FEEDBACK（含人工 `skip`）前，`approval_chain.verify` 重算人工批准时冻结的产物哈希——任何产物在批准后变化、被移走，或批准后新增了已批准阶段的产物，都拒绝推进并要求重新审核。没有审批记录的已过关卡报 legacy/unverifiable，不补造。
 
 ## 运行态落盘
 
@@ -57,6 +58,9 @@ py -3 tools/run_state.py start|pause|resume|fail --reason ...|retry --run-id ...
 py -3 tools/run_state.py artifact --run-id ... --path <文件> [--phase P] [--note ...]
 py -3 tools/run_state.py advance --run-id ... --reason ...
 py -3 tools/run_state.py gate --run-id ... --pass --approver <人名>    # 仅人工执行
+# 发布前还需人工登记审批（TASK 4），approve 人名须与上一行一致：
+py -3 tools/approval_chain.py record --run-id ... --gate G3 --approver <人名> --scope "<批准覆盖什么>"   # 仅人工执行
+py -3 tools/approval_chain.py verify --run-id ...                                                    # 任何人都可查看复核结果
 py -3 tools/run_state.py skip --run-id ... --to WRITE --approver <人名> --reason ...
 py -3 tools/run_state.py kcr --run-id ... --to APPROVED --approver <人名>
 py -3 tools/run_state.py claim-path|release-path --run-id ... --path ...
@@ -67,9 +71,13 @@ py -3 tools/run_state.py show --run-id ... / list
 
 ## 自测
 
-`py -3 tools/kcr/selftest_runstate.py` — 25 tests：schema 正反用例 / 五条不变量 /
+`py -3 tools/kcr/selftest_runstate.py` — 25 tests：schema 正反用例 / 六条不变量 /
 断点恢复 / 失败重试 / 防重复写入 / 人工跳过暂停 / KCR 顺序 / kcr_impact 真实回放
 （SRC-RN-COLORMGMT）/ CLI 退出码。全部写入临时目录，不触碰真实 `.agent/runs/`。
+
+`py -3 tools/kcr/selftest_approval.py` — 15 tests（TASK 4）：approval-record 契约正反用例 / 登记守卫 /
+只增不改 / 批准后文件变化拦截与还原恢复 / 越权新增产物拦截 / 后续阶段产物不误伤 /
+历史批准 legacy-unverifiable 不补造 / 记录被改坏拦截 / 与状态机联动（含人工 skip）/ 临时 git 仓库提交号采集 / CLI 退出码。
 
 ## 边界（不做的事）
 
