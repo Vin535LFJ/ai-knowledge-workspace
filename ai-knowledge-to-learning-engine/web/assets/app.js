@@ -752,6 +752,16 @@
     return LESSON_INDEX.get(lessonId);
   }
 
+  // 课时自己的课文正文（文档路由）：按课程目录 + 课时编号前缀在文档表里定位。
+  // 主课程（key=main）的课时条目没有 lessonFile，课文在 courses/video-rendering-journey/lessons/ 下；
+  // 没有正文的课时（如 L00 地图课）返回空串，页面不渲染该区块。
+  function lessonBodyDocId(lesson, courseKey) {
+    const dir = courseKey === "main" ? "video-rendering-journey" : courseKey;
+    const prefix = "courses/" + dir + "/lessons/" + (lesson.lessonFile || lesson.id + "-");
+    const hit = DATA.docs.find((doc) => doc.id === prefix || doc.id.startsWith(prefix));
+    return hit ? hit.id : "";
+  }
+
   function renderLesson(lessonId, courseKey) {
     const meta = lessonMeta(lessonId, courseKey);
     if (!meta) {
@@ -796,6 +806,12 @@
       .join("");
     const checkpoints = (lesson.checkpoint || []).map((q) => "<li>" + escapeHtml(q) + "</li>").join("");
     const quizHtml = QUIZZES[lesson.id] ? quizSectionHtml(QUIZZES[lesson.id]) : "";
+    const bodyDocId = lessonBodyDocId(lesson, meta.key);
+    const bodyLink = bodyDocId
+      ? '<section class="lesson-block no-term lesson-body"><h2>课文正文</h2><ol class="reading-list">' +
+        '<li><span class="reading-index">读</span><a class="lesson-body-link" href="' + routeFor(bodyDocId) + '">' +
+        escapeHtml(lesson.id + " " + lesson.title) + "（全文）</a></li></ol></section>"
+      : "";
     const nextId = lesson.next || nextLessonId(lesson.id, meta.course.lessons || []);
     const labLinks = LABS.filter((lab) => lab.lesson === lesson.id)
       .map((lab) => '<a class="lesson-lab" href="' + labRoute(lab.id) + '">⌁ 打开实验：' + escapeHtml(lab.title) + "</a>")
@@ -815,6 +831,7 @@
       '<section class="lesson-block no-term"><h2>前置检查</h2>' +
       (prereqs || '<p class="lesson-empty">无前置课时，可以直接开始。</p>') +
       "</section>" +
+      bodyLink +
       '<section class="lesson-block no-term"><h2>按顺序阅读</h2><ol class="reading-list">' + reading + "</ol></section>" +
       '<section class="lesson-block no-term"><h2>关键术语</h2><div class="lesson-terms">' + terms + "</div></section>" +
       '<section class="lesson-block no-term"><h2>学完自检</h2><ul>' + checkpoints + "</ul></section>" +

@@ -1,10 +1,20 @@
 {
  "_meta": {
-  "purpose": "G3 发布就绪浏览器验收证据（具身六课当前版本）",
-  "checked_at": "2026-11-27 22:57",
-  "engine_head_at_check": "50cc14d",
+  "purpose": "G3 发布就绪浏览器验收证据（具身六课当前版本；含课时页→课文正文入口的真实点击链路）",
+  "checked_at": "2026-11-28 00:53",
+  "engine_head_at_check": "c36c906",
+  "uncommitted_changes_at_check": [
+   "tools/test_publish_boundary.py",
+   "web/assets/app.js"
+  ],
+  "baseline_note": "基线 = 提交 c36c906 + 当时未提交的改动（课时页正文入口修复 web/assets/app.js 与对应回归测试）。git 历史中的上一版证据（提交 c36c906）基线为 50cc14d，不含正文入口。",
   "bundle_generatedAt": "2026-11-27 13:49",
   "method": "本机 Edge headless（--headless=new，独立 user-data-dir，直接 subprocess 调用，不经 shell），临时目录副本起 http.server，零改动仓库文件；宽度 1280 与 360",
+  "scenario_count": {
+   "course_mode": 17,
+   "doc_mode": 12,
+   "total": 29
+  },
   "expected_katex_blocks_from_bundle": {
    "E01": 0,
    "E02": 1,
@@ -14,10 +24,12 @@
    "E06": 0
   },
   "reading_notes": {
-   "course_mode_katex_zero": "课时页（#/course/Exx）只渲染标题、目标、前置、阅读清单、术语、自检、测验，不含课文正文，公式数为 0 属预期；正文在文档路由（#/doc/courses/embodied-loop-journey/lessons/…）",
+   "course_mode_katex_zero": "课时页（#/course/Exx）只渲染标题、目标、前置、课文正文入口、阅读清单、术语、自检、测验，不含课文正文，公式数为 0 属预期；正文在文档路由",
+   "bodyLink_bodyLanding": "bodyLink = 课时页“课文正文”入口的 href（null 表示该课时无正文，如主课程 L00）；bodyLanding = 真实点击该入口后落地页的读数（hash / h1 / 公式数 / 面板数 / 溢出 / G1 状态说明）",
    "staleOpenAll": "该字段为测量脚本的正则误报：它把历史句“写作时均为 open/low”计入。真正过时的“升级待人工裁决”在六课 DOM 中为 0 处（已另行 DOM 检索确认）",
-   "evidencePanels": "该字段为 0 是选择器写错；证据面板的实际类名是 .term-panel.ev-panel，已计入 termPanels（六课均为 2 = 术语面板 + 证据面板），E05 面板经 DOM 确认为“证据与概念 6 条”",
-   "quizInteraction": "course 模式结果中 quizInteractions 逐题记录：简答题展开后答案可见；选择题点击后出现判分并禁用选项"
+   "evidencePanels": "该字段为 0 是选择器写错；证据面板的实际类名是 .term-panel.ev-panel，已计入 termPanels（六课均为 2 = 术语面板 + 证据面板）",
+   "g1RulingText_false_on_main": "主课程与 pilot 的课文不含具身课程的 G1 状态说明，该字段为 false 属预期",
+   "quizInteraction": "quizInteractions 逐题记录：简答题展开后答案可见；选择题点击后出现判分并禁用选项"
   }
  },
  "course_mode": {
@@ -67,7 +79,8 @@
    "scrollW": 1265,
    "clientW": 1265,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": null
   },
   "embodied-map-mobile": {
    "url": "#/course?c=embodied-loop-journey",
@@ -115,7 +128,8 @@
    "scrollW": 345,
    "clientW": 345,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": null
   },
   "E01-1280": {
    "url": "#/course/E01?c=embodied-loop-journey",
@@ -158,7 +172,17 @@
    "scrollW": 1265,
    "clientW": 1265,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE01-%E9%97%AD%E7%8E%AF%E5%88%A4%E6%8D%AE%E4%B8%8E%E9%94%99%E8%AF%AF%E8%90%BD%E7%82%B9.md",
+   "bodyLanding": {
+    "hash": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE01-%E9%97%AD%E7%8E%AF%E5%88%A4%E6%8D%AE%E4%B8%8E%E9%94%99%E8%AF%AF%E8%90%BD%E7%82%B9.md",
+    "h1": "闭环判据与错误落点",
+    "katex": 0,
+    "termPanels": 2,
+    "hscroll": false,
+    "g1RulingText": true
+   },
+   "errorsAfterClick": []
   },
   "E01-360": {
    "url": "#/course/E01?c=embodied-loop-journey",
@@ -201,7 +225,17 @@
    "scrollW": 345,
    "clientW": 345,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE01-%E9%97%AD%E7%8E%AF%E5%88%A4%E6%8D%AE%E4%B8%8E%E9%94%99%E8%AF%AF%E8%90%BD%E7%82%B9.md",
+   "bodyLanding": {
+    "hash": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE01-%E9%97%AD%E7%8E%AF%E5%88%A4%E6%8D%AE%E4%B8%8E%E9%94%99%E8%AF%AF%E8%90%BD%E7%82%B9.md",
+    "h1": "闭环判据与错误落点",
+    "katex": 0,
+    "termPanels": 2,
+    "hscroll": false,
+    "g1RulingText": true
+   },
+   "errorsAfterClick": []
   },
   "E02-1280": {
    "url": "#/course/E02?c=embodied-loop-journey",
@@ -253,7 +287,17 @@
    "scrollW": 1265,
    "clientW": 1265,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE02-%E5%85%AD%E7%8E%AF%E9%97%AD%E7%8E%AF%E4%B8%8E%E6%97%B6%E9%97%B4%E9%A2%84%E7%AE%97.md",
+   "bodyLanding": {
+    "hash": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE02-%E5%85%AD%E7%8E%AF%E9%97%AD%E7%8E%AF%E4%B8%8E%E6%97%B6%E9%97%B4%E9%A2%84%E7%AE%97.md",
+    "h1": "六环闭环与时间预算",
+    "katex": 1,
+    "termPanels": 2,
+    "hscroll": false,
+    "g1RulingText": true
+   },
+   "errorsAfterClick": []
   },
   "E02-360": {
    "url": "#/course/E02?c=embodied-loop-journey",
@@ -305,7 +349,17 @@
    "scrollW": 345,
    "clientW": 345,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE02-%E5%85%AD%E7%8E%AF%E9%97%AD%E7%8E%AF%E4%B8%8E%E6%97%B6%E9%97%B4%E9%A2%84%E7%AE%97.md",
+   "bodyLanding": {
+    "hash": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE02-%E5%85%AD%E7%8E%AF%E9%97%AD%E7%8E%AF%E4%B8%8E%E6%97%B6%E9%97%B4%E9%A2%84%E7%AE%97.md",
+    "h1": "六环闭环与时间预算",
+    "katex": 1,
+    "termPanels": 2,
+    "hscroll": false,
+    "g1RulingText": true
+   },
+   "errorsAfterClick": []
   },
   "E03-1280": {
    "url": "#/course/E03?c=embodied-loop-journey",
@@ -357,7 +411,17 @@
    "scrollW": 1265,
    "clientW": 1265,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE03-%E6%97%B6%E7%A9%BA%E5%AF%B9%E9%BD%90%E4%B8%8E%E6%A0%87%E5%AE%9A.md",
+   "bodyLanding": {
+    "hash": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE03-%E6%97%B6%E7%A9%BA%E5%AF%B9%E9%BD%90%E4%B8%8E%E6%A0%87%E5%AE%9A.md",
+    "h1": "时空对齐与标定",
+    "katex": 4,
+    "termPanels": 2,
+    "hscroll": false,
+    "g1RulingText": true
+   },
+   "errorsAfterClick": []
   },
   "E03-360": {
    "url": "#/course/E03?c=embodied-loop-journey",
@@ -409,7 +473,17 @@
    "scrollW": 345,
    "clientW": 345,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE03-%E6%97%B6%E7%A9%BA%E5%AF%B9%E9%BD%90%E4%B8%8E%E6%A0%87%E5%AE%9A.md",
+   "bodyLanding": {
+    "hash": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE03-%E6%97%B6%E7%A9%BA%E5%AF%B9%E9%BD%90%E4%B8%8E%E6%A0%87%E5%AE%9A.md",
+    "h1": "时空对齐与标定",
+    "katex": 4,
+    "termPanels": 2,
+    "hscroll": false,
+    "g1RulingText": true
+   },
+   "errorsAfterClick": []
   },
   "E04-1280": {
    "url": "#/course/E04?c=embodied-loop-journey",
@@ -454,7 +528,17 @@
    "scrollW": 1265,
    "clientW": 1265,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE04-%E8%BF%90%E5%8A%A8%E5%AD%A6%E4%B8%8E%E9%9B%85%E5%8F%AF%E6%AF%94%E5%A5%87%E5%BC%82.md",
+   "bodyLanding": {
+    "hash": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE04-%E8%BF%90%E5%8A%A8%E5%AD%A6%E4%B8%8E%E9%9B%85%E5%8F%AF%E6%AF%94%E5%A5%87%E5%BC%82.md",
+    "h1": "运动学与雅可比奇异",
+    "katex": 4,
+    "termPanels": 2,
+    "hscroll": false,
+    "g1RulingText": true
+   },
+   "errorsAfterClick": []
   },
   "E04-360": {
    "url": "#/course/E04?c=embodied-loop-journey",
@@ -499,7 +583,17 @@
    "scrollW": 345,
    "clientW": 345,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE04-%E8%BF%90%E5%8A%A8%E5%AD%A6%E4%B8%8E%E9%9B%85%E5%8F%AF%E6%AF%94%E5%A5%87%E5%BC%82.md",
+   "bodyLanding": {
+    "hash": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE04-%E8%BF%90%E5%8A%A8%E5%AD%A6%E4%B8%8E%E9%9B%85%E5%8F%AF%E6%AF%94%E5%A5%87%E5%BC%82.md",
+    "h1": "运动学与雅可比奇异",
+    "katex": 4,
+    "termPanels": 2,
+    "hscroll": false,
+    "g1RulingText": true
+   },
+   "errorsAfterClick": []
   },
   "E05-1280": {
    "url": "#/course/E05?c=embodied-loop-journey",
@@ -544,7 +638,17 @@
    "scrollW": 1265,
    "clientW": 1265,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE05-%E6%A8%A1%E4%BB%BF%E5%AD%A6%E4%B9%A0%E5%A4%8D%E5%90%88%E8%AF%AF%E5%B7%AE%E4%B8%8ESim2Real.md",
+   "bodyLanding": {
+    "hash": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE05-%E6%A8%A1%E4%BB%BF%E5%AD%A6%E4%B9%A0%E5%A4%8D%E5%90%88%E8%AF%AF%E5%B7%AE%E4%B8%8ESim2Real.md",
+    "h1": "模仿学习复合误差与 Sim2Real",
+    "katex": 3,
+    "termPanels": 2,
+    "hscroll": false,
+    "g1RulingText": true
+   },
+   "errorsAfterClick": []
   },
   "E05-360": {
    "url": "#/course/E05?c=embodied-loop-journey",
@@ -589,7 +693,17 @@
    "scrollW": 345,
    "clientW": 345,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE05-%E6%A8%A1%E4%BB%BF%E5%AD%A6%E4%B9%A0%E5%A4%8D%E5%90%88%E8%AF%AF%E5%B7%AE%E4%B8%8ESim2Real.md",
+   "bodyLanding": {
+    "hash": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE05-%E6%A8%A1%E4%BB%BF%E5%AD%A6%E4%B9%A0%E5%A4%8D%E5%90%88%E8%AF%AF%E5%B7%AE%E4%B8%8ESim2Real.md",
+    "h1": "模仿学习复合误差与 Sim2Real",
+    "katex": 3,
+    "termPanels": 2,
+    "hscroll": false,
+    "g1RulingText": true
+   },
+   "errorsAfterClick": []
   },
   "E06-1280": {
    "url": "#/course/E06?c=embodied-loop-journey",
@@ -634,7 +748,17 @@
    "scrollW": 1265,
    "clientW": 1265,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE06-%E5%BC%80%E6%BA%90%E7%94%9F%E6%80%81%E4%B8%8E%E5%AE%9E%E8%B7%B5%E8%B7%AF%E5%BE%84.md",
+   "bodyLanding": {
+    "hash": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE06-%E5%BC%80%E6%BA%90%E7%94%9F%E6%80%81%E4%B8%8E%E5%AE%9E%E8%B7%B5%E8%B7%AF%E5%BE%84.md",
+    "h1": "开源生态与实践路径",
+    "katex": 0,
+    "termPanels": 2,
+    "hscroll": false,
+    "g1RulingText": true
+   },
+   "errorsAfterClick": []
   },
   "E06-360": {
    "url": "#/course/E06?c=embodied-loop-journey",
@@ -679,7 +803,191 @@
    "scrollW": 345,
    "clientW": 345,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE06-%E5%BC%80%E6%BA%90%E7%94%9F%E6%80%81%E4%B8%8E%E5%AE%9E%E8%B7%B5%E8%B7%AF%E5%BE%84.md",
+   "bodyLanding": {
+    "hash": "#/doc/courses%2Fembodied-loop-journey%2Flessons%2FE06-%E5%BC%80%E6%BA%90%E7%94%9F%E6%80%81%E4%B8%8E%E5%AE%9E%E8%B7%B5%E8%B7%AF%E5%BE%84.md",
+    "h1": "开源生态与实践路径",
+    "katex": 0,
+    "termPanels": 2,
+    "hscroll": false,
+    "g1RulingText": true
+   },
+   "errorsAfterClick": []
+  },
+  "main-L02": {
+   "url": "#/course/L02",
+   "title": "L02 时间戳与同步 · 教材模式",
+   "h1": "时间戳与同步",
+   "hasObjectives": true,
+   "katexBlocks": 0,
+   "termPanels": 0,
+   "evidencePanels": 0,
+   "archiveBanner": 0,
+   "g1RulingText": false,
+   "staleOpenAll": false,
+   "statusBullet": "",
+   "switchChips": [],
+   "lessonCards": 0,
+   "cardIds": [],
+   "quizPresent": true,
+   "quizItems": 6,
+   "quizInteractions": [
+    {
+     "kind": "short",
+     "shown": true,
+     "len": 156
+    },
+    {
+     "kind": "short",
+     "shown": true,
+     "len": 157
+    },
+    {
+     "kind": "choice",
+     "feedbackShown": true,
+     "feedbackLen": 8,
+     "disabled": true,
+     "correctMarked": true
+    },
+    {
+     "kind": "short",
+     "shown": true,
+     "len": 192
+    },
+    {
+     "kind": "short",
+     "shown": true,
+     "len": 75
+    },
+    {
+     "kind": "choice",
+     "feedbackShown": true,
+     "feedbackLen": 8,
+     "disabled": true,
+     "correctMarked": true
+    }
+   ],
+   "backLink": "#/course",
+   "nextLink": "#/course/L03",
+   "prereqHrefs": [
+    "#/course/L01"
+   ],
+   "hscroll": false,
+   "scrollW": 1265,
+   "clientW": 1265,
+   "rawMarkdownLeak": false,
+   "errors": [],
+   "bodyLink": "#/doc/courses%2Fvideo-rendering-journey%2Flessons%2FL02-%E6%97%B6%E9%97%B4%E6%88%B3%E4%B8%8E%E5%90%8C%E6%AD%A5.md",
+   "bodyLanding": {
+    "hash": "#/doc/courses%2Fvideo-rendering-journey%2Flessons%2FL02-%E6%97%B6%E9%97%B4%E6%88%B3%E4%B8%8E%E5%90%8C%E6%AD%A5.md",
+    "h1": "时间戳与同步",
+    "katex": 2,
+    "termPanels": 2,
+    "hscroll": false,
+    "g1RulingText": false
+   },
+   "errorsAfterClick": []
+  },
+  "pilot-L02": {
+   "url": "#/course/L02?c=video-rendering-journey",
+   "title": "L02 时间戳与同步 · 教材模式",
+   "h1": "时间戳与同步",
+   "hasObjectives": true,
+   "katexBlocks": 0,
+   "termPanels": 0,
+   "evidencePanels": 0,
+   "archiveBanner": 0,
+   "g1RulingText": false,
+   "staleOpenAll": false,
+   "statusBullet": "",
+   "switchChips": [],
+   "lessonCards": 0,
+   "cardIds": [],
+   "quizPresent": true,
+   "quizItems": 6,
+   "quizInteractions": [
+    {
+     "kind": "short",
+     "shown": true,
+     "len": 156
+    },
+    {
+     "kind": "short",
+     "shown": true,
+     "len": 157
+    },
+    {
+     "kind": "choice",
+     "feedbackShown": true,
+     "feedbackLen": 8,
+     "disabled": true,
+     "correctMarked": true
+    },
+    {
+     "kind": "short",
+     "shown": true,
+     "len": 192
+    },
+    {
+     "kind": "short",
+     "shown": true,
+     "len": 75
+    },
+    {
+     "kind": "choice",
+     "feedbackShown": true,
+     "feedbackLen": 8,
+     "disabled": true,
+     "correctMarked": true
+    }
+   ],
+   "backLink": "#/course?c=video-rendering-journey",
+   "nextLink": "#/course/L06?c=video-rendering-journey",
+   "prereqHrefs": [
+    "#/course/L01?c=video-rendering-journey"
+   ],
+   "hscroll": false,
+   "scrollW": 1265,
+   "clientW": 1265,
+   "rawMarkdownLeak": false,
+   "errors": [],
+   "bodyLink": "#/doc/courses%2Fvideo-rendering-journey%2Flessons%2FL02-%E6%97%B6%E9%97%B4%E6%88%B3%E4%B8%8E%E5%90%8C%E6%AD%A5.md",
+   "bodyLanding": {
+    "hash": "#/doc/courses%2Fvideo-rendering-journey%2Flessons%2FL02-%E6%97%B6%E9%97%B4%E6%88%B3%E4%B8%8E%E5%90%8C%E6%AD%A5.md",
+    "h1": "时间戳与同步",
+    "katex": 2,
+    "termPanels": 2,
+    "hscroll": false,
+    "g1RulingText": false
+   },
+   "errorsAfterClick": []
+  },
+  "main-L00": {
+   "url": "#/course/L00",
+   "title": "L00 先看知识地图 · 教材模式",
+   "h1": "先看知识地图",
+   "hasObjectives": true,
+   "katexBlocks": 0,
+   "termPanels": 0,
+   "evidencePanels": 0,
+   "archiveBanner": 0,
+   "g1RulingText": false,
+   "staleOpenAll": false,
+   "statusBullet": "",
+   "switchChips": [],
+   "lessonCards": 0,
+   "cardIds": [],
+   "quizPresent": false,
+   "backLink": "#/course",
+   "nextLink": "#/course/L01",
+   "prereqHrefs": [],
+   "hscroll": false,
+   "scrollW": 1265,
+   "clientW": 1265,
+   "rawMarkdownLeak": false,
+   "errors": [],
+   "bodyLink": null
   }
  },
  "doc_mode": {
@@ -693,7 +1001,7 @@
     "courses/embodied-loop-journey/lessons/E05-模仿学习复合误差与Sim2Real.md",
     "courses/embodied-loop-journey/lessons/E06-开源生态与实践路径.md"
    ],
-   "checked_at": "2026-11-27 22:50"
+   "checked_at": "2026-11-28 00:50"
   },
   "E01-doc-1280": {
    "_retried": false,
@@ -719,7 +1027,8 @@
    "scrollW": 1265,
    "clientW": 1265,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": null
   },
   "E01-doc-360": {
    "_retried": false,
@@ -745,7 +1054,8 @@
    "scrollW": 345,
    "clientW": 345,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": null
   },
   "E02-doc-1280": {
    "_retried": false,
@@ -771,7 +1081,8 @@
    "scrollW": 1265,
    "clientW": 1265,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": null
   },
   "E02-doc-360": {
    "_retried": false,
@@ -797,7 +1108,8 @@
    "scrollW": 345,
    "clientW": 345,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": null
   },
   "E03-doc-1280": {
    "_retried": false,
@@ -823,7 +1135,8 @@
    "scrollW": 1265,
    "clientW": 1265,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": null
   },
   "E03-doc-360": {
    "_retried": false,
@@ -849,7 +1162,8 @@
    "scrollW": 345,
    "clientW": 345,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": null
   },
   "E04-doc-1280": {
    "_retried": false,
@@ -875,7 +1189,8 @@
    "scrollW": 1265,
    "clientW": 1265,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": null
   },
   "E04-doc-360": {
    "_retried": false,
@@ -901,7 +1216,8 @@
    "scrollW": 345,
    "clientW": 345,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": null
   },
   "E05-doc-1280": {
    "_retried": false,
@@ -927,7 +1243,8 @@
    "scrollW": 1265,
    "clientW": 1265,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": null
   },
   "E05-doc-360": {
    "_retried": false,
@@ -953,7 +1270,8 @@
    "scrollW": 345,
    "clientW": 345,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": null
   },
   "E06-doc-1280": {
    "_retried": false,
@@ -979,7 +1297,8 @@
    "scrollW": 1265,
    "clientW": 1265,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": null
   },
   "E06-doc-360": {
    "_retried": false,
@@ -1005,7 +1324,8 @@
    "scrollW": 345,
    "clientW": 345,
    "rawMarkdownLeak": false,
-   "errors": []
+   "errors": [],
+   "bodyLink": null
   }
  }
 }

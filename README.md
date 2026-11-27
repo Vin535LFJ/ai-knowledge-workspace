@@ -7,7 +7,7 @@
 
 | 源仓 | 提交 | 已推送核实 |
 |---|---|---|
-| `ai-knowledge-to-learning-engine` | `c36c906`（2026-11-27） | 是 |
+| `ai-knowledge-to-learning-engine` | `16864f8`（2026-11-27） | 是 |
 | `matt-pocock-skills-zh-cn` | `d6fa00f`（2026-11-26） | 是 |
 
 逐路径 blob SHA 与两个源仓一致（校验结果见快照提交说明）。
@@ -27,7 +27,7 @@
 2. **`ai-knowledge-to-learning-engine/program/NOW.md`** — 当前主项目 / 阶段 / 任务 / 阻塞 / 下一步（七字段）
 3. `program/ROADMAP.md` + `program/decisions/PENDING_DECISIONS.md` — 规划与**需要人拍板的事**
 4. `docs/consolidation/TARGET-ARCHITECTURE.md` + `CONSOLIDATION-DECISIONS.md` — 为什么是这个结构
-5. **`ai-knowledge-to-learning-engine/reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md`** — 具身六课人工验收：**G1（21 条断言）与 G2（六课评分）已于 2026-11-27 由用户裁决并登记**（§2.8、§3.2 已回填；审批记录见 `reviews/approvals/RUN-2026-11-23-embodied-batch1/`）；**G3 与 KCR 仍待用户本人批准**，run 继续 REVIEW / paused。G3 与 KCR 的裁决材料：同目录 `G3-readiness-addendum.md`（含当前版本浏览器验收证据与统一后的执行口径）与 `KCR-RETROSPECTIVE-REVIEW.md`（追溯性提案 KCR-2026-11-002，19 项待逐项裁决）
+5. **`ai-knowledge-to-learning-engine/reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md`** — 具身六课人工验收：**G1（21 条断言）与 G2（六课评分）已于 2026-11-27 由用户裁决并登记**（§2.8、§3.2 已回填；审批记录见 `reviews/approvals/RUN-2026-11-23-embodied-batch1/`）；**G3 与 KCR 仍待用户本人批准**，run 继续 REVIEW / paused。G3 与 KCR 的裁决材料：同目录 `G3-readiness-addendum.md`（含当前版本浏览器验收证据与统一后的执行口径）与 `KCR-RETROSPECTIVE-REVIEW.md`（追溯性提案 KCR-2026-11-002，19 项待逐项裁决）。课时页已补"课文正文"入口（`16864f8`；浏览器验收含真实点击链路，修复方式待你确认）
 6. `program/AUDIT-REPORT.md` + `program/audits/` — 独立审计与处置
 
 ## 当前状态一句话

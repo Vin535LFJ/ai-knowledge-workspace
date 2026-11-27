@@ -577,6 +577,39 @@ class RealArtifactTests(unittest.TestCase):
         self.assertEqual(by_id["L02"].get("next"), "L06", "pilot L02 的下一课必须是 L06")
         self.assertEqual([l["id"] for l in pilot["lessons"]], ["L01", "L02", "L06", "L11", "L13"])
 
+    def test_lesson_page_links_to_lesson_body(self):
+        """回归：课时页必须有通往本课课文正文的入口（此前为 0，课文只能从首页/搜索进入）。
+
+        证据：reviews/embodied-batch1/browser-qa-g3-20261127.json（六课时页点击链路）。
+        此处守住代码不变量与数据级可定位性（按 JS 同样的前缀规则在 bundle 里复算）。
+        """
+        app = (ROOT / "web" / "assets" / "app.js").read_text(encoding="utf-8")
+        self.assertIn("function lessonBodyDocId(lesson, courseKey)", app)
+        self.assertIn('const dir = courseKey === "main" ? "video-rendering-journey" : courseKey;', app)
+        self.assertIn('const prefix = "courses/" + dir + "/lessons/" + (lesson.lessonFile || lesson.id + "-");', app)
+        self.assertIn('<h2>课文正文</h2>', app)
+        self.assertIn('class="lesson-body-link"', app)
+        # renderLesson 把该区块放在“按顺序阅读”之前（正文优先于课源）
+        self.assertLess(app.index("bodyLink +"), app.index('<h2>按顺序阅读</h2>'))
+        doc_ids = [d["id"] for d in self.bundle["docs"]]
+        courses = list(self.bundle.get("courses", []))
+        if self.bundle.get("course"):
+            courses.append(self.bundle["course"])
+
+        def resolves(lesson, key):
+            d = "video-rendering-journey" if key == "main" else key
+            p = "courses/%s/lessons/%s" % (d, lesson.get("lessonFile") or lesson["id"] + "-")
+            return any(i == p or i.startswith(p) for i in doc_ids)
+
+        stats = {}
+        for c in courses:
+            key = c.get("id") or "main"
+            stats[key] = [sum(1 for l in c["lessons"] if resolves(l, key)), len(c["lessons"]),
+                          [l["id"] for l in c["lessons"] if not resolves(l, key)]]
+        self.assertEqual(stats["embodied-loop-journey"], [6, 6, []])
+        self.assertEqual(stats["video-rendering-journey"], [5, 5, []])
+        self.assertEqual(stats["main"], [19, 20, ["L00"]], "主课程仅 L00 地图课无正文")
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
