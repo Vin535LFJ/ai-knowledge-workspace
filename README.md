@@ -7,7 +7,7 @@
 
 | 源仓 | 提交 | 已推送核实 |
 |---|---|---|
-| `ai-knowledge-to-learning-engine` | `7992efd`（2026-11-27） | 是 |
+| `ai-knowledge-to-learning-engine` | `52b7110`（2026-11-27） | 是 |
 | `matt-pocock-skills-zh-cn` | `d6fa00f`（2026-11-26） | 是 |
 
 逐路径 blob SHA 与两个源仓一致（校验结果见快照提交说明）。
@@ -47,5 +47,5 @@ py -3 -m http.server 8791 --directory web
 
 - 学习站 bundle 只含登记资产（发布边界 v2 默认拒绝）；内部审读/审批/运行态不进站点。
 - 在线发布未授权（D02）。
-- **仓库可见性（PD-Q16，2026-11-27 已裁决）**：本快照仓与核心仓含内部审读 / 运行态 / 裁决材料，用户决定**两仓先设为 Private**，之后再划分公开代码 / 学习资产 / 内部治理材料（边界确认后核心仓可恢复 Public，本快照仓长期 Private）。学习站的 publish-allowlist 只管站点内容，**不约束 GitHub 仓库文件可见性**。
+- **仓库可见性（PD-Q16，2026-11-27 已关闭）**：本快照仓与核心仓均为 **Public**，含内部审读 / 运行态 / 裁决材料，对外可见。用户最终决定**暂不调整**（此前"两仓先设 Private"的方案未执行、搁置）。学习站的 publish-allowlist 只管站点内容，**不约束 GitHub 仓库文件可见性**。
 - 快照仓 `Vin535LFJ/ai-knowledge-workspace` 是扁平快照（无子仓历史），仅供一次性浏览；权威事实源是上面两个仓。

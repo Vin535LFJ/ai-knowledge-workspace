@@ -11,6 +11,7 @@
 - **PD-Q16 范围扩展**：明确覆盖 **Engine 仓与 `ai-knowledge-workspace` 快照仓**（两者均 Public 且含内部审读/运行态/裁决材料）；publish-allowlist 不约束 GitHub 文件可见性。
 - **易过时表述清理**：NOW 与验收包中的"当前 HEAD `67ac3ec`"改为不绑定具体提交的表述；README / docs/USER-GUIDE 的 publish 33→**34**。验收包哈希已重新登记（run 状态不变）。
 - **PD-Q16 用户裁决（2026-11-27）**：先收紧可见性、再整理公开边界——Engine 仓与 `ai-knowledge-workspace` 快照仓先设 **Private**，之后划分公开代码 / 学习资产 / 内部治理材料，边界确认后 Engine 可恢复 Public、快照仓长期 Private；不仓促删除内部材料。**切换须用户在 GitHub Settings 执行**（本机无 gh/API 凭据）；公开期间已被克隆/缓存的内容无法靠切换撤回。活跃待决收为 Q4/Q9/Q11/Q15。
+- **PD-Q16 最终处置（2026-11-27，用户指令"仓库的权限先不管"）**：可见性**暂不调整**，两仓维持 Public，本项关闭。关闭前实测：不带登录拉取两仓 raw README 均 HTTP 200（对照不存在仓库 404），即上文"先设 Private"方案**未执行、搁置**。活跃待决收为 Q4/Q9/Q11/Q15。
 - 未动：具身六课 G1 断言（仍 open/low）、G2 建议分（仍标注修复前）、run 状态（REVIEW / paused）。
 
 ## 2026-11-26 · post-D22 定点修复批次（外部审核驱动，不重做架构）

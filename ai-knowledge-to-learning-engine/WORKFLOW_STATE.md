@@ -4,7 +4,9 @@
 >
 > 计划：会话级批准产物，原件位于用户目录 `~/.workbuddy-ai/plans/quantum-nebula-newton-ffFN4E3P.md`（不入仓库） · 裁决：`DECISIONS.md`（D01–D14）
 
-**最后更新**：2026-11-27 10:20（**用户裁决 PD-Q16 + 批准推送**：两仓先设 Private 再整理公开边界，切换待用户在 GitHub Settings 执行；活跃待决收为 Q4/Q9/Q11/Q15；批准推送 Engine 并同步快照；具身六课验收保持暂停，run 仍 REVIEW/paused。此前 09:55 批次：Pilot L13 末课页面补测——真实点击 L11→L13→返回 Pilot 地图，四场景零报错；PD-Q3 标记被 D22 取代；PD-Q16 范围扩展到快照仓；NOW/验收包去掉易过时的 HEAD 表述；README publish 34。验收包哈希已重新登记。**续跑点**：等用户完成 G1/G2 后登记审批 + G3 + KCR；PD-Q4/Q9/Q11/Q15 待决。详见 CHANGELOG 2026-11-27 条）
+**最后更新**：2026-11-27 11:10（**PD-Q16 关闭**：用户最终决定可见性暂不调整，两仓维持 Public——"先设 Private"方案未执行、搁置（关闭前不带登录探测两仓 raw README 均 HTTP 200）；活跃待决收为 Q4/Q9/Q11/Q15；具身六课验收保持暂停，run 仍 REVIEW/paused。**续跑点**：等用户完成 G1/G2 后登记审批 + G3 + KCR；PD-Q4/Q9/Q11/Q15 待决。详见 CHANGELOG 2026-11-27 条）
+
+**前次记录**：**最后更新**：2026-11-27 10:20（**用户裁决 PD-Q16 + 批准推送**：两仓先设 Private 再整理公开边界，切换待用户在 GitHub Settings 执行；活跃待决收为 Q4/Q9/Q11/Q15；批准推送 Engine 并同步快照；具身六课验收保持暂停，run 仍 REVIEW/paused。此前 09:55 批次：Pilot L13 末课页面补测——真实点击 L11→L13→返回 Pilot 地图，四场景零报错；PD-Q3 标记被 D22 取代；PD-Q16 范围扩展到快照仓；NOW/验收包去掉易过时的 HEAD 表述；README publish 34。验收包哈希已重新登记。**续跑点**：等用户完成 G1/G2 后登记审批 + G3 + KCR；PD-Q4/Q9/Q11/Q15 待决。详见 CHANGELOG 2026-11-27 条）
 
 **前次记录**：**最后更新**：2026-11-26 19:55（**post-D22 定点修复批次完成（外部审核驱动）**：Pilot 课程上下文缺陷修复（`?c` 贯穿路由/下一课/前置/返回链），浏览器 3 场景回归全过（reviews/consolidation-qa-pilot-context-20261126.json）；publish 回归 33→34（新增 pilot 静态+数据级断言）；文档漂移逐项修正（NOW/PENDING Q10/Q13 关闭、Q17 移出活跃、Q12/Q14 转非活跃；registry 292 / selftest 28 / 唯一课时 26+Pilot 入口 5 / 3153 KB 口径统一）；Radar README 重写为内部模块口径；验收包版本说明更正为 ecab4b9 已提交。门禁全绿 validate 20/0/0 · publish 34 · 105 claims 误标 0。**续跑点**：本批提交+推送待执行；embodied run 仍 REVIEW/paused 等用户 G1/G2/G3/KCR；PD-Q9/Q11/Q15/Q16 待决（Q16 公开边界须用户在 GitHub Settings 决定）。详见 docs/consolidation/FINAL-ACCEPTANCE-REPORT.md §8）
 
