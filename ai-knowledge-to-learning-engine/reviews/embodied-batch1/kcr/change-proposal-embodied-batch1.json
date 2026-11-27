@@ -1,0 +1,523 @@
+{
+  "proposal_id": "KCR-2026-11-002",
+  "impact_report": "reviews/embodied-batch1/kcr/impact-src-rl-textbook.json",
+  "items": [
+    {
+      "item_id": "A1",
+      "action": "add",
+      "target": {
+        "layer": "course",
+        "id_draft": "embodied-loop-journey"
+      },
+      "content": "新课程 embodied-loop-journey《具身智能：一条指令如何变成物理动作》，independent 课程（自有 id 命名空间），首批 6 课 E01–E06",
+      "evidence": [
+        "reviews/embodied-batch1/intake-manifest.md（查重 0 命中 + 源批）",
+        "reviews/embodied-batch1/research-report-embodied.md",
+        "courses/embodied-loop-journey/course.json"
+      ],
+      "affected": {
+        "lessons": [
+          "E01",
+          "E02",
+          "E03",
+          "E04",
+          "E05",
+          "E06"
+        ],
+        "quizzes": [
+          "E01",
+          "E02",
+          "E03",
+          "E04",
+          "E05",
+          "E06"
+        ]
+      },
+      "rationale": "P10.3 多领域复用首批（用户 2026-11-23 批准课程名与首批 6 课）",
+      "version_note": "已应用：course.json 首见 176d973，后续 176d973→fde4df0→ecab4b9→67abc1d 多次修订"
+    },
+    {
+      "item_id": "A2",
+      "action": "add",
+      "target": {
+        "layer": "lesson",
+        "id_draft": "E01–E06"
+      },
+      "content": "六课教材 courses/embodied-loop-journey/lessons/E0x-*.md 与六份检查点测验 courses/embodied-loop-journey/quizzes/E0x.json；课源提取文档 08-具身智能/01–06；课程 README；术语表按课挂接词条（具身智能、闭环判据、六环闭环…可复现性等）",
+      "evidence": [
+        "reviews/embodied-batch1/independent-review.md（独立审读、复审、复评）",
+        "reviews/embodied-batch1/g2-diagnostic.md",
+        "reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md §3（G2 评分）"
+      ],
+      "default_status": "open",
+      "affected": {
+        "lessons": [
+          "E01",
+          "E02",
+          "E03",
+          "E04",
+          "E05",
+          "E06"
+        ],
+        "quizzes": [
+          "E01",
+          "E02",
+          "E03",
+          "E04",
+          "E05",
+          "E06"
+        ]
+      },
+      "rationale": "RESEARCH→WRITE→独立审读修复→方案甲修复；G2 六课评分 88/91/91/92/90/88（用户 2026-11-27 确认）",
+      "version_note": "已应用：初稿 176d973；审读修复 fde4df0；方案甲 11 项 ecab4b9；状态说明 67abc1d"
+    },
+    {
+      "item_id": "A3",
+      "action": "add",
+      "target": {
+        "layer": "claim",
+        "id_draft": "V68–V88"
+      },
+      "content": "新增 21 条断言 V68–V88（登记时全部 open/low）；V88 为方案甲修复时补登记（E03 §4.5 容差算例此前无断言覆盖）",
+      "evidence": [
+        "evidence/claim-ledger.json",
+        "reviews/embodied-batch1/G1-verification-queue.md §2"
+      ],
+      "default_status": "open",
+      "conditions": [
+        "新断言默认 open/low（AI 不自升）；其中 13 条的状态变更见 R1–R13",
+        "V71 中“抖动只能靠缩短链路与硬件触发”一句保持 open"
+      ],
+      "affected": {
+        "lessons": [
+          "E01",
+          "E02",
+          "E03",
+          "E04",
+          "E05",
+          "E06"
+        ]
+      },
+      "rationale": "教材断言挂接，逐条登记来源与条件",
+      "version_note": "已应用（git log -S 实测首见提交）：V68–V84 于 1a70c3a；V85 于 176d973；V86–V87 于 fde4df0；V88 于 ecab4b9"
+    },
+    {
+      "item_id": "A4",
+      "action": "add",
+      "target": {
+        "layer": "source",
+        "id_draft": "SRC-RL-*（6）/ SRC-EXT-*（5）"
+      },
+      "content": "登记 11 个来源：Robot_Learn 课源 6 个（textbook / principles / kb:5.15 / kb:5.16 / openlab / kb 辅助块）与外部权威来源 5 个（Tobin 2017、DAgger 2011、MuJoCo MJWarp FAQ、BEVFormer、MuJoCo Reproducibility 节）",
+      "evidence": [
+        "evidence/source-registry.json",
+        "reviews/embodied-batch1/G1-verification-queue.md §1（外部核验记录）"
+      ],
+      "affected": {
+        "concepts": [
+          "K-EMB-LOOP",
+          "K-EMB-SIXRING",
+          "K-EMB-TBUDGET",
+          "K-EMB-TALIGN",
+          "K-EMB-KIN",
+          "K-EMB-JACOBIAN",
+          "K-EMB-COMPERR",
+          "K-EMB-SIM2REAL"
+        ],
+        "lessons": [
+          "E01",
+          "E02",
+          "E03",
+          "E04",
+          "E05",
+          "E06"
+        ]
+      },
+      "rationale": "证据链来源登记，含 used_by_claims 反向索引",
+      "version_note": "已应用（git log -S 实测首见提交）：9 个来源于 1a70c3a；SRC-EXT-BEVFORMER 于 176d973；SRC-EXT-MUJOCO-REPRODUCIBILITY 于 ecab4b9"
+    },
+    {
+      "item_id": "A5",
+      "action": "add",
+      "target": {
+        "layer": "concept",
+        "id_draft": "K-EMB-*（8）"
+      },
+      "content": "新增 8 个概念：K-EMB-LOOP / K-EMB-SIXRING / K-EMB-TBUDGET / K-EMB-TALIGN / K-EMB-KIN / K-EMB-JACOBIAN / K-EMB-COMPERR / K-EMB-SIM2REAL",
+      "evidence": [
+        "knowledge-model/concepts.json"
+      ],
+      "affected": {
+        "lessons": [
+          "E01",
+          "E02",
+          "E03",
+          "E04",
+          "E05",
+          "E06"
+        ]
+      },
+      "rationale": "ARCHITECT 阶段概念注册",
+      "version_note": "已应用：176d973（git log -S 实测首见提交）"
+    },
+    {
+      "item_id": "R1",
+      "action": "reverify",
+      "target": {
+        "layer": "claim",
+        "id": "V72"
+      },
+      "evidence": [
+        "SRC-RL-KB515 · kb:5.15.3（半周期规则与算例）",
+        "SRC-RL-TEXTBOOK · §5 L421–429（残差表）"
+      ],
+      "conditions": [
+        "结论前提：被贴靠通道等间隔、无丢帧，且操作方向是贴到主节拍"
+      ],
+      "from_status": "open/low",
+      "to_status_requested": "verified/medium",
+      "rationale": "G1 裁决 2026-11-27（用户本人，整类采纳验收包 §2.8）：升级为 verified",
+      "affected": {
+        "lessons": [
+          "E03"
+        ]
+      },
+      "version_note": "已应用：67abc1d（G1/G2 checkpoint）；审批记录 reviews/approvals/RUN-2026-11-23-embodied-batch1/G1-01.json（代理代录，未经身份认证）"
+    },
+    {
+      "item_id": "R2",
+      "action": "reverify",
+      "target": {
+        "layer": "claim",
+        "id": "V73"
+      },
+      "evidence": [
+        "SRC-RL-TEXTBOOK · §5 L431（混叠算例与正确表述）",
+        "SRC-RL-KB515 · kb:5.15.3（假频率公式）"
+      ],
+      "conditions": [
+        "textbook 术语表 L1036 混叠释义条件写反（与正文及其自身算例矛盾），已登记源勘误队列；Engine 按正确采样定理撰写",
+        "源 textbook L431 写“≥24 Hz”，与同句“高于两倍”不一致；Engine 按严格大于撰写，课源已加注记",
+        "G1 确认按更正后口径：采样率须严格大于信号最高频率的两倍（源文“≥24 Hz”为笔误）"
+      ],
+      "from_status": "open/low",
+      "to_status_requested": "verified/high",
+      "rationale": "G1 裁决 2026-11-27（用户本人，整类采纳验收包 §2.8）：升级为 verified",
+      "affected": {
+        "lessons": [
+          "E03"
+        ]
+      },
+      "version_note": "已应用：67abc1d（G1/G2 checkpoint）；审批记录 reviews/approvals/RUN-2026-11-23-embodied-batch1/G1-01.json（代理代录，未经身份认证）"
+    },
+    {
+      "item_id": "R3",
+      "action": "reverify",
+      "target": {
+        "layer": "claim",
+        "id": "V75"
+      },
+      "evidence": [
+        "SRC-RL-KB516 · kb:5.16.1（公式与算例，verified）"
+      ],
+      "conditions": [
+        "平面两连杆最简约定（源声明符号约定各家不同）；Engine 独立复算全过"
+      ],
+      "from_status": "open/low",
+      "to_status_requested": "verified/medium",
+      "rationale": "G1 裁决 2026-11-27（用户本人，整类采纳验收包 §2.8）：升级为 verified",
+      "affected": {
+        "lessons": [
+          "E04"
+        ]
+      },
+      "version_note": "已应用：67abc1d（G1/G2 checkpoint）；审批记录 reviews/approvals/RUN-2026-11-23-embodied-batch1/G1-01.json（代理代录，未经身份认证）"
+    },
+    {
+      "item_id": "R4",
+      "action": "reverify",
+      "target": {
+        "layer": "claim",
+        "id": "V76"
+      },
+      "evidence": [
+        "SRC-RL-KB516 · kb:5.16.2（公式/双解/不可达算例，verified）"
+      ],
+      "conditions": [
+        "Engine 独立复算全过（含代回还原目标）",
+        "Robot_Learn kb:5.16.2 把两组解的肘上/肘下标签写反；Engine 按通行定义重算后标注（勘误见 G1 队列 #13）",
+        "“无解时挂起并改目标”属工程处置，单源",
+        "G1 确认按更正后口径：肘上/肘下按肘关节相对“基座—腕连线”的位置判定（源文标签写反）"
+      ],
+      "from_status": "open/low",
+      "to_status_requested": "verified/medium",
+      "rationale": "G1 裁决 2026-11-27（用户本人，整类采纳验收包 §2.8）：升级为 verified",
+      "affected": {
+        "lessons": [
+          "E04"
+        ]
+      },
+      "version_note": "已应用：67abc1d（G1/G2 checkpoint）；审批记录 reviews/approvals/RUN-2026-11-23-embodied-batch1/G1-01.json（代理代录，未经身份认证）"
+    },
+    {
+      "item_id": "R5",
+      "action": "reverify",
+      "target": {
+        "layer": "claim",
+        "id": "V77"
+      },
+      "evidence": [
+        "SRC-RL-KB516 · kb:5.16.3（τ=JᵀF/detJ/奇异/速度放大算例，verified）"
+      ],
+      "conditions": [
+        "Engine 独立用 JᵀF 与 Cramer 法则重推全过；最小能量解校核 0.7×0.2414+0.3×0.1034=0.200m/s",
+        "仅平面两连杆最小核，不覆盖空间 6R / 7R、动力学与碰撞"
+      ],
+      "from_status": "open/low",
+      "to_status_requested": "verified/medium",
+      "rationale": "G1 裁决 2026-11-27（用户本人，整类采纳验收包 §2.8）：升级为 verified",
+      "affected": {
+        "lessons": [
+          "E04"
+        ]
+      },
+      "version_note": "已应用：67abc1d（G1/G2 checkpoint）；审批记录 reviews/approvals/RUN-2026-11-23-embodied-batch1/G1-01.json（代理代录，未经身份认证）"
+    },
+    {
+      "item_id": "R6",
+      "action": "reverify",
+      "target": {
+        "layer": "claim",
+        "id": "V78"
+      },
+      "evidence": [
+        "SRC-RL-KB516 · kb:5.16.5（复合误差机制与算例，verified）",
+        "SRC-RL-KB515 · kb:5.15.6（链长算例）",
+        "SRC-EXT-DAGGER2011 · Ross/Gordon/Bagnell AISTATS 2011：BC 分布偏移累积误差 O(εH²)，DAgger 改善至 O(εH)"
+      ],
+      "conditions": [
+        "概率参数为源教学假设（存疑）",
+        "源界方向口径冲突：kb:5.16.5 '乐观上界'正确；kb:5.15.6 '偏乐观的下界式估计'与 principles 术语表'理想下界'错误/含混；5.15.6 '十个环节剩六成六'与算例不符（0.95^10≈59.9%，66.3% 为 8 步）——已登记源勘误队列，Engine 按正确口径撰写",
+        "G1 确认按更正后口径：qⁿ 是乐观上界；概率数值为教学假设"
+      ],
+      "from_status": "open/low",
+      "to_status_requested": "verified/high",
+      "rationale": "G1 裁决 2026-11-27（用户本人，整类采纳验收包 §2.8）：升级为 verified",
+      "affected": {
+        "lessons": [
+          "E05"
+        ]
+      },
+      "version_note": "已应用：67abc1d（G1/G2 checkpoint）；审批记录 reviews/approvals/RUN-2026-11-23-embodied-batch1/G1-01.json（代理代录，未经身份认证）"
+    },
+    {
+      "item_id": "R7",
+      "action": "reverify",
+      "target": {
+        "layer": "claim",
+        "id": "V81"
+      },
+      "evidence": [
+        "SRC-RL-TEXTBOOK · §7 L629（统计账）/§10 L916–917（两条硬要求）",
+        "SRC-RL-KB515 · kb:5.15.6（SE/区间/656 算例）"
+      ],
+      "conditions": [
+        "96% 观测为源教学假设；正态近似区间在 p 接近 1 或小 n 时失效（源已如实提示）",
+        "“两条硬要求”（成功率须带试验次数与初始条件分布）属工程规范，单源"
+      ],
+      "from_status": "open/low",
+      "to_status_requested": "verified/high",
+      "rationale": "G1 裁决 2026-11-27（用户本人，整类采纳验收包 §2.8）：升级为 verified",
+      "affected": {
+        "lessons": [
+          "E05"
+        ]
+      },
+      "version_note": "已应用：67abc1d（G1/G2 checkpoint）；审批记录 reviews/approvals/RUN-2026-11-23-embodied-batch1/G1-01.json（代理代录，未经身份认证）"
+    },
+    {
+      "item_id": "R8",
+      "action": "reverify",
+      "target": {
+        "layer": "claim",
+        "id": "V70"
+      },
+      "evidence": [
+        "SRC-RL-TEXTBOOK · §3 L264–268（分层账）",
+        "SRC-RL-PRINCIPLES · ch1 L51（120/165ms 与 72/99mm）",
+        "SRC-RL-KB515 · kb:5.15.7（3τ 算例）"
+      ],
+      "conditions": [
+        "分项耗时（80/40/300/60ms）为源手册假设算例（教学假设，存疑），机制结论不依赖具体数值",
+        "textbook L266 '执行 300 毫米'为单位笔误（应为毫秒），已登记源勘误队列，Engine 按正确口径撰写",
+        "结论“时间预算须分层”以具体链路实测为准；分项耗时为源手册教学假设",
+        "G1 确认按更正后口径：“执行 300 毫米”为源文单位笔误，应为 300 毫秒"
+      ],
+      "from_status": "open/low",
+      "to_status_requested": "conditional/medium",
+      "rationale": "G1 裁决 2026-11-27（用户本人，整类采纳验收包 §2.8）：升级为 conditional",
+      "affected": {
+        "lessons": [
+          "E02"
+        ]
+      },
+      "version_note": "已应用：67abc1d（G1/G2 checkpoint）；审批记录 reviews/approvals/RUN-2026-11-23-embodied-batch1/G1-01.json（代理代录，未经身份认证）"
+    },
+    {
+      "item_id": "R9",
+      "action": "reverify",
+      "target": {
+        "layer": "claim",
+        "id": "V71"
+      },
+      "evidence": [
+        "SRC-RL-TEXTBOOK · §5 L390/L413–419",
+        "SRC-RL-KB515 · kb:5.15.1（27mm/±3mm/2.97° 算例）",
+        "SRC-RL-PRINCIPLES · ch2 L112–114"
+      ],
+      "conditions": [
+        "速度/延迟/容差为源底本自设教学参数（存疑）；33ms 曝光周期仅用于角量算例，与 27mm 无关",
+        "“抖动只能靠缩短链路与硬件触发”一句单源、无第二依据，该句保持 open，不在本条 conditional 的已核范围内"
+      ],
+      "from_status": "open/low",
+      "to_status_requested": "conditional/medium",
+      "rationale": "G1 裁决 2026-11-27（用户本人，整类采纳验收包 §2.8）：升级为 conditional",
+      "affected": {
+        "lessons": [
+          "E03"
+        ]
+      },
+      "version_note": "已应用：67abc1d（G1/G2 checkpoint）；审批记录 reviews/approvals/RUN-2026-11-23-embodied-batch1/G1-01.json（代理代录，未经身份认证）"
+    },
+    {
+      "item_id": "R10",
+      "action": "reverify",
+      "target": {
+        "layer": "claim",
+        "id": "V74"
+      },
+      "evidence": [
+        "SRC-RL-TEXTBOOK · §5 L433–445（五坐标系与算例）",
+        "SRC-RL-KB515 · kb:5.15.2（顺序算例全数字）",
+        "SRC-RL-PRINCIPLES · ch2 L120–124"
+      ],
+      "conditions": [
+        "五坐标系划分为常见工程惯例；标定产物版本化为工程规范（单源）"
+      ],
+      "from_status": "open/low",
+      "to_status_requested": "conditional/medium",
+      "rationale": "G1 裁决 2026-11-27（用户本人，整类采纳验收包 §2.8）：升级为 conditional",
+      "affected": {
+        "lessons": [
+          "E03"
+        ]
+      },
+      "version_note": "已应用：67abc1d（G1/G2 checkpoint）；审批记录 reviews/approvals/RUN-2026-11-23-embodied-batch1/G1-01.json（代理代录，未经身份认证）"
+    },
+    {
+      "item_id": "R11",
+      "action": "reverify",
+      "target": {
+        "layer": "claim",
+        "id": "V79"
+      },
+      "evidence": [
+        "SRC-RL-KB515 · kb:5.15.5（覆盖机制与期望账，verified）",
+        "SRC-RL-TEXTBOOK · §7 L602–615",
+        "SRC-EXT-TOBIN2017 · arXiv 1703.06907 官方摘要：'the real world may appear to the model as just another variation'"
+      ],
+      "conditions": [
+        "成功率/带宽为源教学假设（存疑）；外部核验支持机制表述，不支持具体百分比",
+        "机制表述有外部来源（Tobin 2017）支持；成功率与带宽数值为源教学假设，外部来源不支持具体百分比"
+      ],
+      "from_status": "open/low",
+      "to_status_requested": "conditional/medium",
+      "rationale": "G1 裁决 2026-11-27（用户本人，整类采纳验收包 §2.8）：升级为 conditional",
+      "affected": {
+        "lessons": [
+          "E05"
+        ]
+      },
+      "version_note": "已应用：67abc1d（G1/G2 checkpoint）；审批记录 reviews/approvals/RUN-2026-11-23-embodied-batch1/G1-01.json（代理代录，未经身份认证）"
+    },
+    {
+      "item_id": "R12",
+      "action": "reverify",
+      "target": {
+        "layer": "claim",
+        "id": "V83"
+      },
+      "evidence": [
+        "SRC-EXT-MUJOCO-MJWARP · 官方 FAQ 'Is MJWarp on GPU deterministic? No.' 与 float32/float64 节（2026-11-24 逐字核验）",
+        "SRC-RL-TEXTBOOK · §7 L647–655（三警告与 PR #1422）",
+        "SRC-RL-PRINCIPLES · ch3 L193–195（可复现性分层）",
+        "SRC-EXT-MUJOCO-REPRODUCIBILITY · Reproducibility 节（piReproducibility）：\"MuJoCo's simulation pipeline is entirely deterministic and reproducible\" + 三条注意事项（2026-11-25 逐字）"
+      ],
+      "conditions": [
+        "CPU 确定性限同版本同架构；源 fact:72/73 未列入册末来源清单（源登记缺口，勘误队列 #3），CPU 一行以官方文档 Reproducibility 节直核为准，GPU 一行以 MJWarp 官方 FAQ 直核为准",
+        "官方原文取文日期：CPU 一行 2026-11-25（doc/computation/index.rst，main 分支），GPU 一行 2026-11-24（doc/mjwarp/index.rst）；官方声明随版本变化，引用须带取文日期与\"同版本、同架构\"条件；G1 2026-11-27 裁决：conditional（官方声明随版本变化）"
+      ],
+      "from_status": "open/low",
+      "to_status_requested": "conditional/medium",
+      "rationale": "G1 裁决 2026-11-27（用户本人，整类采纳验收包 §2.8）：升级为 conditional",
+      "affected": {
+        "lessons": [
+          "E06"
+        ]
+      },
+      "version_note": "已应用：67abc1d（G1/G2 checkpoint）；审批记录 reviews/approvals/RUN-2026-11-23-embodied-batch1/G1-01.json（代理代录，未经身份认证）"
+    },
+    {
+      "item_id": "R13",
+      "action": "reverify",
+      "target": {
+        "layer": "claim",
+        "id": "V85"
+      },
+      "evidence": [
+        "SRC-EXT-BEVFORMER · arXiv 摘要（2022-03-31）：56.9% NDS on nuScenes test, 9.0 points higher than previous best；引言 DETR3D 47.9%",
+        "SRC-RL-TEXTBOOK · §3 L254–258（BEV/Occupancy 只是感知中间态）"
+      ],
+      "conditions": [
+        "数字为论文口径快照（2022-03），引用须带数据集/划分/日期；G1 2026-11-27 裁决：conditional",
+        "“BEV / Occupancy 只是感知中间态”结论为单源；G1 裁决不拆条"
+      ],
+      "from_status": "open/low",
+      "to_status_requested": "conditional/medium",
+      "rationale": "G1 裁决 2026-11-27（用户本人，整类采纳验收包 §2.8）：升级为 conditional",
+      "affected": {
+        "lessons": [
+          "E02"
+        ]
+      },
+      "version_note": "已应用：67abc1d（G1/G2 checkpoint）；审批记录 reviews/approvals/RUN-2026-11-23-embodied-batch1/G1-01.json（代理代录，未经身份认证）"
+    },
+    {
+      "item_id": "M1",
+      "action": "modify",
+      "target": {
+        "layer": "lesson",
+        "id": "E01,E02,E03,E04,E05,E06"
+      },
+      "content": "六课 §8 断言状态说明与写作纪律行、课程 README 证据状态、课程契约 note 按 G1 裁决同步（决议内容不变）",
+      "evidence": [
+        "reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md §2.8",
+        "evidence/claim-ledger.json"
+      ],
+      "affected": {
+        "lessons": [
+          "E01",
+          "E02",
+          "E03",
+          "E04",
+          "E05",
+          "E06"
+        ]
+      },
+      "rationale": "课文状态说明须与台账一致",
+      "version_note": "已应用：67abc1d"
+    }
+  ],
+  "ai_recommendation": "【追溯性提案，不是先行审批】本提案列出的全部变更均已随提交 1a70c3a / 176d973 / fde4df0 / ecab4b9 / 67abc1d 应用并推送，且 G1 / G2 已由用户裁决并登记（G1-01 / G2-01）。提交本提案是为了让 KCR 人工审核有逐项对象：请对每一项选择 approve / reject / request_research。reject 意味着需要回退或修订对应内容，并会产生新的变更。影响分析共 11 份（reviews/embodied-batch1/kcr/impact-*.json），此处 impact_report 指向主要课源 SRC-RL-TEXTBOOK 的一份。AI 不预填任何裁决。",
+  "human_decision": null
+}

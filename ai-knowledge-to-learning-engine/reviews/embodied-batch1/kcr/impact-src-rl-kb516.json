@@ -1,0 +1,78 @@
+{
+  "trigger": {
+    "type": "source_update",
+    "ref": "SRC-RL-KB516",
+    "date": "2026-11-27"
+  },
+  "new_sources": [],
+  "seed": {
+    "source_id": "SRC-RL-KB516",
+    "claim_id": null
+  },
+  "affected": {
+    "claims": [
+      {
+        "id": "V75",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V76",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V77",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V78",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "K-EMB-COMPERR",
+        "via_claim": "V78"
+      },
+      {
+        "id": "K-EMB-JACOBIAN",
+        "via_claim": "V77"
+      },
+      {
+        "id": "K-EMB-KIN",
+        "via_claim": "V75"
+      }
+    ],
+    "lessons": [
+      {
+        "id": "E04",
+        "via_claim": "V75"
+      },
+      {
+        "id": "E05",
+        "via_claim": "V78"
+      }
+    ],
+    "quizzes": [],
+    "courses": []
+  },
+  "conflicts": [],
+  "uncovered": [],
+  "integrity_findings": [],
+  "website_artifacts": [
+    "web/content.js (build 生成物)",
+    "site-vitepress/docs/ (build 生成物)"
+  ],
+  "counts": {
+    "sources": 54,
+    "claims": 105,
+    "concepts": 33,
+    "quizzes": 5,
+    "courses": 2
+  },
+  "generated_at": "2026-11-27 22:57",
+  "read_only": true
+}

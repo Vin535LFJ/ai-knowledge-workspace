@@ -1,0 +1,96 @@
+{
+  "trigger": {
+    "type": "source_update",
+    "ref": "SRC-RL-KB-AUX",
+    "date": "2026-11-27"
+  },
+  "new_sources": [],
+  "seed": {
+    "source_id": "SRC-RL-KB-AUX",
+    "claim_id": null
+  },
+  "affected": {
+    "claims": [
+      {
+        "id": "V68",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V69",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V80",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "K-EMB-LOOP",
+        "via_claim": "V68"
+      },
+      {
+        "id": "K-EMB-SIM2REAL",
+        "via_claim": "V80"
+      },
+      {
+        "id": "K-EMB-SIXRING",
+        "via_claim": "V69"
+      }
+    ],
+    "lessons": [
+      {
+        "id": "E01",
+        "via_claim": "V68"
+      },
+      {
+        "id": "E02",
+        "via_claim": "V69"
+      },
+      {
+        "id": "E05",
+        "via_claim": "V80"
+      }
+    ],
+    "quizzes": [],
+    "courses": []
+  },
+  "conflicts": [],
+  "uncovered": [],
+  "integrity_findings": [
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V68",
+      "status": "open",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V69",
+      "status": "open",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V80",
+      "status": "open",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    }
+  ],
+  "website_artifacts": [
+    "web/content.js (build 生成物)",
+    "site-vitepress/docs/ (build 生成物)"
+  ],
+  "counts": {
+    "sources": 54,
+    "claims": 105,
+    "concepts": 33,
+    "quizzes": 5,
+    "courses": 2
+  },
+  "generated_at": "2026-11-27 22:57",
+  "read_only": true
+}

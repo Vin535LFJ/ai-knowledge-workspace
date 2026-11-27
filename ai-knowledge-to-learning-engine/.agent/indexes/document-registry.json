@@ -1,10 +1,10 @@
 {
  "meta": {
-  "generated_at": "2026-11-27T05:49:25+00:00",
+  "generated_at": "2026-11-27T14:57:15+00:00",
   "generator": "tools/build_document_registry.py",
-  "total": 292,
+  "total": 294,
   "counts_by_status": {
-   "active": 103,
+   "active": 105,
    "unregistered": 99,
    "draft": 76,
    "archived": 6,
@@ -13,7 +13,7 @@
    "under_review": 1
   },
   "counts_by_level": {
-   "L1": 108,
+   "L1": 110,
    "L2": 88,
    "unclassified": 72,
    "L3": 24
@@ -21,7 +21,7 @@
   "counts_by_type": {
    "knowledge": 101,
    "project-state": 60,
-   "review-material": 58,
+   "review-material": 60,
    "skill": 28,
    "adapter": 10,
    "template": 9,
@@ -4042,6 +4042,22 @@
    "level": "L2"
   },
   {
+   "path": "reviews/embodied-batch1/G3-readiness-addendum.md",
+   "id": "EMB-B1-G3-ADDENDUM",
+   "type": "review-material",
+   "type_source": "frontmatter",
+   "status": "active",
+   "owner": "qwenwork",
+   "created": "2026-11-27",
+   "updated": "2026-11-27",
+   "supersedes": [],
+   "related_adr": [],
+   "related_task": "",
+   "generated": false,
+   "frontmatter_present": true,
+   "level": "L1"
+  },
+  {
    "path": "reviews/embodied-batch1/independent-review.md",
    "id": "EMB-B1-INDEPENDENT-REVIEW",
    "type": "review-material",
@@ -4066,6 +4082,22 @@
    "owner": "qwenwork",
    "created": "2026-11-23",
    "updated": "2026-11-23",
+   "supersedes": [],
+   "related_adr": [],
+   "related_task": "",
+   "generated": false,
+   "frontmatter_present": true,
+   "level": "L1"
+  },
+  {
+   "path": "reviews/embodied-batch1/KCR-RETROSPECTIVE-REVIEW.md",
+   "id": "EMB-B1-KCR-RETRO",
+   "type": "review-material",
+   "type_source": "frontmatter",
+   "status": "active",
+   "owner": "qwenwork",
+   "created": "2026-11-27",
+   "updated": "2026-11-27",
    "supersedes": [],
    "related_adr": [],
    "related_task": "",

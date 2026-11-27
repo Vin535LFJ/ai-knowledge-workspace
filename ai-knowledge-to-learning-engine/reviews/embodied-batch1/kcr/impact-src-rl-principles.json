@@ -1,0 +1,103 @@
+{
+  "trigger": {
+    "type": "source_update",
+    "ref": "SRC-RL-PRINCIPLES",
+    "date": "2026-11-27"
+  },
+  "new_sources": [],
+  "seed": {
+    "source_id": "SRC-RL-PRINCIPLES",
+    "claim_id": null
+  },
+  "affected": {
+    "claims": [
+      {
+        "id": "V70",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V71",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V74",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V83",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "K-EMB-TALIGN",
+        "via_claim": "V71"
+      },
+      {
+        "id": "K-EMB-TBUDGET",
+        "via_claim": "V70"
+      }
+    ],
+    "lessons": [
+      {
+        "id": "E02",
+        "via_claim": "V70"
+      },
+      {
+        "id": "E03",
+        "via_claim": "V71"
+      },
+      {
+        "id": "E06",
+        "via_claim": "V83"
+      }
+    ],
+    "quizzes": [],
+    "courses": []
+  },
+  "conflicts": [],
+  "uncovered": [],
+  "integrity_findings": [
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V70",
+      "status": "conditional",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V71",
+      "status": "conditional",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V74",
+      "status": "conditional",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V83",
+      "status": "conditional",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    }
+  ],
+  "website_artifacts": [
+    "web/content.js (build 生成物)",
+    "site-vitepress/docs/ (build 生成物)"
+  ],
+  "counts": {
+    "sources": 54,
+    "claims": 105,
+    "concepts": 33,
+    "quizzes": 5,
+    "courses": 2
+  },
+  "generated_at": "2026-11-27 22:57",
+  "read_only": true
+}

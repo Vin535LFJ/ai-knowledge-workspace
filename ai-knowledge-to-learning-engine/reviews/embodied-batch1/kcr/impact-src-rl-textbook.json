@@ -1,0 +1,248 @@
+{
+  "trigger": {
+    "type": "source_update",
+    "ref": "SRC-RL-TEXTBOOK",
+    "date": "2026-11-27"
+  },
+  "new_sources": [],
+  "seed": {
+    "source_id": "SRC-RL-TEXTBOOK",
+    "claim_id": null
+  },
+  "affected": {
+    "claims": [
+      {
+        "id": "V68",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V69",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V70",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V71",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V72",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V73",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V74",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V79",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V80",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V81",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V82",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V83",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V84",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V85",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V86",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V87",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      },
+      {
+        "id": "V88",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "K-EMB-LOOP",
+        "via_claim": "V68"
+      },
+      {
+        "id": "K-EMB-SIM2REAL",
+        "via_claim": "V79"
+      },
+      {
+        "id": "K-EMB-SIXRING",
+        "via_claim": "V69"
+      },
+      {
+        "id": "K-EMB-TALIGN",
+        "via_claim": "V71"
+      },
+      {
+        "id": "K-EMB-TBUDGET",
+        "via_claim": "V70"
+      }
+    ],
+    "lessons": [
+      {
+        "id": "E01",
+        "via_claim": "V68"
+      },
+      {
+        "id": "E02",
+        "via_claim": "V69"
+      },
+      {
+        "id": "E03",
+        "via_claim": "V71"
+      },
+      {
+        "id": "E05",
+        "via_claim": "V79"
+      },
+      {
+        "id": "E06",
+        "via_claim": "V82"
+      }
+    ],
+    "quizzes": [],
+    "courses": []
+  },
+  "conflicts": [],
+  "uncovered": [],
+  "integrity_findings": [
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V68",
+      "status": "open",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V69",
+      "status": "open",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V70",
+      "status": "conditional",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V71",
+      "status": "conditional",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V74",
+      "status": "conditional",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V79",
+      "status": "conditional",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V80",
+      "status": "open",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V82",
+      "status": "open",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V83",
+      "status": "conditional",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V84",
+      "status": "open",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V85",
+      "status": "conditional",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V86",
+      "status": "open",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V87",
+      "status": "open",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    },
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V88",
+      "status": "open",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    }
+  ],
+  "website_artifacts": [
+    "web/content.js (build 生成物)",
+    "site-vitepress/docs/ (build 生成物)"
+  ],
+  "counts": {
+    "sources": 54,
+    "claims": 105,
+    "concepts": 33,
+    "quizzes": 5,
+    "courses": 2
+  },
+  "generated_at": "2026-11-27 22:57",
+  "read_only": true
+}

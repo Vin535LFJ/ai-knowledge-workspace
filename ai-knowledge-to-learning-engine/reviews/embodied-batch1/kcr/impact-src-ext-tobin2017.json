@@ -1,0 +1,58 @@
+{
+  "trigger": {
+    "type": "source_update",
+    "ref": "SRC-EXT-TOBIN2017",
+    "date": "2026-11-27"
+  },
+  "new_sources": [],
+  "seed": {
+    "source_id": "SRC-EXT-TOBIN2017",
+    "claim_id": null
+  },
+  "affected": {
+    "claims": [
+      {
+        "id": "V79",
+        "relation": "supports",
+        "note": "source→claim 支持链（seed=source）"
+      }
+    ],
+    "concepts": [
+      {
+        "id": "K-EMB-SIM2REAL",
+        "via_claim": "V79"
+      }
+    ],
+    "lessons": [
+      {
+        "id": "E05",
+        "via_claim": "V79"
+      }
+    ],
+    "quizzes": [],
+    "courses": []
+  },
+  "conflicts": [],
+  "uncovered": [],
+  "integrity_findings": [
+    {
+      "type": "unverified_claim_in_chain",
+      "claim": "V79",
+      "status": "conditional",
+      "note": "链中断言未 verified，升级/应用需人工裁决"
+    }
+  ],
+  "website_artifacts": [
+    "web/content.js (build 生成物)",
+    "site-vitepress/docs/ (build 生成物)"
+  ],
+  "counts": {
+    "sources": 54,
+    "claims": 105,
+    "concepts": 33,
+    "quizzes": 5,
+    "courses": 2
+  },
+  "generated_at": "2026-11-27 22:57",
+  "read_only": true
+}
