@@ -7,7 +7,7 @@
 
 | 源仓 | 提交 | 已推送核实 |
 |---|---|---|
-| `ai-knowledge-to-learning-engine` | `52b7110`（2026-11-27） | 是 |
+| `ai-knowledge-to-learning-engine` | `50cc14d`（2026-11-27） | 是 |
 | `matt-pocock-skills-zh-cn` | `d6fa00f`（2026-11-26） | 是 |
 
 逐路径 blob SHA 与两个源仓一致（校验结果见快照提交说明）。
@@ -27,12 +27,12 @@
 2. **`ai-knowledge-to-learning-engine/program/NOW.md`** — 当前主项目 / 阶段 / 任务 / 阻塞 / 下一步（七字段）
 3. `program/ROADMAP.md` + `program/decisions/PENDING_DECISIONS.md` — 规划与**需要人拍板的事**
 4. `docs/consolidation/TARGET-ARCHITECTURE.md` + `CONSOLIDATION-DECISIONS.md` — 为什么是这个结构
-5. **`reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md`** — 当前真正卡住的地方：具身六课人工验收（G1 21 条断言 / G2 评分 / 审批顺序），裁决栏全部留空
+5. **`ai-knowledge-to-learning-engine/reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md`** — 具身六课人工验收：**G1（21 条断言）与 G2（六课评分）已于 2026-11-27 由用户裁决并登记**（§2.8、§3.2 已回填；审批记录见 `reviews/approvals/RUN-2026-11-23-embodied-batch1/`）；**G3 与 KCR 仍待用户本人批准**，run 继续 REVIEW / paused
 6. `program/AUDIT-REPORT.md` + `program/audits/` — 独立审计与处置
 
 ## 当前状态一句话
 
-核心生产链已真实跑通一次（HDR 批 INTAKE→FEEDBACK done）；具身智能 6 课教材完成、停在人工验收门；D22 整合与多课程切换/检查点练习已上线并浏览器实测，视频 Pilot 精选路径的课程上下文缺陷已修复（下一课/前置/返回链均带课程上下文，四个浏览器场景回归通过，含末课 L13 的真实点击链路）；门禁全绿（validate 20/0/0 · publish 34 · 105 claims 误标 0）。具身六课人工验收保持暂停（run 仍 REVIEW / paused，裁决栏留空）。
+核心生产链已真实跑通一次（HDR 批 INTAKE→FEEDBACK done）；具身智能 6 课教材完成，G1 / G2 已裁决并登记，停在 G3 与 KCR 人工门（run 仍 REVIEW / paused，等用户本人批准）；D22 整合与多课程切换/检查点练习已上线并浏览器实测，视频 Pilot 精选路径的课程上下文缺陷已修复（下一课/前置/返回链均带课程上下文，四个浏览器场景回归通过，含末课 L13 的真实点击链路）；门禁全绿（validate 20/0/0 · publish 34 · 105 claims 误标 0）。具身六课：G1 / G2 已裁决并登记（代理代录，身份认证未进行）；G3 与 KCR 待用户本人批准，run 继续 REVIEW / paused。
 
 ## 快速开始
 

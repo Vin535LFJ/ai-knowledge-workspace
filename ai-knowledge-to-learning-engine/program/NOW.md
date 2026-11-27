@@ -18,32 +18,32 @@ updated: 2026-11-27
 
 ## 2. 当前阶段
 
-**人工验收与稳定化阶段。** 主线仍是 embodied-loop-journey 首批 6 课，run `RUN-2026-11-23-embodied-batch1` 停在 **REVIEW / paused，等待用户裁决**。上一主目标 P1 已于 2026-11-21 达成；D22 整合与 P0 质量收口（多课程切换 + 检查点练习）已于 2026-11-26 完成并浏览器实测。
+**人工验收与稳定化阶段。** 主线仍是 embodied-loop-journey 首批 6 课，run `RUN-2026-11-23-embodied-batch1` 停在 **REVIEW / paused**。**G1 与 G2 已于 2026-11-27 由用户裁决并执行**（G1：7 verified / 6 conditional / 8 保持 open；G2：88/91/91/92/90/88 全部通过）；**G3 与 KCR 尚未批准**。上一主目标 P1 已于 2026-11-21 达成；D22 整合与 P0 质量收口（多课程切换 + 检查点练习）已于 2026-11-26 完成并浏览器实测。
 
 ## 3. 当前任务
 
-1. **用户完成六课裁决**。材料：`../reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md`（G1 V68–V88 共 21 条、G2 六课评分表、专项复核、审批登记顺序）。裁决栏全部留空；AI 没有升级断言、没有填分。
+1. **用户本人批准 G3 与 KCR**。G1 / G2 已裁决（2026-11-27）并以 checkpoint `67abc1d` 提交推送，审批记录 G1-01 / G2-01 已登记（代理代录，未经身份认证）。剩余须用户本人执行：G3 → KCR，命令见 `../reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md` §7 第 7–8 步。
 2. **PD-Q 待决清单逐项裁决**（`decisions/PENDING_DECISIONS.md`）：活跃待决项 PD-Q4/Q9/Q11/Q15；**PD-Q16 已关闭**（2026-11-27 用户最终决定：可见性暂不调整，两仓维持 Public）；PD-Q3 已被 D22 取代（不再建独立远程）；PD-Q12/Q14 因 Governance 已归档转为非活跃（如重新启用再议）。
 
 > 已收口（不再是当前任务）：D22 整合产物与 post-D22 定点修复均已分组提交并推送（Engine / Skills 远端经 ls-remote 核实与本地一致，具体提交见 `../CHANGELOG.md`）；Skills 过时文档修复已完成；**视频 pilot 课程上下文缺陷已修复**（路由/下一课/返回链贯穿 `?c=`，4 个浏览器回归场景通过，含 L13 末课页面真实点击链路，证据 `../reviews/consolidation-qa-pilot-context-20261126.json`）。
 
 ## 4. 阻塞问题（需人工，AI 不自批）
 
-- **embodied 四件人工门**：G1（V68–V88 是否升级）→ G2（六课评分，基于修复后版本）→ 登记审批 + G3 → KCR。run 无法被 AI 推进。
+- **embodied 剩余人工门**：G3 与 KCR 未批准，run 无法被 AI 推进；用户已明确不授权代理代批这两项。审批人只是字符串，没有身份验证（G1/G2 的代录记录已如实标注）。
 - **待裁决清单**：PD-Q4 / Q9 / Q11 / Q15（`decisions/PENDING_DECISIONS.md`）。
 - **仓库可见性（PD-Q16，已关闭——维持现状）**：Engine 仓与 `ai-knowledge-workspace` 快照仓均为 Public，内部审读/运行态/裁决材料公开可见。用户 2026-11-27 最终决定**暂不调整**（此前"两仓先设 Private"的方案搁置，未执行；关闭前不带登录探测两仓 raw README 均 HTTP 200）。学习站的 publish-allowlist 只管站点内容，不约束 GitHub 仓库文件可见性。
 - **Skills 全新会话验证未做**（会话重建后发现/加载/执行均成功，全新会话未测）。
 
 ## 5. 下一步
 
-1. 用户读验收包，填 G1 裁决栏与 G2 评分。
-2. AI 按裁决更新台账与课文状态说明，重建并跑门禁，报结果。
-3. 用户确认文件不再改动后：登记审批 → G3 → KCR → resume → PUBLISH（本地口径，D02 约束在线发布）→ FEEDBACK → done。
+1. （已完成 2026-11-27）G1 / G2 裁决执行并以 checkpoint `67abc1d` 提交推送；审批记录 G1-01 / G2-01 已登记。
+2. 用户本人执行 G3 → KCR。代理只准备证据与材料，不代批。
+3. AI 复核通过后：resume → PUBLISH（本地口径，D02 约束在线发布）→ FEEDBACK → done。
 4. 穿插：Skills 全新会话确认；PD-Q 活跃项逐项裁决（Q4/Q9/Q11/Q15）。
 
 ## 6. 最近状态更新时间
 
-**2026-11-27 11:10**（用户最终处置 PD-Q16：可见性暂不调整、两仓维持 Public，本项关闭；关闭前不带登录探测两仓均 HTTP 200。活跃待决收为 Q4/Q9/Q11/Q15）。前次 2026-11-27 10:20（用户裁决 PD-Q16：两仓先设 Private、再整理公开边界，待其在 GitHub Settings 执行；批准推送 Engine 与同步快照；具身六课验收保持暂停）。前次 2026-11-27 09:55（二次外部审核收尾：Pilot L13 末课页面真实点击补测通过；PD-Q3 标记被 D22 取代，活跃待决统一为 Q4/Q9/Q11/Q15/Q16；PD-Q16 范围扩展到快照仓；易过时的 HEAD 表述清理）。前次 2026-11-26 19:30（外部审核定点修复批次：视频 pilot 课程上下文缺陷修复 + 3 浏览器回归通过；文档治理收口——NOW/PENDING 关闭 Q10/Q13/Q17、Q12/Q14 转非活跃，REQUIREMENT-COVERAGE/FINAL-ACCEPTANCE/README 数字与课时口径更正，Radar README/AGENTS 改为内部模块口径，验收包版本说明更正为 ecab4b9）。D22 统一收敛已于本日 earlier 完成（备份 6/6 PASS、三仓并入、多课程切换 + quiz 上线）。逐日明细以 Engine `../CHANGELOG.md` / `../WORKFLOW_STATE.md` 为准。
+**2026-11-27 13:50**（G1/G2 checkpoint `67abc1d` 已提交并推送；审批记录 G1-01 / G2-01 已登记——用户授权代理代录，身份认证未进行；G3 与 KCR 仍待用户本人，run 仍 REVIEW/paused）。前次 2026-11-27 12:30（具身六课 G1/G2 用户裁决已执行：7 verified / 6 conditional / 8 保持 open；六课评分全部通过；run 仍 REVIEW/paused 等 G3 与 KCR；本轮改动未提交）。前次 2026-11-27 11:10（用户最终处置 PD-Q16：可见性暂不调整、两仓维持 Public，本项关闭；关闭前不带登录探测两仓均 HTTP 200。活跃待决收为 Q4/Q9/Q11/Q15）。前次 2026-11-27 10:20（用户裁决 PD-Q16：两仓先设 Private、再整理公开边界，待其在 GitHub Settings 执行；批准推送 Engine 与同步快照；具身六课验收保持暂停）。前次 2026-11-27 09:55（二次外部审核收尾：Pilot L13 末课页面真实点击补测通过；PD-Q3 标记被 D22 取代，活跃待决统一为 Q4/Q9/Q11/Q15/Q16；PD-Q16 范围扩展到快照仓；易过时的 HEAD 表述清理）。前次 2026-11-26 19:30（外部审核定点修复批次：视频 pilot 课程上下文缺陷修复 + 3 浏览器回归通过；文档治理收口——NOW/PENDING 关闭 Q10/Q13/Q17、Q12/Q14 转非活跃，REQUIREMENT-COVERAGE/FINAL-ACCEPTANCE/README 数字与课时口径更正，Radar README/AGENTS 改为内部模块口径，验收包版本说明更正为 ecab4b9）。D22 统一收敛已于本日 earlier 完成（备份 6/6 PASS、三仓并入、多课程切换 + quiz 上线）。逐日明细以 Engine `../CHANGELOG.md` / `../WORKFLOW_STATE.md` 为准。
 
 ## 7. 关键状态文件链接
 

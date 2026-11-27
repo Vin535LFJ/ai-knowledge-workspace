@@ -1,6 +1,6 @@
 {
  "meta": {
-  "generated_at": "2026-11-27T03:44:40+00:00",
+  "generated_at": "2026-11-27T05:49:25+00:00",
   "generator": "tools/build_document_registry.py",
   "total": 292,
   "counts_by_status": {
@@ -3825,7 +3825,7 @@
    "status": "active",
    "owner": "qwenwork",
    "created": "2026-11-25",
-   "updated": "2026-11-25",
+   "updated": "2026-11-27",
    "supersedes": [],
    "related_adr": [],
    "related_task": "",
@@ -4017,7 +4017,7 @@
    "status": "active",
    "owner": "qwenwork",
    "created": "2026-11-25",
-   "updated": "2026-11-25",
+   "updated": "2026-11-27",
    "supersedes": [],
    "related_adr": [],
    "related_task": "",
@@ -4145,7 +4145,7 @@
    "status": "active",
    "owner": "qwenwork",
    "created": "2026-11-25",
-   "updated": "2026-11-25",
+   "updated": "2026-11-27",
    "supersedes": [],
    "related_adr": [],
    "related_task": "",

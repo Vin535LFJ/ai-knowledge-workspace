@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "record_id": "RUN-2026-11-23-embodied-batch1/G1-01",
+  "run_id": "RUN-2026-11-23-embodied-batch1",
+  "gate_id": "G1",
+  "approver": "用户本人（GitHub Vin535LFJ）— 代理代录，未经身份认证",
+  "approved_at": "2026-11-27T13:47:08+08:00",
+  "decision": "approved",
+  "scope": "G1：V68–V88 共 21 条断言裁决——verified 7 条（V72/V73/V75/V76/V77/V78/V81）、conditional 6 条（V70/V71/V74/V79/V83/V85）、保持 open/low 8 条（V68/V69/V80/V82/V84/V86/V87/V88）；更正口径 6 条确认",
+  "approved_at_phase": "REVIEW",
+  "artifacts": [
+    {
+      "path": "reviews/embodied-batch1/intake-manifest.md",
+      "sha256": "36a848bce0a0bb076f52f00aa43862f4520a3fc77dd031d64e5ecd1ebf795b57",
+      "phase": "INTAKE",
+      "kind": "file"
+    },
+    {
+      "path": "reviews/embodied-batch1/research-report-embodied.md",
+      "sha256": "695e6adcd85c23a546eecf48a245598f8d093213ede9889ea5800871d0f6c2df",
+      "phase": "RESEARCH",
+      "kind": "file"
+    },
+    {
+      "path": "reviews/embodied-batch1/G1-verification-queue.md",
+      "sha256": "77fdf4a73eb08a0fd2d05d5cf51616b2967dc59558e764e6eea51e731adf9553",
+      "phase": "REVIEW",
+      "kind": "file"
+    },
+    {
+      "path": "courses/embodied-loop-journey/course.json",
+      "sha256": "c023d17ab75993136635e2743aeaa9b9c03e47b3f9909ca67c398f82098c8dd4",
+      "phase": "REVIEW",
+      "kind": "file"
+    },
+    {
+      "path": "courses/embodied-loop-journey/README.md",
+      "sha256": "e253a4920fc4de8319f1bd50bcf9aaef9f36e4fe03b024c8117db13537b5da9e",
+      "phase": "REVIEW",
+      "kind": "file"
+    },
+    {
+      "path": "courses/embodied-loop-journey/lessons/E01-闭环判据与错误落点.md",
+      "sha256": "2a1b3b9d981a972158193998773fd2b403197c1efb4f4c66870e9dc87f294ae3",
+      "phase": "REVIEW",
+      "kind": "file"
+    },
+    {
+      "path": "courses/embodied-loop-journey/lessons/E02-六环闭环与时间预算.md",
+      "sha256": "5f3bb69da12d11f1d915d2753125dbd24563b4b66677ee0e7e2b6ce617bf494e",
+      "phase": "REVIEW",
+      "kind": "file"
+    },
+    {
+      "path": "courses/embodied-loop-journey/lessons/E03-时空对齐与标定.md",
+      "sha256": "7afd4d5c511387edd9b7f1675415b4688aecda1eb3fe92d37c176b9defa39bed",
+      "phase": "REVIEW",
+      "kind": "file"
+    },
+    {
+      "path": "courses/embodied-loop-journey/lessons/E04-运动学与雅可比奇异.md",
+      "sha256": "9104ecd49981c154fec17771196985b7a4b359fcee50dcff0f5b66a3d2b304b0",
+      "phase": "REVIEW",
+      "kind": "file"
+    },
+    {
+      "path": "courses/embodied-loop-journey/lessons/E05-模仿学习复合误差与Sim2Real.md",
+      "sha256": "6bf57b47a85bb634b350050063ddbead8bcfcf0ece512a4536a4ac485bcad1da",
+      "phase": "REVIEW",
+      "kind": "file"
+    },
+    {
+      "path": "courses/embodied-loop-journey/lessons/E06-开源生态与实践路径.md",
+      "sha256": "f940b047978cf5cf0ff221b2c44fb9efd19c14de0fe2119f48ddce2092ccbd04",
+      "phase": "REVIEW",
+      "kind": "file"
+    },
+    {
+      "path": "reviews/embodied-batch1/design-note.md",
+      "sha256": "265bef5a7729b5b1a3b46abe3607691fb78a1db90abab20e7b8e2e9ba84849b9",
+      "phase": "DESIGN",
+      "kind": "file"
+    },
+    {
+      "path": "courses/embodied-loop-journey/quizzes/E01.json",
+      "sha256": "2aa49c4dc0dee13f1a4b2470b9eef5a467b8235f09fab258a7e93dae02ec409b",
+      "phase": "PRACTICE",
+      "kind": "file"
+    },
+    {
+      "path": "courses/embodied-loop-journey/quizzes/E02.json",
+      "sha256": "09f0e7767087cc0ac653823bb05dc6889bd7898479ddd2a7e90f3576fed2e80b",
+      "phase": "PRACTICE",
+      "kind": "file"
+    },
+    {
+      "path": "courses/embodied-loop-journey/quizzes/E03.json",
+      "sha256": "3d0fe34a6560e712bf739905283106e0fea0c6e79ef13632187c3f403db8a18d",
+      "phase": "PRACTICE",
+      "kind": "file"
+    },
+    {
+      "path": "courses/embodied-loop-journey/quizzes/E04.json",
+      "sha256": "964604f9ff57b6e44b6ec9e6245170f8a5c67ddd730380e391cd80f998c28eda",
+      "phase": "PRACTICE",
+      "kind": "file"
+    },
+    {
+      "path": "courses/embodied-loop-journey/quizzes/E05.json",
+      "sha256": "85db03255c77b7dd4bac87f66aebbbd6319c3f4c9dcfc2325c5bcbc0311f6e8c",
+      "phase": "PRACTICE",
+      "kind": "file"
+    },
+    {
+      "path": "courses/embodied-loop-journey/quizzes/E06.json",
+      "sha256": "35dc090740b36c944c65801ad9c6b0ed6c4ebf746e1f15cac48607b151384ba2",
+      "phase": "PRACTICE",
+      "kind": "file"
+    },
+    {
+      "path": "reviews/embodied-batch1/independent-review.md",
+      "sha256": "7170d7e37693f6d4969bd9d282a3672fabbe474d49e3225b5facc67ad65946c4",
+      "phase": "REVIEW",
+      "kind": "file"
+    },
+    {
+      "path": "reviews/embodied-batch1/recheck-after-fix.md",
+      "sha256": "151ec0433877d882da50b7e94002ea9f5a80114aa20dc2d12ffba7292772cfaa",
+      "phase": "REVIEW",
+      "kind": "file"
+    },
+    {
+      "path": "reviews/embodied-batch1/g2-diagnostic.md",
+      "sha256": "102cfcfab4a0e895de682b0ef2aee3618a7bdaefb5884247463e50382c9450db",
+      "phase": "REVIEW",
+      "kind": "file"
+    },
+    {
+      "path": "reviews/embodied-batch1/targeted-recheck.md",
+      "sha256": "08a841d25f8f92055b9c5d88820edeb939e6284fb2f1e657cb1d07ce86ecbcf9",
+      "phase": "REVIEW",
+      "kind": "file"
+    },
+    {
+      "path": "reviews/embodied-batch1/recheck-planA-fixes.md",
+      "sha256": "add60414544e7203e02b2ab72c5742b174075a915374a443f35b7d9174646455",
+      "phase": "REVIEW",
+      "kind": "file"
+    },
+    {
+      "path": "reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md",
+      "sha256": "758ab6f69adf54b828a89bc3071ab32c941735b7cde1accec14a79c5eee613da",
+      "phase": "REVIEW",
+      "kind": "file"
+    }
+  ],
+  "commit": "67abc1d7c290d6cad8382bbaa9c3600b042664bb",
+  "dirty_files": 0,
+  "note": "决策人：用户本人；决策日期：2026-11-27；决策依据：用户在对话中明确给出的裁决；记录执行：代理代录（用户 2026-11-27 明确授权代理登记 G1/G2 决定）；身份认证：未进行（审批人仅为字符串，无登录、无数字签名）。 范围仅限 G1，不含 G3 与 KCR。"
+}

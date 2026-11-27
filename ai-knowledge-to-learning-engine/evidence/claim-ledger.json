@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-11-25",
+  "updated": "2026-11-27",
   "note": "种子断言从 00-导航与索引/验真队列与术语表.md 与 概念引入说明.md 派生，状态继承原 ✅/⚠️/❗ 标记。AI 生成内容不得自动标为 verified。",
   "claims": [
     {
@@ -2276,7 +2276,8 @@
       ],
       "used_by_lessons": [
         "E01"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：open；单源或工程经验，缺第二独立来源。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V69",
@@ -2304,7 +2305,8 @@
       ],
       "used_by_lessons": [
         "E02"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：open；单源或工程经验，缺第二独立来源。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V70",
@@ -2328,19 +2330,22 @@
         }
       ],
       "verification": {
-        "status": "open",
-        "confidence": "low"
+        "status": "conditional",
+        "confidence": "medium"
       },
       "conditions": [
         "分项耗时（80/40/300/60ms）为源手册假设算例（教学假设，存疑），机制结论不依赖具体数值",
-        "textbook L266 '执行 300 毫米'为单位笔误（应为毫秒），已登记源勘误队列，Engine 按正确口径撰写"
+        "textbook L266 '执行 300 毫米'为单位笔误（应为毫秒），已登记源勘误队列，Engine 按正确口径撰写",
+        "结论“时间预算须分层”以具体链路实测为准；分项耗时为源手册教学假设",
+        "G1 确认按更正后口径：“执行 300 毫米”为源文单位笔误，应为 300 毫秒"
       ],
       "source_documents": [
         "08-具身智能/02-六环闭环与时间预算.md"
       ],
       "used_by_lessons": [
         "E02"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：conditional；更正后口径已确认。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V71",
@@ -2364,18 +2369,20 @@
         }
       ],
       "verification": {
-        "status": "open",
-        "confidence": "low"
+        "status": "conditional",
+        "confidence": "medium"
       },
       "conditions": [
-        "速度/延迟/容差为源底本自设教学参数（存疑）；33ms 曝光周期仅用于角量算例，与 27mm 无关"
+        "速度/延迟/容差为源底本自设教学参数（存疑）；33ms 曝光周期仅用于角量算例，与 27mm 无关",
+        "“抖动只能靠缩短链路与硬件触发”一句单源、无第二依据，该句保持 open，不在本条 conditional 的已核范围内"
       ],
       "source_documents": [
         "08-具身智能/03-时空对齐与标定.md"
       ],
       "used_by_lessons": [
         "E03"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：conditional。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V72",
@@ -2394,8 +2401,8 @@
         }
       ],
       "verification": {
-        "status": "open",
-        "confidence": "low"
+        "status": "verified",
+        "confidence": "medium"
       },
       "conditions": [
         "结论前提：被贴靠通道等间隔、无丢帧，且操作方向是贴到主节拍"
@@ -2405,7 +2412,8 @@
       ],
       "used_by_lessons": [
         "E03"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：verified；更正后口径已确认。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V73",
@@ -2424,19 +2432,21 @@
         }
       ],
       "verification": {
-        "status": "open",
-        "confidence": "low"
+        "status": "verified",
+        "confidence": "high"
       },
       "conditions": [
         "textbook 术语表 L1036 混叠释义条件写反（与正文及其自身算例矛盾），已登记源勘误队列；Engine 按正确采样定理撰写",
-        "源 textbook L431 写“≥24 Hz”，与同句“高于两倍”不一致；Engine 按严格大于撰写，课源已加注记"
+        "源 textbook L431 写“≥24 Hz”，与同句“高于两倍”不一致；Engine 按严格大于撰写，课源已加注记",
+        "G1 确认按更正后口径：采样率须严格大于信号最高频率的两倍（源文“≥24 Hz”为笔误）"
       ],
       "source_documents": [
         "08-具身智能/03-时空对齐与标定.md"
       ],
       "used_by_lessons": [
         "E03"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：verified；更正后口径已确认。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V74",
@@ -2460,16 +2470,19 @@
         }
       ],
       "verification": {
-        "status": "open",
-        "confidence": "low"
+        "status": "conditional",
+        "confidence": "medium"
       },
-      "conditions": [],
+      "conditions": [
+        "五坐标系划分为常见工程惯例；标定产物版本化为工程规范（单源）"
+      ],
       "source_documents": [
         "08-具身智能/03-时空对齐与标定.md"
       ],
       "used_by_lessons": [
         "E03"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：conditional。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V75",
@@ -2483,8 +2496,8 @@
         }
       ],
       "verification": {
-        "status": "open",
-        "confidence": "low"
+        "status": "verified",
+        "confidence": "medium"
       },
       "conditions": [
         "平面两连杆最简约定（源声明符号约定各家不同）；Engine 独立复算全过"
@@ -2494,7 +2507,8 @@
       ],
       "used_by_lessons": [
         "E04"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：verified。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V76",
@@ -2508,19 +2522,22 @@
         }
       ],
       "verification": {
-        "status": "open",
-        "confidence": "low"
+        "status": "verified",
+        "confidence": "medium"
       },
       "conditions": [
         "Engine 独立复算全过（含代回还原目标）",
-        "Robot_Learn kb:5.16.2 把两组解的肘上/肘下标签写反；Engine 按通行定义重算后标注（勘误见 G1 队列 #13）"
+        "Robot_Learn kb:5.16.2 把两组解的肘上/肘下标签写反；Engine 按通行定义重算后标注（勘误见 G1 队列 #13）",
+        "“无解时挂起并改目标”属工程处置，单源",
+        "G1 确认按更正后口径：肘上/肘下按肘关节相对“基座—腕连线”的位置判定（源文标签写反）"
       ],
       "source_documents": [
         "08-具身智能/04-运动学与雅可比奇异.md"
       ],
       "used_by_lessons": [
         "E04"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：verified；更正后口径已确认。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V77",
@@ -2534,18 +2551,20 @@
         }
       ],
       "verification": {
-        "status": "open",
-        "confidence": "low"
+        "status": "verified",
+        "confidence": "medium"
       },
       "conditions": [
-        "Engine 独立用 JᵀF 与 Cramer 法则重推全过；最小能量解校核 0.7×0.2414+0.3×0.1034=0.200m/s"
+        "Engine 独立用 JᵀF 与 Cramer 法则重推全过；最小能量解校核 0.7×0.2414+0.3×0.1034=0.200m/s",
+        "仅平面两连杆最小核，不覆盖空间 6R / 7R、动力学与碰撞"
       ],
       "source_documents": [
         "08-具身智能/04-运动学与雅可比奇异.md"
       ],
       "used_by_lessons": [
         "E04"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：verified。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V78",
@@ -2569,19 +2588,21 @@
         }
       ],
       "verification": {
-        "status": "open",
-        "confidence": "low"
+        "status": "verified",
+        "confidence": "high"
       },
       "conditions": [
         "概率参数为源教学假设（存疑）",
-        "源界方向口径冲突：kb:5.16.5 '乐观上界'正确；kb:5.15.6 '偏乐观的下界式估计'与 principles 术语表'理想下界'错误/含混；5.15.6 '十个环节剩六成六'与算例不符（0.95^10≈59.9%，66.3% 为 8 步）——已登记源勘误队列，Engine 按正确口径撰写"
+        "源界方向口径冲突：kb:5.16.5 '乐观上界'正确；kb:5.15.6 '偏乐观的下界式估计'与 principles 术语表'理想下界'错误/含混；5.15.6 '十个环节剩六成六'与算例不符（0.95^10≈59.9%，66.3% 为 8 步）——已登记源勘误队列，Engine 按正确口径撰写",
+        "G1 确认按更正后口径：qⁿ 是乐观上界；概率数值为教学假设"
       ],
       "source_documents": [
         "08-具身智能/05-模仿学习复合误差与Sim2Real.md"
       ],
       "used_by_lessons": [
         "E05"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：verified；更正后口径已确认。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V79",
@@ -2605,18 +2626,20 @@
         }
       ],
       "verification": {
-        "status": "open",
-        "confidence": "low"
+        "status": "conditional",
+        "confidence": "medium"
       },
       "conditions": [
-        "成功率/带宽为源教学假设（存疑）；外部核验支持机制表述，不支持具体百分比"
+        "成功率/带宽为源教学假设（存疑）；外部核验支持机制表述，不支持具体百分比",
+        "机制表述有外部来源（Tobin 2017）支持；成功率与带宽数值为源教学假设，外部来源不支持具体百分比"
       ],
       "source_documents": [
         "08-具身智能/05-模仿学习复合误差与Sim2Real.md"
       ],
       "used_by_lessons": [
         "E05"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：conditional。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V80",
@@ -2646,7 +2669,8 @@
       ],
       "used_by_lessons": [
         "E05"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：open；单源或工程经验，缺第二独立来源。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V81",
@@ -2665,18 +2689,20 @@
         }
       ],
       "verification": {
-        "status": "open",
-        "confidence": "low"
+        "status": "verified",
+        "confidence": "high"
       },
       "conditions": [
-        "96% 观测为源教学假设；正态近似区间在 p 接近 1 或小 n 时失效（源已如实提示）"
+        "96% 观测为源教学假设；正态近似区间在 p 接近 1 或小 n 时失效（源已如实提示）",
+        "“两条硬要求”（成功率须带试验次数与初始条件分布）属工程规范，单源"
       ],
       "source_documents": [
         "08-具身智能/05-模仿学习复合误差与Sim2Real.md"
       ],
       "used_by_lessons": [
         "E05"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：verified。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V82",
@@ -2706,7 +2732,8 @@
       ],
       "used_by_lessons": [
         "E06"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：open；单源或工程经验，缺第二独立来源。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V83",
@@ -2735,19 +2762,20 @@
         }
       ],
       "verification": {
-        "status": "open",
-        "confidence": "low"
+        "status": "conditional",
+        "confidence": "medium"
       },
       "conditions": [
         "CPU 确定性限同版本同架构；源 fact:72/73 未列入册末来源清单（源登记缺口，勘误队列 #3），CPU 一行以官方文档 Reproducibility 节直核为准，GPU 一行以 MJWarp 官方 FAQ 直核为准",
-        "官方原文取文日期：CPU 一行 2026-11-25（doc/computation/index.rst，main 分支），GPU 一行 2026-11-24（doc/mjwarp/index.rst）；官方声明随版本变化，引用须带取文日期与\"同版本、同架构\"条件；状态升级待人工裁决（G1）"
+        "官方原文取文日期：CPU 一行 2026-11-25（doc/computation/index.rst，main 分支），GPU 一行 2026-11-24（doc/mjwarp/index.rst）；官方声明随版本变化，引用须带取文日期与\"同版本、同架构\"条件；G1 2026-11-27 裁决：conditional（官方声明随版本变化）"
       ],
       "source_documents": [
         "08-具身智能/06-开源生态与实践路径.md"
       ],
       "used_by_lessons": [
         "E06"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：conditional；更正后口径已确认。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V84",
@@ -2765,14 +2793,15 @@
         "confidence": "low"
       },
       "conditions": [
-        "概念级结论（首批边界）；数据账 12s×20Hz=240 步/条、10 万条=2400 万步≈165.9TB 经独立复算；前沿模型具体数字待 G1 对官方来源复核"
+        "概念级结论（首批边界）；数据账 12s×20Hz=240 步/条、10 万条=2400 万步≈165.9TB 经独立复算；前沿模型具体数字未核验、教材不引用（G1 2026-11-27 裁决：保持 open/low）"
       ],
       "source_documents": [
         "08-具身智能/05-模仿学习复合误差与Sim2Real.md"
       ],
       "used_by_lessons": [
         "E05"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：open；单源或工程经验，缺第二独立来源。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V85",
@@ -2791,18 +2820,20 @@
         }
       ],
       "verification": {
-        "status": "open",
-        "confidence": "low"
+        "status": "conditional",
+        "confidence": "medium"
       },
       "conditions": [
-        "数字为论文口径快照（2022-03），引用须带数据集/划分/日期；升级待 G1"
+        "数字为论文口径快照（2022-03），引用须带数据集/划分/日期；G1 2026-11-27 裁决：conditional",
+        "“BEV / Occupancy 只是感知中间态”结论为单源；G1 裁决不拆条"
       ],
       "source_documents": [
         "08-具身智能/02-六环闭环与时间预算.md"
       ],
       "used_by_lessons": [
         "E02"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：conditional。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V86",
@@ -2826,14 +2857,15 @@
       },
       "conditions": [
         "逐周验收表为源文要点；「不能复现的成功无法证明是能力而不是运气」是与第 4 周验收标准一致的教学解释，非源文原句",
-        "openlab 主体素材为研究整理稿（未经独立核实声明）；升级待 G1"
+        "openlab 主体素材为研究整理稿（未经独立核实声明）；G1 2026-11-27 裁决：保持 open/low"
       ],
       "source_documents": [
         "08-具身智能/06-开源生态与实践路径.md"
       ],
       "used_by_lessons": [
         "E06"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：open；单源或工程经验，缺第二独立来源。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V87",
@@ -2864,7 +2896,8 @@
       ],
       "used_by_lessons": [
         "E06"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：open；单源或工程经验，缺第二独立来源。裁决人：用户本人（经对话确认，非 AI 自升）"
     },
     {
       "id": "V88",
@@ -2885,14 +2918,15 @@
         "容差为源底本自设的示例值，未经实测（存疑）；机制结论'容差必须写成数字'不依赖具体数值",
         "33.2% 隐含点在框内均匀分布的假设，源文与课文均未写明",
         "源文'每边放宽 10 毫米'的'边'字在面与边长之间有歧义（算式按每个面 10 mm），已登记源勘误队列 #14",
-        "单源；同节'对齐检查表八项'为工程惯例，无第二来源；升级待人工裁决（G1）"
+        "单源；同节'对齐检查表八项'为工程惯例，无第二来源；G1 2026-11-27 裁决：保持 open/low"
       ],
       "source_documents": [
         "08-具身智能/03-时空对齐与标定.md"
       ],
       "used_by_lessons": [
         "E03"
-      ]
+      ],
+      "note": "G1 裁决 2026-11-27（用户本人，整类采纳 USER-ACCEPTANCE-PACKAGE §2.8）：open；单源或工程经验，缺第二独立来源。裁决人：用户本人（经对话确认，非 AI 自升）"
     }
   ]
 }

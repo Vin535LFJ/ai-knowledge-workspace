@@ -4,11 +4,12 @@ type: review-material
 status: active
 owner: qwenwork
 created: 2026-11-25
-updated: 2026-11-25
+updated: 2026-11-27
 ---
 
 # G1 核验队列 · embodied-loop-journey 首批（V68–V88）
 
+> **2026-11-27 已裁决（用户本人，整类采纳，见 §4）**：7 条 verified（V72、V73、V75、V76、V77、V78、V81）、6 条 conditional（V70、V71、V74、V79、V83、V85）、8 条保持 open/low。台账与教材状态说明已同步。§1–§3 为 2026-11-25 的证据材料原貌。
 > **AI 只准备证据与建议，裁决栏由人填写；AI 不自升断言状态。** 全部 21 条已登记 open/low（V88 为 2026-11-25 方案甲修复时补登记的容差算例，此前正文无断言覆盖；review_gate 105 claims 误标 0）。教材按 L19 先例引用 open 断言并如实标注，升级后由 G1 裁决回填。
 > 关联：RUN-2026-11-23-embodied-batch1 · 研究报告 `reviews/embodied-batch1/research-report-embodied.md` · 课源 `08-具身智能/`
 
@@ -69,5 +70,5 @@ updated: 2026-11-25
 
 | 项 | 裁决（升级/维持/附条件） | 裁决人 | 日期 |
 |---|---|---|---|
-| V68–V88 | | | |
-| 源勘误反馈 | （反馈 / 不反馈） | | |
+| V68–V88 | **整类采纳验收包 §2.8 推荐**：A 类 V72、V73、V75、V76、V77、V78、V81 → **verified**；B 类 V70、V71、V74、V79、V83、V85 → **conditional**（附条件）；C 类 V68、V69、V80、V82、V84、V86、V87、V88 → 保持 open/low。E 类更正口径（V70、V72、V73、V76、V78、V83）随整类采纳确认。执行：台账状态/置信度/条件已更新（V78 high；V73、V81 high；V72、V75、V76、V77 medium；六条 conditional 均 medium），六课 §8 与写作纪律行、课程 README/契约同步。AI 只执行裁决，未自行改动任何类别 | 用户本人（经对话确认；本行由 AI 按原话回填） | 2026-11-27 |
+| 源勘误反馈 | （反馈 / 不反馈）——**未裁决**（PD-Q11，仍待决） | | |

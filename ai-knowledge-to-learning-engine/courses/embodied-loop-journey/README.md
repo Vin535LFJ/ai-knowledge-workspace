@@ -30,7 +30,7 @@ U3 学习与落地   E05 模仿学习复合误差与 Sim2Real → E06 开源生�
 
 ## 证据状态（如实声明）
 
-- 本课程引用的断言 **V68–V88 在写作时全部为 open/low**；升级由人工核验裁决，AI 不自升。核验队列：`reviews/embodied-batch1/G1-verification-queue.md`。
+- 本课程引用的断言 **V68–V88 在写作时全部为 open/low**；升级由人工核验裁决，AI 不自升。**G1 裁决（2026-11-27，用户本人）**：V72 / V73 / V75 / V76 / V77 / V78 / V81 为 **verified**；V70 / V71 / V74 / V79 / V83 / V85 为 **conditional**（带条件引用）；其余 8 条保持 open/low。核验队列与裁决记录：`reviews/embodied-batch1/G1-verification-queue.md` §4。
 - 所有算例经 Engine 独立复算（Python 逐条重推）；域随机化（Tobin 2017）、复合误差（Ross 2011）、BEVFormer 数字（arXiv 2203.17270）、可复现性分层（MuJoCo 官方文档）另有外部来源核验。
 - 时间预算、概率、带宽、容差等数值是课源自设的**教学假设**，不是实测数据；生态项目信息为 2026 年 11 月中旬的快照。
 - 前沿模型的性能数字与未能核实的发布日期**不进教材**。

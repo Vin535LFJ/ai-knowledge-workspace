@@ -4,6 +4,15 @@
 > 权威口径见 `DECISIONS.md`；当前阶段见 `WORKFLOW_STATE.md`。
 > P5 + Part B 执行期间遵循 D09（不 commit/push）；2026-11-18 用户新授权 commit + push 到 origin/master，见文末"git 提交"段与 DECISIONS.md D09 更新。
 
+## 2026-11-27 · 具身六课 G1 / G2 用户裁决执行（run 仍停在 REVIEW）
+
+- **裁决来源**：用户指令"G1 按验收包推荐整类采纳（7 条升 verified、6 条升 conditional、其余保持 open/low）；G2 六课评分按独立复评的建议分确认"。AI 只执行，未改任何类别。
+- **G1（V68–V88）**：verified = V72、V73、V75、V76、V77、V78、V81；conditional = V70、V71、V74、V79、V83、V85；保持 open/low = V68、V69、V80、V82、V84、V86、V87、V88；E 类更正口径随整类采纳确认。置信度按证据强度定（V78 及教科书/标准公式类 V73、V81 为 high，单源工程数学 V72、V75、V76、V77 与六条 conditional 为 medium）。附加条件逐条写入台账（如 V71 的"抖动只能靠缩短链路与硬件触发"一句保持 open；V83 维持 conditional 未升 verified；V85 不拆条）。台账：105 claims = **31 verified / 13 conditional / 61 open**，误标 0。
+- **同步**：六课 §8 状态说明与写作纪律行、课程 README 与契约 note、G1 队列 §4 裁决栏、验收包 §2.8 / §3.2（裁决人 = 用户本人，AI 代录）。10 个受影响的 run 产物已重新登记哈希（24 个全部有效）。
+- **G2**：E01 88 / E02 91 / E03 91 / E04 92 / E05 90 / E06 88，全部过线；E06 的 88 分在方案甲两处小修之前评定，用户知情确认。
+- **checkpoint 提交与审批代录（2026-11-27，用户批准）**：上述改动以 `67abc1d` 提交并快进推送（提交前六项核对全过：16 文件全属本轮 / 105=31v/13c/61o 误标 0 / 六课分数三处一致 / 24 产物有效 / G3·KCR 未批准 / run REVIEW·paused）。随后按用户明确授权**代录** G1 与 G2 审批记录（`reviews/approvals/RUN-2026-11-23-embodied-batch1/G1-01.json`、`G2-01.json`，绑定 `67abc1d` 与 24 个产物哈希）；记录如实标注"代理代录、身份认证未进行"。**G3 与 KCR 未获代录授权，未执行**。
+- **未做（等用户本人）**：G3 → KCR → resume。run 仍 REVIEW / paused。
+
 ## 2026-11-27 · post-D22 收尾批次（二次外部审核驱动，定点修正）
 
 - **Pilot L13 末课页面浏览器补测**：上批 QA 止于 L11（L13 只出现在 nextLink）。新增场景以**真实点击**走完链路：L11 点"下一课"→ L13（带 `?c`，页面标题渲染正确，末课显示"回到课程地图"且保留 Pilot 上下文，前置 L08 回退主课程）→ 点返回落在 Pilot 5 课地图。四场景零报错，证据更新 `reviews/consolidation-qa-pilot-context-20261126.json`。

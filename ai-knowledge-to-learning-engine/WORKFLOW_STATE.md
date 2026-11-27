@@ -4,7 +4,11 @@
 >
 > 计划：会话级批准产物，原件位于用户目录 `~/.workbuddy-ai/plans/quantum-nebula-newton-ffFN4E3P.md`（不入仓库） · 裁决：`DECISIONS.md`（D01–D14）
 
-**最后更新**：2026-11-27 11:10（**PD-Q16 关闭**：用户最终决定可见性暂不调整，两仓维持 Public——"先设 Private"方案未执行、搁置（关闭前不带登录探测两仓 raw README 均 HTTP 200）；活跃待决收为 Q4/Q9/Q11/Q15；具身六课验收保持暂停，run 仍 REVIEW/paused。**续跑点**：等用户完成 G1/G2 后登记审批 + G3 + KCR；PD-Q4/Q9/Q11/Q15 待决。详见 CHANGELOG 2026-11-27 条）
+**最后更新**：2026-11-27 13:50（**G1/G2 checkpoint `67abc1d` 已提交并推送**；按用户授权代录审批记录 G1-01 / G2-01（绑定 `67abc1d`、24 产物，身份认证未进行）；**G3 与 KCR 未获代录授权、未执行**，run 仍 REVIEW / paused。**续跑点**：用户本人执行 G3 → KCR → AI resume → PUBLISH → FEEDBACK → done。详见 CHANGELOG 2026-11-27 G1/G2 条）
+
+**前次记录**：**最后更新**：2026-11-27 12:30（**具身六课 G1 / G2 用户裁决已执行**：G1 整类采纳——7 verified（V72/V73/V75/V76/V77/V78/V81）、6 conditional（V70/V71/V74/V79/V83/V85）、8 保持 open/low；台账 105 claims = 31v/13c/61o 误标 0；六课状态说明、课程 README/契约、G1 队列裁决栏、验收包 §2.8/§3.2 同步；G2 六课 = 88/91/91/92/90/88 全部通过。10 个受影响产物哈希已重新登记（24 个全部有效）。**run 仍 REVIEW / paused，G3 open，KCR REVIEWING，无审批记录**。门禁：validate 20/0/0 · publish 34 · arc 0 FAIL · Floor 6/6 · selftest 28/16/15。**续跑点**：用户确认 G1/G2 文件不再改动 → 登记审批（G1、G2）→ G3 → KCR → AI resume → PUBLISH → FEEDBACK → done。本轮改动**未提交、未推送**。详见 CHANGELOG 2026-11-27 G1/G2 条）
+
+**前次记录**：**最后更新**：2026-11-27 11:10（**PD-Q16 关闭**：用户最终决定可见性暂不调整，两仓维持 Public——"先设 Private"方案未执行、搁置（关闭前不带登录探测两仓 raw README 均 HTTP 200）；活跃待决收为 Q4/Q9/Q11/Q15；具身六课验收保持暂停，run 仍 REVIEW/paused。**续跑点**：等用户完成 G1/G2 后登记审批 + G3 + KCR；PD-Q4/Q9/Q11/Q15 待决。详见 CHANGELOG 2026-11-27 条）
 
 **前次记录**：**最后更新**：2026-11-27 10:20（**用户裁决 PD-Q16 + 批准推送**：两仓先设 Private 再整理公开边界，切换待用户在 GitHub Settings 执行；活跃待决收为 Q4/Q9/Q11/Q15；批准推送 Engine 并同步快照；具身六课验收保持暂停，run 仍 REVIEW/paused。此前 09:55 批次：Pilot L13 末课页面补测——真实点击 L11→L13→返回 Pilot 地图，四场景零报错；PD-Q3 标记被 D22 取代；PD-Q16 范围扩展到快照仓；NOW/验收包去掉易过时的 HEAD 表述；README publish 34。验收包哈希已重新登记。**续跑点**：等用户完成 G1/G2 后登记审批 + G3 + KCR；PD-Q4/Q9/Q11/Q15 待决。详见 CHANGELOG 2026-11-27 条）
 
