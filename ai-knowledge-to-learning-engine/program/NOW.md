@@ -4,7 +4,7 @@ type: program-state
 status: active
 owner: qwenwork
 created: 2026-11-19
-updated: 2026-11-26
+updated: 2026-11-27
 ---
 
 # NOW · 当前唯一主目标
@@ -23,14 +23,15 @@ updated: 2026-11-26
 ## 3. 当前任务
 
 1. **用户完成六课裁决**。材料：`../reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md`（G1 V68–V88 共 21 条、G2 六课评分表、专项复核、审批登记顺序）。裁决栏全部留空；AI 没有升级断言、没有填分。
-2. **PD-Q 待决清单逐项裁决**（`decisions/PENDING_DECISIONS.md`）：活跃项 PD-Q3/Q4/Q9/Q11/Q15/Q16；PD-Q12/Q14 因 Governance 已归档转为非活跃（如重新启用再议）。
+2. **PD-Q 待决清单逐项裁决**（`decisions/PENDING_DECISIONS.md`）：活跃待决项 PD-Q4/Q9/Q11/Q15；**PD-Q16 已裁决**（2026-11-27：两仓先设 Private，再整理公开边界），待用户在 GitHub Settings 执行；PD-Q3 已被 D22 取代（不再建独立远程）；PD-Q12/Q14 因 Governance 已归档转为非活跃（如重新启用再议）。
 
-> 已收口（不再是当前任务）：D22 整合产物已分组提交并推送（核心仓 HEAD `67ac3ec`、Skills `d6fa00f`，ls-remote 核实一致）；Skills 过时文档修复已随 `d6fa00f` 完成；**视频 pilot 课程上下文缺陷已修复**（路由/下一课/返回链贯穿 `?c=`，3 个浏览器回归场景通过，证据 `../reviews/consolidation-qa-pilot-context-20261126.json`）。
+> 已收口（不再是当前任务）：D22 整合产物与 post-D22 定点修复均已分组提交并推送（Engine / Skills 远端经 ls-remote 核实与本地一致，具体提交见 `../CHANGELOG.md`）；Skills 过时文档修复已完成；**视频 pilot 课程上下文缺陷已修复**（路由/下一课/返回链贯穿 `?c=`，4 个浏览器回归场景通过，含 L13 末课页面真实点击链路，证据 `../reviews/consolidation-qa-pilot-context-20261126.json`）。
 
 ## 4. 阻塞问题（需人工，AI 不自批）
 
 - **embodied 四件人工门**：G1（V68–V88 是否升级）→ G2（六课评分，基于修复后版本）→ 登记审批 + G3 → KCR。run 无法被 AI 推进。
-- **待裁决清单**：PD-Q9 至 PD-Q16（`decisions/PENDING_DECISIONS.md`）；其中 **PD-Q16 公开仓内部材料可见性**只能由用户在 GitHub Settings 操作（本机无 gh/API 凭据）。
+- **待裁决清单**：PD-Q4 / Q9 / Q11 / Q15（`decisions/PENDING_DECISIONS.md`）。
+- **仓库可见性（PD-Q16，已裁决待执行）**：Engine 仓与 `ai-knowledge-workspace` 快照仓目前均为 Public 且含内部审读/运行态/裁决材料；用户 2026-11-27 决定"先收紧、再整理"——两仓先设 **Private**，之后划分公开代码 / 学习资产 / 内部治理材料，边界确认后 Engine 可恢复 Public，快照仓长期 Private。**切换动作只能由用户在 GitHub Settings 完成**（本机无 gh/API 凭据）。
 - **Skills 全新会话验证未做**（会话重建后发现/加载/执行均成功，全新会话未测）。
 
 ## 5. 下一步
@@ -38,11 +39,11 @@ updated: 2026-11-26
 1. 用户读验收包，填 G1 裁决栏与 G2 评分。
 2. AI 按裁决更新台账与课文状态说明，重建并跑门禁，报结果。
 3. 用户确认文件不再改动后：登记审批 → G3 → KCR → resume → PUBLISH（本地口径，D02 约束在线发布）→ FEEDBACK → done。
-4. 穿插：Skills 全新会话确认；PD-Q 活跃项逐项裁决（Q3/Q4/Q9/Q11/Q15/Q16）。
+4. 穿插：Skills 全新会话确认；PD-Q 活跃项逐项裁决（Q4/Q9/Q11/Q15）；用户在 GitHub Settings 执行 PD-Q16（两仓设 Private）。
 
 ## 6. 最近状态更新时间
 
-**2026-11-26 19:30**（外部审核定点修复批次：视频 pilot 课程上下文缺陷修复 + 3 浏览器回归通过；文档治理收口——NOW/PENDING 关闭 Q10/Q13/Q17、Q12/Q14 转非活跃，REQUIREMENT-COVERAGE/FINAL-ACCEPTANCE/README 数字与课时口径更正，Radar README/AGENTS 改为内部模块口径，验收包版本说明更正为 ecab4b9）。D22 统一收敛已于本日 earlier 完成（备份 6/6 PASS、三仓并入、多课程切换 + quiz 上线）。逐日明细以 Engine `../CHANGELOG.md` / `../WORKFLOW_STATE.md` 为准。
+**2026-11-27 10:20**（用户裁决 PD-Q16：两仓先设 Private、再整理公开边界，待其在 GitHub Settings 执行；批准推送 Engine 与同步快照；具身六课验收保持暂停）。前次 2026-11-27 09:55（二次外部审核收尾：Pilot L13 末课页面真实点击补测通过；PD-Q3 标记被 D22 取代，活跃待决统一为 Q4/Q9/Q11/Q15/Q16；PD-Q16 范围扩展到快照仓；易过时的 HEAD 表述清理）。前次 2026-11-26 19:30（外部审核定点修复批次：视频 pilot 课程上下文缺陷修复 + 3 浏览器回归通过；文档治理收口——NOW/PENDING 关闭 Q10/Q13/Q17、Q12/Q14 转非活跃，REQUIREMENT-COVERAGE/FINAL-ACCEPTANCE/README 数字与课时口径更正，Radar README/AGENTS 改为内部模块口径，验收包版本说明更正为 ecab4b9）。D22 统一收敛已于本日 earlier 完成（备份 6/6 PASS、三仓并入、多课程切换 + quiz 上线）。逐日明细以 Engine `../CHANGELOG.md` / `../WORKFLOW_STATE.md` 为准。
 
 ## 7. 关键状态文件链接
 

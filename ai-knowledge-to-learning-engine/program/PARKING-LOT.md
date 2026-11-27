@@ -30,8 +30,8 @@ Knowledge/Skills/MCP/Tools 同一原则：知识跟随领域和产品归档；�
 | Learning Experience Design 试点 | Engine 内 Skill（`.agent/skills/learning-experience-design/`） | ✅ **已解冻执行（2026-11-21 阶段 2）**：试点 A 落地 L13 六项增强 + SKILL draft→active + Floor L13/L19 双 PASS（Engine `4945711`）；**全面铺开转入 NOW 主线内部工作流**（ROADMAP P1'） | 用户六阶段批准计划 |
 | Agent Workspace Governance | MVP + 真实适配（本地 git `1b4a880`） | ✅ **已解冻执行（2026-11-21 阶段 3）**：ENGINE 真实适配实跑 183 docs + IGNORE_DIRS 修复 + 9/9 验收（`6aec3d3`+`1b4a880`）；此后**按需维护**，无第二个持续真实项目需求不追加新功能；独立抽取仍须 ADR+用户批准 | 用户六阶段批准计划 |
 | GitHub Project Radar | MVP + 真实采集（本地 git `b7442da`） | ✅ **已解冻执行（2026-11-21 阶段 4）**：rest.py 匿名实跑 121 仓/200 快照/0 错误 + 首份周报 + Intake 导出 1 条；此后**按需跑周报**，不自动导入 Engine | 用户六阶段批准计划 |
-| PD-Q3 远程创建（Program/Governance/Radar） | 三仓库均仅本地 git | 冻结解除后另行授权（不可逆公开动作） | PENDING_DECISIONS |
-| PD-Q4 Radar GitHub PAT | 未申请 | Radar 解冻后，环境变量注入只读 PAT | PENDING_DECISIONS |
+| PD-Q3 远程创建（Program/Governance/Radar） | 三仓库原仅本地 git | ⊘ **已被 D22 取代（2026-11-26）**：三项目并入核心仓（`program/` / `legacy/` / `integrations/`），随核心仓远端发布，不再建独立远程；原仓历史留存备份区 | PENDING_DECISIONS |
+| PD-Q4 Radar GitHub PAT | 未申请 | Radar 解冻后，环境变量注入只读 PAT | PENDING_DECISIONS（仍活跃） |
 | 仓库命名统一迁移 | 审计 + 方案存档（`plans/2026-11-19-rename-audit-and-migration.md`）；**本地目录已改新名（2026-11-19）**；范围=含品牌文案；OmniWorld-Engine 跟进已授权 | ✅ **已完成（2026-11-20 T1 执行完成）**：GitHub 改名（用户手动）后，AI 已集中完成 remote 切换 / 引用更新 / 验证 + OmniWorld 跟进；实测见 NOW.md 与 Engine CHANGELOG | 2026-11-19 用户指令：本地先改，GitHub 稍后同步 |
 
 冻结期唯一允许的动作：把 Engine 协作中**真实发生**的痛点追加记录到 Governance 需求清单（为将来抽取备料）；不写新功能/新 CLI/新目录。（2026-11-23 注：LXD/Governance/Radar 三项已按用户批准的六阶段计划解冻执行，见上表；本条适用于其余仍冻结项。）

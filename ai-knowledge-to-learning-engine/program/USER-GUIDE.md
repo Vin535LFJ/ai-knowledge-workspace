@@ -207,8 +207,8 @@ PM 的节奏是「一次只给一个明确的下一步主任务」：
 **Q1：为什么不做一个 Dashboard？**
 A：Program 的价值是「准确 + 轻」，不是「可视化」。Dashboard 会变成第二个需要维护的产品。当前用 Markdown + git 足够。
 
-**Q2：为什么 Program 没有 GitHub 远程？**
-A：它是本地统筹层，只服务本机工作区。PD-Q3 未批准远程创建（不可逆公开动作）。
+**Q2：Program 有 GitHub 远程吗？**
+A：D22（2026-11-26）后 Program 已并入核心仓 `ai-knowledge-to-learning-engine` 的 `program/` 目录，随核心仓远端（Public）一起发布，不再单独建远程（PD-Q3 已被 D22 取代）。注意：这意味着 `program/decisions/` 等统筹材料在公开仓可见，属 PD-Q16 的裁决范围。
 
 **Q3：NOW.md 和项目 WORKFLOW_STATE 有什么区别？**
 A：NOW 是**项目级**快照（跨项目视角）；WORKFLOW_STATE 是 Engine **内部**的详细状态。冲突以 Engine 为准。

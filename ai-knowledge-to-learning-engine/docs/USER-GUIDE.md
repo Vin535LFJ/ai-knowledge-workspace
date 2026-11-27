@@ -422,5 +422,5 @@ frontmatter 与 tools/course.json 逐字一致；新断言登记 open/low；桥�
 
 ---
 
-**最后验证**：2026-11-26，D22 整合批次（validate 20/0/0 · publish 33 · 105 claims 误标 0 · 浏览器课程切换/quiz 实测通过）。
+**最后验证**：2026-11-26，D22 整合批次 + post-D22 定点修复（validate 20/0/0 · publish 34 · 105 claims 误标 0 · 浏览器课程切换/quiz 实测通过；pilot 课程上下文 4 场景回归通过）。
 **最近更新**：2026-11-26。

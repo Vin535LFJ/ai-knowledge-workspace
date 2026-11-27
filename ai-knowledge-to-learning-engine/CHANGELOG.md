@@ -4,6 +4,15 @@
 > 权威口径见 `DECISIONS.md`；当前阶段见 `WORKFLOW_STATE.md`。
 > P5 + Part B 执行期间遵循 D09（不 commit/push）；2026-11-18 用户新授权 commit + push 到 origin/master，见文末"git 提交"段与 DECISIONS.md D09 更新。
 
+## 2026-11-27 · post-D22 收尾批次（二次外部审核驱动，定点修正）
+
+- **Pilot L13 末课页面浏览器补测**：上批 QA 止于 L11（L13 只出现在 nextLink）。新增场景以**真实点击**走完链路：L11 点"下一课"→ L13（带 `?c`，页面标题渲染正确，末课显示"回到课程地图"且保留 Pilot 上下文，前置 L08 回退主课程）→ 点返回落在 Pilot 5 课地图。四场景零报错，证据更新 `reviews/consolidation-qa-pilot-context-20261126.json`。
+- **待决清单口径统一**：PD-Q3 标记**已被 D22 取代**（三项目并入核心仓，不再建独立远程）；活跃待决统一为 **PD-Q4 / Q9 / Q11 / Q15 / Q16**（NOW §3/§4、PENDING 前言与两表、PARKING-LOT、ROADMAP、USER-GUIDE、decisions/README 同步；原 NOW §4 "Q9 至 Q16" 的矛盾表述已消除）。
+- **PD-Q16 范围扩展**：明确覆盖 **Engine 仓与 `ai-knowledge-workspace` 快照仓**（两者均 Public 且含内部审读/运行态/裁决材料）；publish-allowlist 不约束 GitHub 文件可见性。
+- **易过时表述清理**：NOW 与验收包中的"当前 HEAD `67ac3ec`"改为不绑定具体提交的表述；README / docs/USER-GUIDE 的 publish 33→**34**。验收包哈希已重新登记（run 状态不变）。
+- **PD-Q16 用户裁决（2026-11-27）**：先收紧可见性、再整理公开边界——Engine 仓与 `ai-knowledge-workspace` 快照仓先设 **Private**，之后划分公开代码 / 学习资产 / 内部治理材料，边界确认后 Engine 可恢复 Public、快照仓长期 Private；不仓促删除内部材料。**切换须用户在 GitHub Settings 执行**（本机无 gh/API 凭据）；公开期间已被克隆/缓存的内容无法靠切换撤回。活跃待决收为 Q4/Q9/Q11/Q15。
+- 未动：具身六课 G1 断言（仍 open/low）、G2 建议分（仍标注修复前）、run 状态（REVIEW / paused）。
+
 ## 2026-11-26 · post-D22 定点修复批次（外部审核驱动，不重做架构）
 
 - **Pilot 课程上下文修复（真实导航缺陷）**：视频渲染 Pilot 复用主课程 L## ID 导致下一课/返回链按主课程走。修复 `web/assets/app.js`：课程上下文 `?c=<courseKey>` 贯穿 parseRoute / 课时查找 / renderLesson 的下一课、前置、返回链；前置不属于当前精选路径时按明确规则回退主课程；主课程路由不带 `?c` 行为不变。浏览器回归 3 场景全过（`reviews/consolidation-qa-pilot-context-20261126.json`）：Pilot L01→L02→**L06**→L11、Pilot L06 返回 Pilot 地图、主课程 L02→L03→L04 不受影响；零报错、360px 无溢出。

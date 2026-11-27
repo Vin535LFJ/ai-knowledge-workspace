@@ -65,7 +65,7 @@ py -3 -m http.server 8791 --directory web
 
 - **P10 端到端验收 done（2026-11-21）**：HDR 批次真实 run 走通 INTAKE→FEEDBACK，四件人工门全过。
 - **具身智能首批 6 课**：教材/测验/审读/修复/复核完成，run `RUN-2026-11-23-embodied-batch1` 停在 **REVIEW / paused**，等用户 G1（V68–V88）/ G2 / G3 / KCR 裁决。材料：`reviews/embodied-batch1/USER-ACCEPTANCE-PACKAGE.md`。
-- **质量门禁（2026-11-26 实测）**：validate 20/0/0 · publish 33 项 · arc 两课程 0 FAIL · 105 claims 误标 0 · selftest 16/28/15 · radar 58。
+- **质量门禁（2026-11-26 实测）**：validate 20/0/0 · publish 34 项 · arc 两课程 0 FAIL · 105 claims 误标 0 · selftest 16/28/15 · radar 58。
 - **已知限制**：站点仅本地（在线发布 D02 未授权）；Radar 摄取端未接通（人工批准后另行立项）；审批人为字符串（无数字签名）；公开仓含内部过程材料（PD-Q16 待用户裁决可见性）。
 
 ## 相关仓库

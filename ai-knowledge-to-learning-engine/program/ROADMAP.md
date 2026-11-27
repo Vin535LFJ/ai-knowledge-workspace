@@ -40,7 +40,7 @@ updated: 2026-11-25
 
 - **Governance**：2026-11-21 阶段 3 解冻执行——ENGINE 真实适配实跑（183 docs）+ IGNORE_DIRS 修复（`6aec3d3`+`1b4a880`）。**审计口径修正（2026-11-24）**：原称「9/9 验收」为文档自证，实际示例项目 doctor 不通过、真实项目 0 task/0 agent/0 ADR，独立审计判定 PARTIAL。此后**维护期**：仅修缺陷与可靠性验证（示例项目过 doctor、已有 AGENTS.md 的项目接入），不追加新功能；无第二个持续真实项目需求前不抽取。反向接入/独立抽取仍须 ADR + 用户批准。**P0 已修**（2026-11-25，`2ab2891`）：示例 doctor 退出码 0、init 接入已有 AGENTS.md 且幂等，41 tests；**2026-11-25 副本验证更正**：Engine 里已有被 git 跟踪的 `.governance/`（2026-11-21 适配写入，5 个文件）；在 Engine 副本上 `init` 安全且幂等、AGENTS.md 原文保留，但 `validate` exit 1、`doctor` exit 1（Engine 文档类型不在 13 类枚举、146 条登记为 unknown），原因是两套规范的类型口径未对齐，非 P0 回归（PD-Q14）。
 - **Radar**：2026-11-21 阶段 4 解冻执行——rest.py 匿名真实采集 121 仓 + 首份周报 + Intake 导出 1 条（`b7442da`）。**审计口径修正（2026-11-24）**：原称「200 快照」实为 20 秒内 4 次搜索（增长数据全空）；`analyze` 会覆盖人工复核状态、`--approved` 不写人工批准字段、导出物 `human_selected_for_research=false`，独立审计判定 PARTIAL。此后**维护期**：仅修 P0/P1 缺陷（人工状态保留/人工门字段/增长口径），不追加功能；PAT（PD-Q4）未申请、不自动导入 Engine；持续采集成为明确负担时再评估自动化。**P0 已修**（2026-11-25，`dbff9c7`）：analyze 不再覆盖人工状态、`--approved` 写入完整人工批准字段，58 tests；已在真实库的隔离副本上验证通过（2026-11-25：人工状态不被重置、批准幂等、非法转换被拒，58 tests）；真实库仍是修复前结构，升级待批（PD-Q15）。
-- **PD-Q3 远程创建**（Program/Governance/Radar）：仍待用户另批（不可逆公开动作）。
+- **PD-Q3 远程创建**（Program/Governance/Radar）：⊘ **已被 D22 取代（2026-11-26）**——三项目并入核心仓并随其远端发布，不再建独立远程。
 
 ## COMPLETED · P1：Engine 主目标达成（2026-11-21 P10 done）
 
